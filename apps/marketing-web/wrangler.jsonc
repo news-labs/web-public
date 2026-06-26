@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nl-marketing-web",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-01-20",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "vars": {
+    "ENVIRONMENT": "production",
+    "NEXT_PUBLIC_API_URL": "https://api.news-labs.io"
+  }
+}

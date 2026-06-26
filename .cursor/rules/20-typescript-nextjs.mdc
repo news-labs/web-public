@@ -1,0 +1,27 @@
+---
+description: TypeScript + Next.js App Router — server vs client, imports, and structure
+globs:
+  - "apps/**/*.{ts,tsx}"
+alwaysApply: true
+---
+
+# TypeScript and Next.js (App Router)
+
+## Defaults
+
+- Prefer **Server Components** unless browser APIs, event handlers, or local state require `"use client"`.
+- Colocate route segments under `app/` using route groups `(auth)`, `(dashboard)` when it clarifies layout boundaries.
+- Use `import type` for type-only imports from `react` / `next` where possible.
+
+## Data and env
+
+- Read secrets on the server only. Never embed secrets in client bundles.
+- Use `NEXT_PUBLIC_*` only for values that are safe to expose to browsers.
+
+## Styling
+
+- Tailwind v4-style `@import "tailwindcss"` in `globals.css`; keep `darkMode: "class"` aligned with the root layout strategy.
+
+## API calls from the client
+
+- Prefer a typed BFF or gateway base URL from env (`NEXT_PUBLIC_API_BASE_URL` pattern in templates).

@@ -1,0 +1,49 @@
+---
+description: Org account isolation — Cloudflare/GitHub credentials, no wrangler OAuth, CI-only prod deploy
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Organization account isolation (mandatory)
+
+Read `policies/org-account-isolation-policy.md` and `docs/org-account-isolation.md` before any deploy or Cloudflare change.
+
+## Hard rules for AI agents
+
+1. **Never run `wrangler login`** or suggest OAuth for product/org work.
+2. **Never run `wrangler deploy`** or `wrangler secret put` against production locally.
+3. **Never hardcode** `CLOUDFLARE_API_TOKEN`, account IDs, or secrets in repo files.
+4. **Always** use `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` from environment (direnv / CI secrets).
+5. **Always** pin `account_id` in `wrangler.prod.toml` when adding or editing production Wrangler configs.
+6. **Always** run or add `scripts/preflight-cloudflare.mjs` before deploy workflows mutate Cloudflare.
+7. **Production deploys** must go through GitHub Actions (`workflow_dispatch` or push to `main`).
+8. **labs-core** must not contain org-specific credentials or product Cloudflare account IDs.
+
+## Credential layout
+
+| What | Where |
+|---|---|
+| Org rules & scripts | `labs-core` |
+| Per-org CF token (local) | `~/.config/<org>/cloudflare.env` |
+| Per-org direnv | `~/develop/<org>/.envrc` |
+| CI credentials | GitHub repo/org secrets |
+| Worker runtime secrets | GitHub `THINERP_*` or equivalent + CI bootstrap |
+
+## Multi-repo orgs (e.g. thinerp-labs)
+
+- `.envrc` lives at **org folder root** (`~/develop/thinerp-labs/.envrc`), not in each repo.
+- All repos under that folder inherit env via direnv when cwd is inside the org tree.
+
+## When scaffolding new projects
+
+- Copy `base/scripts/account-guard.mjs` and `base/scripts/preflight-cloudflare.mjs`.
+- Generate `.envrc` sourcing `~/.config/<org>/cloudflare.env`.
+- Add preflight step to deploy workflows before `wrangler deploy`.
+- Document setup in `docs/ORG_ACCOUNT_SETUP.md`.
+
+## Cross-reference
+
+- `40-cloudflare-wrangler.mdc` — Wrangler file layout
+- `41-github-actions-cloudflare-path-deploy.mdc` — CI deploy patterns
+- `10-naming-standard.mdc` — `<org>-<product>-...` resource naming

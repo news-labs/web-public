@@ -1,0 +1,26 @@
+---
+description: Drizzle ORM + D1 — schema location, migrations, and repository usage
+globs:
+  - "packages/db/**/*.ts"
+alwaysApply: true
+---
+
+# Drizzle and D1 (`@core-labs/db`)
+
+## Schema
+
+- Table definitions live under `packages/db/src/schema/`.
+- Export inferred types (`$inferSelect`, `$inferInsert`) for repositories and services.
+
+## Client
+
+- Use `createDb(d1)` from `client.ts` inside Workers; pass `D1Database` from `env.DB` (or equivalent binding).
+
+## Migrations
+
+- Generated SQL or Drizzle metadata under `packages/db/src/migrations` (per `drizzle.config.ts`).
+- Run `drizzle-kit` with pinned versions; validate `dialect` / `driver` options against installed `drizzle-kit` — APIs change between minors.
+
+## Boundaries
+
+- Repositories perform queries; services choose transactions and orchestrate multiple repositories when needed.

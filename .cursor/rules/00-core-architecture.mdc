@@ -1,0 +1,32 @@
+---
+description: Engineering Standard v3.1 — layers, domain boundaries, dependency direction
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Core architecture (v3.1)
+
+## Request path
+
+`route → handler → service → repository → db`
+
+- **Route**: wiring only (HTTP path, method, middleware chain).
+- **Handler**: parse/validate input, call service, map response. No business rules, no direct DB.
+- **Service**: use-cases and orchestration. Calls repositories only, not raw SQL/D1 unless through repository abstractions.
+- **Repository**: persistence (Drizzle queries, KV, etc.). No domain branching beyond data access.
+- **DB**: schema and migrations owned by the data layer package.
+
+## Domain public surface
+
+Each domain folder exposes **one** public entry: `index.ts`. Other files are implementation details.
+
+## Dependency direction (unidirectional)
+
+`ai → document → workflow → identity → tenant`
+
+Higher layers may depend on lower; never the reverse. Shared utilities stay leaf-side or in neutral `packages/*`.
+
+## New packages
+
+Introduce a workspace package only when the same code is used **three or more** times.

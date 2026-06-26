@@ -1,0 +1,23 @@
+---
+description: Vitest — co-located unit tests and e2e folder convention
+globs:
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+alwaysApply: true
+---
+
+# Testing (Vitest)
+
+## Placement
+
+- **Unit / integration**: co-locate `*.test.ts` or `*.spec.ts` next to the module under test (`src/foo.test.ts` beside `src/foo.ts`).
+- **End-to-end**: only under `tests/e2e/` at the workspace or app root (not beside individual components).
+
+## Style
+
+- Prefer small, deterministic tests; mock IO at repository boundaries when testing services.
+- Use `describe` / `it` blocks that read like behavior specs; avoid testing implementation details.
+
+## Workers
+
+- Use Miniflare / `@cloudflare/vitest-pool-workers` patterns when you add Worker tests (not included in the minimal template).

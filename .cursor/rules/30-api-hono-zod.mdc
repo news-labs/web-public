@@ -1,0 +1,30 @@
+---
+description: Hono Workers API — routes, handlers, Zod validation, and errors
+globs:
+  - "services/**/*.ts"
+alwaysApply: true
+---
+
+# Hono + Zod (services)
+
+## Structure (aligns with `00-core-architecture.mdc`)
+
+- `routes/*.route.ts` — mount paths and middleware per resource.
+- `handlers/*.handler.ts` — request/response only; call services; return `c.json(...)`.
+- `services/*.service.ts` — export **objects** (`UserService = { ... }`) or small factories, not fat classes unless already established.
+- `repositories/*.repository.ts` — Drizzle (or bindings) only; map rows to API types here or in a thin mapper.
+- `schemas/*.schema.ts` — Zod for inbound/outbound validation at the edge of the handler.
+
+## Validation
+
+- Use `safeParse` for request bodies; return **400** with structured error details on failure.
+- Share cross-surface schemas from `packages/validators` when browsers and services must agree.
+
+## Middleware
+
+- Auth and cross-cutting concerns live in `middleware/`; keep ordering explicit and documented.
+
+## Errors
+
+- Handlers should not throw for expected validation failures — return typed JSON errors.
+- Let `errorMiddleware` catch unexpected exceptions and return **500** without leaking internals.

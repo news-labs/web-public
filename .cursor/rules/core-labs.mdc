@@ -1,0 +1,70 @@
+---
+description: Core Labs IP boundary enforcement — what belongs in this shared layer and what does not
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Core Labs — IP boundary rules
+
+This repository is the **shared platform technology layer**. It serves multiple independent product companies. Every piece of code here must be reusable across all of them.
+
+## What belongs here
+
+- Generic packages reusable by any product company
+- App and service templates with no product-specific logic
+- Engineering Standard rules (v3.1)
+- Governance, IP, and license documents
+- Project generator and wizard scripts
+- CI/CD workflow templates
+
+## What NEVER belongs here
+
+Do not add any of the following:
+
+- `Vouus`, `ERP`, `Frappe`, `ERPNext`, `erp-labs`, `vouus` as product identifiers
+- Customer-specific business rules or data models
+- ERP compliance workflows (leave management, payroll, expense policies)
+- Frappe session management or ERPNext site provisioning logic
+- Product-specific pricing strategies (erp-labs plan tiers, Vouus SKUs)
+- Hardcoded domains, API endpoints, or credentials
+- Code that only makes sense for one specific product
+
+## Every new package must include
+
+- `README.md` — purpose, public API, usage example
+- `SOURCE.md` — origin path, extraction date, removed items, ownership declaration
+- `LICENSE.md` — reference to Core Labs Internal Commercial License (CLICL v1.0)
+- `src/index.ts` — public API barrel only (no internal implementation details exported)
+
+## Every code movement must be logged
+
+Before merging code from a product repository into Core Labs:
+
+1. Remove all product-specific identifiers.
+2. Add `SOURCE.md` to the new package.
+3. Add an entry to `MIGRATION_LOG.md` at the repo root.
+4. Update `SOURCE_CODE_INVENTORY.md`.
+
+## Adapters belong in product repositories
+
+Code that connects a Core Labs package to a product-specific system is an **adapter** and belongs in the product repository, not here.
+
+Example: `core-auth-to-frappe.ts` belongs in `erp-labs`, not in `@core-labs/auth-kit`.
+
+## Environment variable naming
+
+Core Labs packages use neutral env var prefixes. Never hardcode product-specific prefixes:
+
+| Forbidden | Use instead |
+|---|---|
+| `VOUUS_*` | `APP_*` or `SERVICE_*` |
+| `ERP_*` | `TENANT_*` or `SERVICE_*` |
+| `FRAPPE_*` | `ERP_BACKEND_*` (in adapter code, not here) |
+
+## Cloudflare resource naming
+
+Follow `10-naming-standard.mdc` Cloudflare resource pattern. Never use:
+- Public brand names in Worker/Pages/D1/KV slugs
+- Hostnames as resource identifiers
+- Customer-facing product names as infrastructure identifiers

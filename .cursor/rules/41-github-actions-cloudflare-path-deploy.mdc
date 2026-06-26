@@ -1,0 +1,63 @@
+---
+description: GitHub Actions — path-filtered triggers for Cloudflare Pages/Workers deploy workflows (one target per workflow)
+globs:
+  - "**/.github/workflows/**"
+alwaysApply: false
+---
+
+# GitHub Actions — path-filtered Cloudflare deploy
+
+When adding or editing workflows that **deploy** to Cloudflare **Pages** or **Workers**, follow these rules. Binding names and Wrangler file layout stay in **`40-cloudflare-wrangler.mdc`**.
+
+## One deploy target per workflow file
+
+- Each workflow run should call **`wrangler pages deploy`** at most **once** with **one** `--project-name`, or **`wrangler deploy`** for **one** Worker root / config.
+- Do **not** use a single workflow that builds and deploys every app under `apps/**` or every service under `services/**` when only one product changed.
+
+## Path triggers (`on.push` / `pull_request`)
+
+Include **only** paths that should trigger this deploy:
+
+1. **App or service root** — e.g. `apps/my-app/**`, `services/my-api/**`.
+2. **Workspace packages that app imports** — list explicit globs like `packages/ui/**`, not blanket `packages/**`, unless every package truly affects the bundle (then document why).
+3. **Repo roots that affect install/build** — `pnpm-lock.yaml`, `pnpm-workspace.yaml`, root `package.json`, `.nvmrc` when present.
+4. **This workflow file** — e.g. `.github/workflows/deploy-pages-my-app.yml` so CI edits re-run the workflow.
+
+Also add **`workflow_dispatch`** so operators can redeploy without a matching path change.
+
+## Anti-patterns
+
+- **`paths: ['apps/**']`** plus **`pnpm --filter "./apps/*"`** — any app change rebuilds or deploy targets for all apps; split per app or use `dorny/paths-filter` + conditional jobs.
+- **`packages/**` on a single-app workflow** when only a few workspace packages are linked — widens triggers; list **only** imported `packages/*` trees.
+
+## Concurrency
+
+Use **`concurrency.group`** scoped to the deploy target (e.g. `deploy-pages-docs-app`) so two pushes do not corrupt the same Worker/Pages upload.
+
+## Preflight (required)
+
+Before any step that runs `wrangler deploy` or provisions Cloudflare resources, add:
+
+```yaml
+- name: Cloudflare preflight
+  run: node scripts/preflight-cloudflare.mjs
+  env:
+    CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+    CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+    CF_WORKERS_SUBDOMAIN: ${{ vars.CF_WORKERS_SUBDOMAIN }}
+```
+
+See **`15-org-account-isolation.mdc`**. Never deploy from a developer laptop to production.
+
+## Optional consolidation
+
+- **`dorny/paths-filter`** — one workflow, multiple outputs, `if:` per job to deploy only changed apps (fewer YAML files, more YAML logic).
+- **Pages connected to Git** — align Cloudflare **Watch paths** with the same globs as Actions `paths`.
+
+## Cross-reference
+
+- **`40-cloudflare-wrangler.mdc`** — environments, bindings, resource naming.
+
+## Platform matrix (erp-labs)
+
+When **web-public** `apps/devdocs` is available, see **`github-actions-path-filtered-cloudflare-deploy.md`** in that repo’s runbook tree (Starlight route `/runbook/github-actions-path-filtered-cloudflare-deploy/`) for a cross-repository workflow matrix.

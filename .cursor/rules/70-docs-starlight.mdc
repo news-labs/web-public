@@ -1,0 +1,22 @@
+---
+description: Astro Starlight docs — MDX/Markdown authoring and sidebar structure
+globs:
+  - "apps/docs-app/src/content/docs/**/*.md"
+alwaysApply: false
+---
+
+# Starlight docs (`apps/docs-app`)
+
+## Content paths
+
+- Documentation pages live under `apps/docs-app/src/content/docs/`.
+- Each sidebar `autogenerate` directory should have an `index.md` with frontmatter `title`.
+
+## Authoring
+
+- Prefer clear headings: Overview → Prerequisites → Procedures → Next steps.
+- Avoid bare angle-bracket placeholders in MDX if they can be parsed as JSX; use backticks or escapes per Starlight guidance.
+
+## Links
+
+- Link to Engineering Standard (`docs/ENGINEERING_STANDARD.md` in the templates root) for normative rules; keep docs in sync when rules change.

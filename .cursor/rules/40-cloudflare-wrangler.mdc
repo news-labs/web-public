@@ -1,0 +1,33 @@
+---
+description: Cloudflare Workers — Wrangler configs, bindings naming, environments
+globs:
+  - "**/wrangler*.toml"
+alwaysApply: true
+---
+
+# Cloudflare Wrangler (templates)
+
+## Environments
+
+- Maintain **separate** `wrangler.dev.toml`, `wrangler.stg.toml`, and `wrangler.prod.toml` for services that deploy to multiple stages.
+- Keep `compatibility_date` intentional; bump when adopting new runtime APIs.
+
+## Bindings
+
+- Use descriptive binding keys: `DB`, `KV_SESSION`, `R2_FILES`, `QUEUE_EMAIL`, etc.
+- Document placeholder IDs (`REPLACE_WITH_*`) until real resources exist.
+
+## Naming
+
+- Align Worker **name** with `<org>-<product>-<resource>-<domain>-<env>` or your org’s standard; stay consistent across env files.
+
+## Queues
+
+- Match **queue names** between producers and consumers across services.
+
+## Secrets
+
+- Never commit secrets. Use Wrangler secrets / CI OIDC and `.env` locally from `.env.example` only.
+- **Never use `wrangler login` (OAuth)** for org/product work. Use `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` via direnv (`~/.config/<org>/cloudflare.env`). See **`15-org-account-isolation.mdc`**.
+- Pin `account_id` in every `wrangler.prod.toml`.
+- Production deploy and `wrangler secret put` for prod: **CI only** (`preflight-cloudflare.mjs` before deploy).

@@ -1,0 +1,44 @@
+---
+description: Engineering Standard v3.1 — naming for files, symbols, Zod, React, env, Cloudflare
+globs:
+  - "**/*.ts"
+  - "**/*.tsx"
+alwaysApply: true
+---
+
+# Naming standard (v3.1)
+
+## Files and folders
+
+- **Files**: `kebab-case` (e.g. `user.repository.ts`, `auth.middleware.ts`).
+- **React component files**: `PascalCase` matching the default export (e.g. `Button.tsx`).
+
+## TypeScript symbols
+
+- **Classes / types / interfaces**: `PascalCase`.
+- **Functions / variables / methods**: `camelCase`.
+- **Constants**: `UPPER_SNAKE_CASE`.
+
+## Zod
+
+- Schema names: `<action><Entity>Schema` (e.g. `createUserSchema`, `updateUserSchema`).
+- Inferred types: `<Action><Entity>Input` or `CreateUserInput` pattern.
+
+## React
+
+- **Hooks**: `use` prefix (`useSession`, `useTenantId`).
+- **Server actions**: file suffix `*.action.ts`.
+
+## Environment variables
+
+- Single instance: `<SYSTEM>_<RESOURCE>_<KEY>` (e.g. `CORE_PLATFORM_D1_MAIN_DATABASE_ID`).
+- Multi-instance: `<SYSTEM>_<RESOURCE>_<NAME>_<KEY>`.
+
+## Cloudflare resources
+
+Pattern: `<org>-<product>-<resource>-<domain>-<env>` for Workers, D1, KV, R2, queues, and Pages projects where applicable.
+
+## Comments
+
+- Prefer self-explanatory names over long comments.
+- Module-level comments only for non-obvious invariants or security notes; use `meta/FILE_HEADER.template.ts` when a standard header is required.
