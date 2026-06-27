@@ -28,16 +28,11 @@ if (existsSync(adminShellPath)) {
 const repo = process.env.LABS_CORE_REPO ?? "news-labs/labs-core";
 const token = process.env.LABS_CORE_CHECKOUT_TOKEN ?? process.env.GITHUB_TOKEN;
 
-if (!token) {
-  console.error("Set LABS_CORE_CHECKOUT_TOKEN or GITHUB_TOKEN to clone LABS_CORE_REPO in CI.");
-  process.exit(1);
-}
-
 console.log(`Cloning ${repo} → ${labsCorePath}`);
-execSync(
-  `git clone --depth 1 "https://x-access-token:${token}@github.com/${repo}.git" "${labsCorePath}"`,
-  { stdio: "inherit" },
-);
+const cloneUrl = token
+  ? `https://x-access-token:${token}@github.com/${repo}.git`
+  : `https://github.com/${repo}.git`;
+execSync(`git clone --depth 1 "${cloneUrl}" "${labsCorePath}"`, { stdio: "inherit" });
 
 if (!existsSync(adminShellPath)) {
   console.error(`Cloned ${repo} but admin-shell package missing at ${adminShellPath}`);
