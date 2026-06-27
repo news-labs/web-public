@@ -29,6 +29,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Prepare labs-core (workspace install)
+        run: node scripts/prepare-labs-core.mjs
+        env:
+          LABS_CORE_REPO: ${{ vars.LABS_CORE_REPO }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
