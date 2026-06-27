@@ -4,7 +4,7 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-01-20",
   "compatibility_flags": ["nodejs_compat"],
-  "assets": { "directory": "../../apps/admin-web-portal/dist", "binding": "ASSETS" },
+  "assets": { "directory": "../../apps/admin-web-portal/dist", "binding": "ASSETS", "run_worker_first": true },
   "d1_databases": [
     {
       "binding": "WEB_ADMIN_DB",
