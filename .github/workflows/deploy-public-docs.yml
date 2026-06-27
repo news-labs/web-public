@@ -55,15 +55,16 @@ jobs:
 
       - name: Ensure Pages project exists
         run: |
-          if ! pnpm exec wrangler pages project list | grep -q 'nl-public-docs'; then
-            pnpm exec wrangler pages project create nl-public-docs --production-branch main
+          if ! pnpm --filter public-docs exec wrangler pages project list | grep -q 'nl-public-docs'; then
+            pnpm --filter public-docs exec wrangler pages project create nl-public-docs --production-branch main
           fi
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Deploy to Cloudflare Pages
-        run: pnpm exec wrangler pages deploy apps/public-docs/dist --project-name=nl-public-docs --commit-dirty=true
+        working-directory: apps/public-docs
+        run: pnpm exec wrangler pages deploy dist --project-name=nl-public-docs --commit-dirty=true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
