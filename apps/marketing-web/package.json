@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev --port 3000",
     "build": "next build",
-    "deploy": "wrangler pages deploy out --project-name=nf-web-public",
+    "deploy": "wrangler pages deploy out --project-name=nl-marketing-web",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."
   },

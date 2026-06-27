@@ -1,4 +1,4 @@
-# docs.newsfork.com router — deprecated (unified docs on nf-public-docs Pages)
+# docs.newsfork.com router — deprecated (unified docs on nl-public-docs Pages)
 # account_id from CLOUDFLARE_ACCOUNT_ID (direnv / CI). Do not commit tokens.
 #
 # Custom route docs.newsfork.com/* must be attached in Dashboard (token needs
@@ -9,5 +9,5 @@ main = "src/index.ts"
 compatibility_date = "2024-12-30"
 
 [vars]
-LEGAL_DOCS_ORIGIN = "https://nf-public-docs.pages.dev"
-API_DOCS_ORIGIN = "https://nfdocs.pages.dev"
+LEGAL_DOCS_ORIGIN = "https://nl-public-docs.pages.dev"
+API_DOCS_ORIGIN = "https://nl-public-docs.pages.dev"

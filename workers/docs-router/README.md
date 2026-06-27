@@ -1,12 +1,12 @@
-# docs.newsfork.com Worker router (deprecated)
+# docs.newsfork.com router — deprecated
 
-> **Deprecated.** User docs are now served directly from the `nf-public-docs` Pages project at `docs.newsfork.com`. Remove the Worker route `docs.newsfork.com/*` after cutover.
+> **Deprecated.** User docs are served from the `nl-public-docs` Pages project at `docs.newsfork.com`. Remove the Worker route `docs.newsfork.com/*` after cutover.
 
-This Worker previously split traffic:
+## Historical routing
 
-| Path | Origin | Pages project |
+| Path | Proxied to | Legacy project |
 | --- | --- | --- |
-| `/legal/*` | `LEGAL_DOCS_ORIGIN` | `nf-public-legal` |
+| `/legal/*` | `LEGAL_DOCS_ORIGIN` | `nl-public-docs` |
 | `/*` | `API_DOCS_ORIGIN` | `nfdocs` |
 
-See [docs/CLOUDFLARE_DOCS_SETUP.md](../../docs/CLOUDFLARE_DOCS_SETUP.md) for the current setup.
+Do not deploy this Worker. Use GitHub Actions workflows for `nl-public-docs` instead.

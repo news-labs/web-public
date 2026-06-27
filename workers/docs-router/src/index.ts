@@ -1,11 +1,11 @@
 /**
- * @deprecated Unified docs are served directly from nf-public-docs Pages at docs.newsfork.com.
+ * @deprecated Unified docs are served directly from nl-public-docs Pages at docs.newsfork.com.
  */
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     const legalOrigin = env.LEGAL_DOCS_ORIGIN || "https://nf-public-legal.pages.dev";
-    const apiDocsOrigin = env.API_DOCS_ORIGIN || "https://nfdocs.pages.dev";
+    const apiDocsOrigin = env.API_DOCS_ORIGIN || "https://nl-public-docs.pages.dev";
 
     const isLegal = url.pathname === "/legal" || url.pathname.startsWith("/legal/");
     const targetOrigin = isLegal ? legalOrigin : apiDocsOrigin;

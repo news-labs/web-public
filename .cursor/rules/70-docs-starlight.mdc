@@ -1,11 +1,3 @@
----
-description: Astro Starlight docs — MDX/Markdown authoring and sidebar structure
-globs:
-  - "apps/public-docs/src/content/docs/**/*.md"
-  - "apps/public-docs/src/content/docs/**/*.mdx"
-alwaysApply: false
----
-
 # Starlight docs (`apps/public-docs`)
 
 Unified user documentation for `docs.newsfork.com` — API reference, guides, user manual, legal policies, and company info.
@@ -13,8 +5,8 @@ Unified user documentation for `docs.newsfork.com` — API reference, guides, us
 ## Content paths
 
 - Documentation pages live under `apps/public-docs/src/content/docs/`.
+- Korean locale: `apps/public-docs/src/content/docs/ko/`.
 - Each sidebar `autogenerate` directory should have an `index.md` or `index.mdx` with frontmatter `title`.
-- English only for now; Korean (`ko/`) locale is planned as a follow-up.
 
 ## Sidebar sections
 
@@ -22,24 +14,15 @@ Unified user documentation for `docs.newsfork.com` — API reference, guides, us
 | --- | --- |
 | `getting-started.md`, `manual-setup.md`, `changelog.md` | Start Here |
 | `v1/api/` | REST API reference |
-| `v1/guides/` | Integration and architecture guides |
+| `v1/guides/` | Integration and architecture guides (no internal engineering guides) |
 | `user-manual/` | End-user manual |
 | `reference/` | Conventions and reference material |
 | `legal/` | Privacy, terms, cookies, acceptable use |
 | `company/` | About, contact |
 | `resources/` | FAQ, glossary |
 
-## Authoring
-
-- Prefer clear headings: Overview → Prerequisites → Procedures → Next steps.
-- Avoid bare angle-bracket placeholders in MDX if they can be parsed as JSX; use backticks or escapes per Starlight guidance.
-- Mermaid diagrams are supported via `@pasqal-io/starlight-client-mermaid`.
-
-## Links
-
-- Use root-relative paths (e.g. `/v1/api/seeds-api/`, not `/en/v1/...`).
-- Link to Engineering Standard (`docs/ENGINEERING_STANDARD.md` in the templates root) for normative rules; keep docs in sync when rules change.
+Internal engineering guides live in `core-platform/docs/devdocs` (`nl-internal-docs`).
 
 ## Deploy
 
-Production deploys to Cloudflare Pages project `nf-public-docs` via `.github/workflows/deploy-public-docs.yml`.
+Production deploys to Cloudflare Pages project `nl-public-docs` via `.github/workflows/deploy-public-docs.yml`.

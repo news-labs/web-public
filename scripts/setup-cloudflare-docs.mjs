@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Idempotent Cloudflare setup for News-Labs public docs site.
+ * Idempotent Cloudflare setup for News-Labs nl-* Pages projects.
  * Uses CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID from direnv.
  *
  * Requires token permissions: Account / Cloudflare Pages (Edit).
@@ -14,14 +14,31 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const CORE_PLATFORM = join(ROOT, "..", "core-platform");
 const TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 
-const PROJECTS = [
-  { name: "nf-public-docs", dist: "apps/public-docs/dist", build: "pnpm --filter public-docs run build" },
+const WEB_PUBLIC_PROJECTS = [
+  {
+    name: "nl-marketing-web",
+    dist: "apps/marketing-web/out",
+    build: "pnpm --filter marketing-web run build",
+    domain: "www.newsfork.com",
+  },
+  {
+    name: "nl-public-docs",
+    dist: "apps/public-docs/dist",
+    build: "pnpm --filter public-docs run build",
+    domain: "docs.newsfork.com",
+  },
 ];
 
-const PUBLIC_DOCS_DOMAIN = "docs.newsfork.com";
+const INTERNAL_DOCS_PROJECT = {
+  name: "nl-internal-docs",
+  dist: join(CORE_PLATFORM, "docs/devdocs/dist"),
+  buildRel: "docs/devdocs",
+  domain: "devdocs.newsfork.com",
+};
 
 async function cf(path, init = {}) {
   const res = await fetch(`https://api.cloudflare.com/client/v4${path}`, {
@@ -38,7 +55,15 @@ async function cf(path, init = {}) {
 
 function run(cmd, cwd = ROOT) {
   console.log(`\n$ ${cmd}`);
-  execSync(cmd, { cwd, stdio: "inherit" });
+  execSync(cmd, { cwd, stdio: "inherit", env: process.env });
+}
+
+function wrangler(cmd, cwd = ROOT) {
+  run(`pnpm --filter public-docs exec wrangler ${cmd}`, cwd);
+}
+
+function wranglerCorePlatform(cmd) {
+  run(`pnpm exec wrangler ${cmd}`, CORE_PLATFORM);
 }
 
 async function ensurePagesProject(name) {
@@ -52,16 +77,27 @@ async function ensurePagesProject(name) {
     return;
   }
   console.log(`Creating Pages project: ${name}`);
-  run(`wrangler pages project create ${name} --production-branch main`);
+  wrangler(`pages project create ${name} --production-branch main`);
 }
 
-async function deployPages(name, distRel) {
-  const dist = join(ROOT, distRel);
+async function deployWebPublic(project) {
+  const dist = join(ROOT, project.dist);
   if (!existsSync(dist)) {
-    console.log(`Building before deploy (${distRel} missing)...`);
-    run(PROJECTS.find((p) => p.name === name)?.build || "pnpm --filter public-docs run build");
+    console.log(`Building before deploy (${project.dist} missing)...`);
+    run(project.build);
   }
-  run(`wrangler pages deploy ${distRel} --project-name=${name} --commit-dirty=true`);
+  wrangler(`pages deploy ${project.dist} --project-name=${project.name} --commit-dirty=true`);
+}
+
+async function deployInternalDocs() {
+  const dist = INTERNAL_DOCS_PROJECT.dist;
+  if (!existsSync(dist)) {
+    console.log("Building internal docs before deploy...");
+    run("bash scripts/build-dev-docs.sh", CORE_PLATFORM);
+  }
+  wranglerCorePlatform(
+    `pages deploy docs/devdocs/dist --project-name=${INTERNAL_DOCS_PROJECT.name} --commit-dirty=true`,
+  );
 }
 
 async function ensureCustomDomain(projectName, domain) {
@@ -93,44 +129,48 @@ Manual steps (API token lacks Zone / Zero Trust permissions)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 1. Remove legacy docs-router Worker route (if still attached)
-   Dashboard → Workers & Pages → news-labs-web-public-docs-router-prod
-   → Settings → Domains & Routes → Delete route: docs.newsfork.com/*
+   Dashboard → news-labs-web-public-docs-router-prod
+   → Settings → Domains & Routes → Delete: docs.newsfork.com/*
 
-2. Confirm docs.newsfork.com custom domain on nf-public-docs
-   Dashboard → Workers & Pages → nf-public-docs → Custom domains
-   → Confirm docs.newsfork.com (creates proxied DNS)
+2. Remove nl-marketing-web Worker routes if they overlap www.newsfork.com
 
-3. Deprecate legacy Pages projects (optional)
-   - nf-public-legal → redirect or delete after cutover
-   - nfdocs → deploy redirect-only _redirects to docs.newsfork.com
+3. Migrate custom domains from legacy nf-* Pages to nl-*:
+   - nf-web-public → remove www.newsfork.com; attach on nl-marketing-web
+   - nf-devdocs → remove devdocs.newsfork.com; attach on nl-internal-docs
 
-4. devdocs.newsfork.com (internal platform docs)
-   Dashboard → Workers & Pages → nf-devdocs → Custom domains
+4. Cloudflare Access for devdocs.newsfork.com → nl-internal-docs origin
 
-5. Cloudflare Access for devdocs (Zero Trust)
-   Dashboard → Zero Trust → Access → Applications → devdocs.newsfork.com
+5. Deprecate: nf-web-public, nf-devdocs, nf-public-docs, nfdocs
 
-See docs/CLOUDFLARE_DOCS_SETUP.md for full checklist.
+See docs/CLOUDFLARE_DOCS_SETUP.md and docs/CLOUDFLARE_DASHBOARD_AUDIT.md
 `);
 }
 
 async function main() {
   if (!TOKEN || !ACCOUNT_ID) {
-    console.error("❌ Set CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID (source ~/.config/news-labs/cloudflare.env)");
+    console.error(
+      "❌ Set CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID (source ~/.config/news-labs/cloudflare.env)",
+    );
     process.exit(1);
   }
 
   console.log("🔍 Running preflight...");
   run("node scripts/preflight-cloudflare.mjs");
 
-  for (const project of PROJECTS) {
+  for (const project of WEB_PUBLIC_PROJECTS) {
     await ensurePagesProject(project.name);
-    await deployPages(project.name, project.dist);
-    await ensureCustomDomain(project.name, PUBLIC_DOCS_DOMAIN);
+    await deployWebPublic(project);
+    if (project.domain) {
+      await ensureCustomDomain(project.name, project.domain);
+    }
   }
 
+  await ensurePagesProject(INTERNAL_DOCS_PROJECT.name);
+  await deployInternalDocs();
+  await ensureCustomDomain(INTERNAL_DOCS_PROJECT.name, INTERNAL_DOCS_PROJECT.domain);
+
   await printManualSteps();
-  console.log("\n✅ Automated Cloudflare docs setup complete.\n");
+  console.log("\n✅ Automated nl-* Pages setup complete.\n");
 }
 
 main().catch((err) => {

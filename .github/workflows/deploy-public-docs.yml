@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: deploy-public-docs
+  group: deploy-nl-public-docs
   cancel-in-progress: false
 
 jobs:
@@ -54,7 +54,7 @@ jobs:
           NODE_ENV: production
 
       - name: Deploy to Cloudflare Pages
-        run: pnpm --filter public-docs exec wrangler pages deploy apps/public-docs/dist --project-name=nf-public-docs --commit-dirty=true
+        run: pnpm --filter public-docs exec wrangler pages deploy apps/public-docs/dist --project-name=nl-public-docs --commit-dirty=true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
