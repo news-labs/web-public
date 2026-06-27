@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "wrangler dev -c wrangler.dev.jsonc",
     "deploy": "wrangler deploy -c wrangler.prod.jsonc",
+    "deploy:stg": "wrangler deploy -c wrangler.stg.jsonc",
     "typecheck": "tsc --noEmit",
     "build": "tsc --noEmit"
   },
