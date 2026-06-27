@@ -9,9 +9,12 @@
     "dev:docs": "pnpm --filter public-docs run dev",
     "build:www": "pnpm --filter marketing-web run build",
     "build:docs": "pnpm --filter public-docs run build",
-    "verify": "pnpm --filter marketing-web run typecheck && pnpm --filter marketing-web run build",
+    "pages:build:www": "pnpm install --frozen-lockfile && pnpm --filter marketing-web run build",
+    "verify": "pnpm --filter marketing-web run typecheck && pnpm --filter marketing-web run build && pnpm --filter public-docs run build",
     "deploy:www": "pnpm --filter marketing-web run deploy",
-    "deploy:docs": "pnpm --filter public-docs run deploy"
+    "deploy:docs": "pnpm --filter public-docs run deploy",
+    "deploy:docs-router": "echo 'Deprecated: docs.newsfork.com is served from nf-public-docs Pages; docs-router is no longer deployed.' && exit 1",
+    "setup:cloudflare-docs": "node scripts/setup-cloudflare-docs.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

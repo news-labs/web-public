@@ -1,3 +1,77 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --nf-bg: 0 0% 100%;
+    --nf-surface: 240 4.8% 95.9%;
+    --nf-border: 240 5.9% 90%;
+    --nf-text: 240 10% 3.9%;
+    --nf-muted: 240 3.8% 46.1%;
+    --nf-accent: 199 89% 48%;
+    --nf-accent-2: 239 84% 67%;
+    --nf-card: 0 0% 100%;
+    --nf-card-foreground: 240 10% 3.9%;
+    --nf-radius: 0.75rem;
+  }
+
+  .dark {
+    --nf-bg: 240 10% 3.9%;
+    --nf-surface: 240 3.7% 15.9%;
+    --nf-border: 240 3.7% 15.9%;
+    --nf-text: 0 0% 98%;
+    --nf-muted: 240 5% 64.9%;
+    --nf-accent: 199 89% 48%;
+    --nf-accent-2: 239 84% 67%;
+    --nf-card: 240 3.7% 15.9%;
+    --nf-card-foreground: 0 0% 98%;
+  }
+
+  * {
+    border-color: hsl(var(--nf-border));
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: hsl(var(--nf-bg));
+    color: hsl(var(--nf-text));
+    font-family: var(--font-inter, Inter, system-ui, sans-serif);
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .section-spacing {
+    @apply py-24 md:py-32;
+  }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.5s ease-out both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in-up {
+      animation: none;
+    }
+  }
+}

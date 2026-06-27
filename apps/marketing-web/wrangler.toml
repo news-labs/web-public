@@ -1,0 +1,11 @@
+# Cloudflare Pages — Newsfork marketing site (www.newsfork.com)
+# Custom domain: www.newsfork.com
+# Functions: functions/api/contact.ts → POST /api/contact/
+#
+# Pages env (Dashboard → Settings → Environment variables):
+#   CONTACT_TO_EMAIL=hello@newsfork.com
+#   CONTACT_FROM_EMAIL=noreply@newsfork.com
+
+name = "nf-web-public"
+compatibility_date = "2026-01-20"
+pages_build_output_dir = "out"

@@ -1,0 +1,51 @@
+---
+title: Newsfork Docs
+description: User documentation for Newsfork — API reference, guides, user manual, and policies.
+template: splash
+hero:
+  tagline: Everything you need to integrate and build with Newsfork.
+  actions:
+    - text: Getting Started
+      link: /getting-started/
+      icon: rocket
+    - text: API Reference
+      link: /v1/api/seeds-api/
+      icon: document
+    - text: Guides
+      link: /v1/guides/seeds/
+      variant: minimal
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+
+## Overview
+
+Newsfork Docs covers API integration, operational guides, user manuals, and legal policies. Start with [Getting Started](/getting-started/) or jump directly to the [API reference](/v1/api/seeds-api/).
+
+## Quick links
+
+| Topic | Link |
+| --- | --- |
+| Getting Started | [Start Here → Getting Started](/getting-started/) |
+| Manual Setup | [Start Here → Manual Setup](/manual-setup/) |
+| API Reference | [v1 API → Seeds API](/v1/api/seeds-api/) |
+| User Manual | [User Manual → Overview](/user-manual/manual-overview/) |
+| Privacy Policy | [Legal → Privacy](/legal/privacy/) |
+| Terms of Service | [Legal → Terms](/legal/terms/) |
+| FAQ | [Resources → FAQ](/resources/faq/) |
+| Changelog | [Changelog](/changelog/) |
+
+<CardGrid stagger>
+  <Card title="Getting Started" icon="rocket">
+    Set up your first API request in minutes.
+  </Card>
+  <Card title="API Reference" icon="document">
+    Complete REST API reference with request and response examples.
+  </Card>
+  <Card title="Guides" icon="open-book">
+    In-depth guides for seeds, research, deployment, and architecture.
+  </Card>
+  <Card title="Legal & Policies" icon="information">
+    Privacy, terms, cookies, and acceptable use policies.
+  </Card>
+</CardGrid>
