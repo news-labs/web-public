@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { PageContainer } from "@/components/layout/page-container";
 
 const FOOTER_LINKS = {
   Product: [
@@ -25,19 +26,19 @@ const FOOTER_LINKS = {
 export function Footer() {
   return (
     <footer className="border-t border-border bg-muted/30">
-      <div className="container mx-auto max-w-6xl px-4 py-16">
+      <PageContainer className="py-16">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <Logo className="mb-4" />
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-[200px]">
+            <p className="max-w-[220px] text-sm leading-relaxed text-muted-foreground">
               The world&apos;s government news intelligence layer, powered by AI.
             </p>
-            <div className="flex items-center gap-3 mt-4">
+            <div className="mt-4 flex items-center gap-3">
               <a
                 href="https://github.com/news-labs"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground transition-colors hover:text-accent"
                 aria-label="GitHub"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -48,7 +49,7 @@ export function Footer() {
                 href="https://x.com/newsfork"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground transition-colors hover:text-accent"
                 aria-label="X (Twitter)"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -60,13 +61,13 @@ export function Footer() {
 
           {Object.entries(FOOTER_LINKS).map(([title, links]) => (
             <div key={title}>
-              <p className="text-sm font-semibold mb-4">{title}</p>
+              <p className="mb-4 text-sm font-semibold">{title}</p>
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-sm text-muted-foreground transition-colors hover:text-accent"
                     >
                       {link.label}
                     </Link>
@@ -77,7 +78,7 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
           <p className="text-sm text-muted-foreground">© 2026 Newsfork. All rights reserved.</p>
           <p className="text-sm text-muted-foreground">
             Powered by{" "}
@@ -85,13 +86,13 @@ export function Footer() {
               href="https://workers.cloudflare.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-foreground transition-colors"
+              className="transition-colors hover:text-accent"
             >
               Cloudflare Workers
             </a>
           </p>
         </div>
-      </div>
+      </PageContainer>
     </footer>
   );
 }

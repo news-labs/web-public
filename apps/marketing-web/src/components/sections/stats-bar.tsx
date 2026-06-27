@@ -1,25 +1,24 @@
-interface StatItem {
-  value: string;
-  label: string;
-}
+"use client";
 
-interface StatsBarProps {
-  stats: StatItem[];
-}
+import { Section } from "@/components/layout/section";
+import { MotionReveal } from "@/components/ui/motion-reveal";
+import { REVAMP_TYPO } from "@/lib/marketing-revamp-tokens";
+import { HOME_STATS } from "@/data/home-content";
 
-export function StatsBar({ stats }: StatsBarProps) {
+export function StatsBar() {
   return (
-    <section className="border-b border-border bg-muted/30">
-      <div className="container mx-auto max-w-6xl px-4 py-12 md:py-14">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-          {stats.map((stat) => (
-            <div key={stat.label} className="text-center">
-              <p className="text-4xl md:text-5xl font-bold tracking-tight">{stat.value}</p>
-              <p className="mt-2 text-sm text-muted-foreground">{stat.label}</p>
-            </div>
-          ))}
-        </div>
+    <Section
+      withContainer={false}
+      className="border-y border-border bg-muted/50 py-12 md:py-16"
+    >
+      <div className="mx-auto grid max-w-revamp-content grid-cols-1 gap-8 px-4 sm:grid-cols-3 sm:gap-4 sm:px-6 lg:px-8">
+        {HOME_STATS.map((stat, i) => (
+          <MotionReveal key={stat.label} className="text-center" delay={0.06 * i}>
+            <p className={`mb-1 text-foreground ${REVAMP_TYPO.statValue}`}>{stat.value}</p>
+            <p className={REVAMP_TYPO.statLabel}>{stat.label}</p>
+          </MotionReveal>
+        ))}
       </div>
-    </section>
+    </Section>
   );
 }

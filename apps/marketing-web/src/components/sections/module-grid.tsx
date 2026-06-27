@@ -1,53 +1,51 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import { SectionHeader } from "./section-header";
+import { Section } from "@/components/layout/section";
+import { MotionReveal } from "@/components/ui/motion-reveal";
+import { REVAMP_TYPO } from "@/lib/marketing-revamp-tokens";
+import { API_MODULES } from "@/data/home-content";
 
-interface ModuleItem {
-  icon: LucideIcon;
-  title: string;
-  description: string;
-  href: string;
-}
-
-interface ModuleGridProps {
-  title: string;
-  subtitle?: string;
-  modules: ModuleItem[];
-}
-
-export function ModuleGrid({ title, subtitle, modules }: ModuleGridProps) {
+export function ModuleGrid() {
   return (
-    <section className="border-y border-border bg-muted/30 py-24 md:py-32">
-      <div className="container mx-auto max-w-6xl px-4">
-        <SectionHeader title={title} subtitle={subtitle} />
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {modules.map((mod) => {
-            const Icon = mod.icon;
-            return (
-              <div
-                key={mod.title}
-                className="group rounded-2xl border border-border bg-card p-8 transition-all hover:border-accent/40 hover:shadow-lg hover:shadow-accent/5"
+    <Section id="features" className="bg-background md:py-24">
+      <MotionReveal className="mx-auto max-w-revamp-narrow text-center">
+        <h2 className={`mb-3 text-foreground ${REVAMP_TYPO.sectionTitle}`}>
+          One API for how government news flows.
+        </h2>
+        <p className={`mb-12 ${REVAMP_TYPO.sectionSub}`}>
+          From collection to distribution — a complete intelligence stack on Cloudflare&apos;s global edge.
+        </p>
+      </MotionReveal>
+      <div className="mx-auto grid max-w-revamp-content gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {API_MODULES.map((mod, i) => {
+          const Icon = mod.icon;
+          return (
+            <MotionReveal key={mod.title} delay={0.05 * i} className="h-full min-h-0">
+              <Link
+                href={mod.href}
+                className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-muted/50 shadow-sm transition-all hover:border-accent/30 hover:shadow-md"
               >
-                <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent transition-colors group-hover:bg-accent/15">
-                  <Icon size={22} />
+                <div className="flex aspect-square w-full items-center justify-center border-b border-border bg-accent/5">
+                  <Icon className="h-16 w-16 text-accent" aria-hidden />
                 </div>
-                <h3 className="mb-2 font-semibold text-base">{mod.title}</h3>
-                <p className="mb-4 text-sm text-muted-foreground leading-relaxed">
-                  {mod.description}
-                </p>
-                <Link
-                  href={mod.href}
-                  className="inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline"
-                >
-                  Learn more <ArrowRight size={14} />
-                </Link>
-              </div>
-            );
-          })}
-        </div>
+                <div className="flex flex-1 flex-col p-5">
+                  <h4 className={`mb-2 text-foreground ${REVAMP_TYPO.cardTitle}`}>{mod.title}</h4>
+                  <p className="mb-4 flex-1 text-sm leading-relaxed text-muted-foreground">
+                    {mod.description}
+                  </p>
+                  <span className="inline-flex items-center gap-1 text-sm font-medium text-accent">
+                    Learn more
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                </div>
+              </Link>
+            </MotionReveal>
+          );
+        })}
       </div>
-    </section>
+    </Section>
   );
 }

@@ -1,63 +1,48 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { SectionHeader } from "./section-header";
+import { Section } from "@/components/layout/section";
+import { MotionReveal } from "@/components/ui/motion-reveal";
+import { REVAMP_TYPO } from "@/lib/marketing-revamp-tokens";
+import { TRIPLE_CTA } from "@/data/home-content";
 
-interface CtaCard {
-  title: string;
-  description: string;
-  cta: string;
-  href: string;
-  external?: boolean;
-}
-
-interface TripleCtaProps {
-  title?: string;
-  subtitle?: string;
-  cards: CtaCard[];
-}
-
-export function TripleCta({
-  title = "Ready to get started?",
-  subtitle = "Talk to our team, see a live demo, or start your free API key today.",
-  cards,
-}: TripleCtaProps) {
+export function TripleCta() {
   return (
-    <section className="border-t border-border bg-foreground text-background py-24 md:py-32">
-      <div className="container mx-auto max-w-6xl px-4">
-        <SectionHeader
-          title={title}
-          subtitle={subtitle}
-          className="mb-12 [&_h2]:text-background [&_p]:text-background/70"
-        />
-
-        <div className="grid gap-6 md:grid-cols-3">
-          {cards.map((card) => (
-            <div
-              key={card.title}
-              className="rounded-2xl border border-background/20 bg-background/5 p-8 flex flex-col"
-            >
-              <h3 className="text-lg font-semibold mb-2">{card.title}</h3>
-              <p className="text-sm text-background/70 leading-relaxed mb-6 flex-1">
-                {card.description}
+    <Section
+      id="support"
+      className="scroll-mt-20 border-t border-border bg-muted/50 md:py-24"
+    >
+      <MotionReveal className="mx-auto max-w-2xl text-center">
+        <h2 className={`mb-3 text-foreground ${REVAMP_TYPO.sectionTitle}`}>
+          Ready to get started?
+        </h2>
+        <p className={`mb-12 ${REVAMP_TYPO.sectionSub}`}>
+          Talk to our team, see a live demo, or start your free API key today.
+        </p>
+      </MotionReveal>
+      <div className="mx-auto grid max-w-4xl gap-6 sm:grid-cols-3">
+        {TRIPLE_CTA.map((ch, i) => (
+          <MotionReveal key={ch.title} delay={0.06 * i} className="h-full">
+            <div className="flex h-full flex-col rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-accent/30 hover:shadow-md">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                <span className="text-lg font-bold">{i + 1}</span>
+              </div>
+              <h3 className="mb-2 text-lg font-semibold text-foreground">{ch.title}</h3>
+              <p className="mb-6 flex-1 text-sm leading-relaxed text-muted-foreground">
+                {ch.description}
               </p>
               <Link
-                href={card.href}
-                target={card.external ? "_blank" : undefined}
-                rel={card.external ? "noopener noreferrer" : undefined}
+                href={ch.href}
+                target={ch.external ? "_blank" : undefined}
+                rel={ch.external ? "noopener noreferrer" : undefined}
+                className="inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90"
               >
-                <Button
-                  size="md"
-                  variant="outline"
-                  className="w-full gap-2 border-background/30 text-background hover:bg-background/10"
-                >
-                  {card.cta} <ArrowRight size={14} />
-                </Button>
+                {ch.cta}
               </Link>
             </div>
-          ))}
-        </div>
+          </MotionReveal>
+        ))}
       </div>
-    </section>
+    </Section>
   );
 }

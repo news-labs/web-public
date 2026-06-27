@@ -82,11 +82,33 @@ export const API_MODULES: ModuleCard[] = [
   },
 ];
 
-export const TESTIMONIAL = {
-  quote:
-    "The best fit for teams that need government news as structured API data—not another scraper pipeline.",
-  author: "Policy Research Lead",
-  role: "Global Think Tank",
+export const TESTIMONIALS = [
+  {
+    quote:
+      "The best fit for teams that need government news as structured API data—not another scraper pipeline.",
+    author: "Policy Research Lead",
+    role: "Global Think Tank",
+    company: "Atlantic Policy Institute",
+  },
+  {
+    quote:
+      "News-V scoring and semantic search let us ship a policy dashboard in days instead of months of custom crawling.",
+    author: "Head of Data Products",
+    role: "Media Intelligence",
+    company: "Northstar Analytics",
+  },
+  {
+    quote:
+      "Edge-native delivery with sub-50ms latency made Newsfork the obvious choice for our real-time alerting stack.",
+    author: "Principal Engineer",
+    role: "Platform Team",
+    company: "GovSignal",
+  },
+];
+
+export const PRICING_BAND = {
+  headline: "Plans that scale with your API usage",
+  subline: "Start with 1,000 free requests per month. Upgrade when you need real-time data, semantic search, and MCP tools.",
 };
 
 export const CODE_EXAMPLE = {

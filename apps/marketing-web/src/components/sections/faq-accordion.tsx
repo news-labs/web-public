@@ -1,62 +1,45 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import Link from "next/link";
+import { Section } from "@/components/layout/section";
+import { MotionReveal } from "@/components/ui/motion-reveal";
+import { SiteFAQAccordion } from "@/components/sections/site-faq-accordion";
+import { FaqPageJsonLd } from "@/components/seo/faq-page-json-ld";
+import { DOCS_SITE_BASE_URL } from "@/lib/nav-config";
+import { HOME_FAQ, type FaqItem } from "@/data/pricing";
 import { cn } from "@/lib/utils";
-import { SectionHeader } from "./section-header";
-import type { FaqItem } from "@/data/pricing";
 
 interface FaqAccordionProps {
-  items: FaqItem[];
+  items?: FaqItem[];
   title?: string;
   className?: string;
+  showDocsLink?: boolean;
 }
 
 export function FaqAccordion({
-  items,
+  items = HOME_FAQ,
   title = "FAQ",
   className,
+  showDocsLink = true,
 }: FaqAccordionProps) {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const jsonLdItems = items.map((item) => ({ question: item.q, answer: item.a }));
 
   return (
-    <section className={cn("py-24 md:py-32", className)}>
-      <div className="container mx-auto max-w-3xl px-4">
-        <SectionHeader title={title} />
-
-        <div className="space-y-3">
-          {items.map((item, index) => {
-            const isOpen = openIndex === index;
-            return (
-              <div
-                key={item.q}
-                className="rounded-2xl border border-border bg-card overflow-hidden"
-              >
-                <button
-                  type="button"
-                  className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
-                  onClick={() => setOpenIndex(isOpen ? null : index)}
-                  aria-expanded={isOpen}
-                >
-                  <span className="font-semibold text-sm md:text-base">{item.q}</span>
-                  <ChevronDown
-                    size={18}
-                    className={cn(
-                      "shrink-0 text-muted-foreground transition-transform",
-                      isOpen && "rotate-180"
-                    )}
-                  />
-                </button>
-                {isOpen && (
-                  <div className="border-t border-border px-6 pb-5 pt-4">
-                    <p className="text-sm text-muted-foreground leading-relaxed">{item.a}</p>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
+    <Section className={cn("border-t border-border bg-background md:py-24", className)}>
+      <FaqPageJsonLd items={jsonLdItems} />
+      <MotionReveal className="text-center">
+        <h2 className="mb-10 text-2xl font-bold tracking-title text-foreground sm:text-3xl">{title}</h2>
+      </MotionReveal>
+      <MotionReveal delay={0.05}>
+        <SiteFAQAccordion items={items} defaultOpenIndex={0} />
+      </MotionReveal>
+      {showDocsLink && (
+        <MotionReveal delay={0.1} className="mt-8 text-center">
+          <Link href={`${DOCS_SITE_BASE_URL}/`} className="text-sm font-medium text-accent hover:underline">
+            More questions in the docs →
+          </Link>
+        </MotionReveal>
+      )}
+    </Section>
   );
 }

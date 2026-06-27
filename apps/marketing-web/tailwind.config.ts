@@ -36,6 +36,27 @@ const config: Config = {
       fontFamily: {
         sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "sans-serif"],
       },
+      letterSpacing: {
+        title: "-0.02em",
+        hero: "-0.025em",
+      },
+      spacing: {
+        "header-top": "2.25rem",
+        "header-top-desktop": "2.5rem",
+        "footer-bottom": "3.5rem",
+        "section-gap": "2.5rem",
+        "header-height-mobile": "4rem",
+        "header-height-desktop": "4rem",
+      },
+      minHeight: {
+        "screen-below-header": "calc(100svh - 4rem)",
+        "screen-below-header-lg": "calc(100svh - 4rem)",
+        "revamp-stat": "8rem",
+      },
+      maxWidth: {
+        "revamp-content": "1280px",
+        "revamp-narrow": "720px",
+      },
       animation: {
         "fade-up": "fadeUp 0.5s ease-out forwards",
         "fade-in": "fadeIn 0.4s ease-out forwards",
