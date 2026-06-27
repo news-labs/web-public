@@ -24,6 +24,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Prepare labs-core (admin-web-portal)
+        run: node scripts/prepare-labs-core.mjs
+        env:
+          LABS_CORE_REPO: ${{ vars.LABS_CORE_REPO }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: pnpm/action-setup@v4
         with: { version: "9.15.0" }
       - uses: actions/setup-node@v4
