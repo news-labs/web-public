@@ -62,8 +62,10 @@ function wrangler(cmd, cwd = ROOT) {
   run(`pnpm --filter public-docs exec wrangler ${cmd}`, cwd);
 }
 
+const INTERNAL_DOCS_ROOT = join(CORE_PLATFORM, "docs/devdocs");
+
 function wranglerCorePlatform(cmd) {
-  run(`pnpm exec wrangler ${cmd}`, CORE_PLATFORM);
+  run(`pnpm exec wrangler ${cmd}`, INTERNAL_DOCS_ROOT);
 }
 
 async function ensurePagesProject(name) {
@@ -86,7 +88,9 @@ async function deployWebPublic(project) {
     console.log(`Building before deploy (${project.dist} missing)...`);
     run(project.build);
   }
-  wrangler(`pages deploy ${project.dist} --project-name=${project.name} --commit-dirty=true`);
+  wrangler(
+    `pages deploy ${dist} --project-name=${project.name} --commit-dirty=true`,
+  );
 }
 
 async function deployInternalDocs() {
@@ -96,7 +100,7 @@ async function deployInternalDocs() {
     run("bash scripts/build-dev-docs.sh", CORE_PLATFORM);
   }
   wranglerCorePlatform(
-    `pages deploy docs/devdocs/dist --project-name=${INTERNAL_DOCS_PROJECT.name} --commit-dirty=true`,
+    `pages deploy ${INTERNAL_DOCS_PROJECT.dist} --project-name=${INTERNAL_DOCS_PROJECT.name} --commit-dirty=true`,
   );
 }
 
@@ -128,19 +132,11 @@ async function printManualSteps() {
 Manual steps (API token lacks Zone / Zero Trust permissions)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-1. Remove legacy docs-router Worker route (if still attached)
-   Dashboard → news-labs-web-public-docs-router-prod
-   → Settings → Domains & Routes → Delete: docs.newsfork.com/*
+1. Confirm custom domains on nl-* Pages are Active (see docs/CLOUDFLARE_DOCS_SETUP.md)
 
-2. Remove nl-marketing-web Worker routes if they overlap www.newsfork.com
+2. Deprecate legacy nf-* Pages: nf-web-public, nf-devdocs, nfdocs
 
-3. Migrate custom domains from legacy nf-* Pages to nl-*:
-   - nf-web-public → remove www.newsfork.com; attach on nl-marketing-web
-   - nf-devdocs → remove devdocs.newsfork.com; attach on nl-internal-docs
-
-4. Cloudflare Access for devdocs.newsfork.com → nl-internal-docs origin
-
-5. Deprecate: nf-web-public, nf-devdocs, nf-public-docs, nfdocs
+Note: news-labs-web-public-docs-router-prod Worker removed (repo + Cloudflare account).
 
 See docs/CLOUDFLARE_DOCS_SETUP.md and docs/CLOUDFLARE_DASHBOARD_AUDIT.md
 `);

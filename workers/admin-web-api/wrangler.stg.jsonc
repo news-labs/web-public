@@ -1,0 +1,22 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nl-web-admin-portal-stg",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-01-20",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "directory": "../../apps/admin-web-portal/dist", "binding": "ASSETS" },
+  "d1_databases": [
+    {
+      "binding": "WEB_ADMIN_DB",
+      "database_name": "nl-web-db-admin-stg",
+      "database_id": "PLACEHOLDER_STG",
+      "migrations_dir": "../../migrations/web-admin"
+    }
+  ],
+  "vars": {
+    "ENVIRONMENT": "staging",
+    "GITHUB_REPO": "news-labs/web-public",
+    "GITHUB_WORKFLOW_DEPLOY_WWW": "deploy-www.yml",
+    "GITHUB_WORKFLOW_DEPLOY_DOCS": "deploy-public-docs.yml"
+  }
+}

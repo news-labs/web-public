@@ -1,40 +1,56 @@
 # Cloudflare dashboard audit — nl Pages migration
 
-Audit date: 2026-06-27. Baseline from operator dashboard before `nl-*` cutover.
+Audit baseline: 2026-06-27. Updated after automated deploy.
 
-## Active resources (pre-migration)
+## Deployed nl-* Pages projects
 
-| Name | Type | Git | Notes |
+| Project | pages.dev | Content pages | Deploy status |
 | --- | --- | --- | --- |
-| `nf-web-public` | Pages | No | Target: replace with `nl-marketing-web` |
-| `nf-devdocs` | Pages | No | Target: replace with `nl-internal-docs` |
-| `nfdocs` | Pages | No | Redirect-only to `docs.newsfork.com` |
-| `nl-marketing-web` | Worker | — | **Conflict risk** with Pages `nf-web-public`; remove Worker routes before Pages cutover |
-| `news-labs-web-public-docs-router-prod` | Worker | — | **Remove** `docs.newsfork.com/*` route before `nl-public-docs` custom domain |
-| `nf-public-docs` / `nl-public-docs` | Pages | — | **Missing** — public-docs content never deployed |
+| `nl-marketing-web` | https://nl-marketing-web.pages.dev | marketing-web (17 routes) | Deployed |
+| `nl-public-docs` | https://nl-public-docs.pages.dev | public-docs (100 pages, EN + ko) | Deployed |
+| `nl-internal-docs` | https://nl-internal-docs.pages.dev | devdocs (46 pages) | Deployed |
 
-## Target state
+## Custom domains (API attach — pending DNS cutover)
 
-| Pages project | Custom domain | Source |
+Domains registered on nl-* projects but **pending** until CNAME moves from legacy targets:
+
+| Domain | nl-* project | Status |
 | --- | --- | --- |
-| `nl-marketing-web` | `www.newsfork.com` | `web-public/apps/marketing-web` |
-| `nl-public-docs` | `docs.newsfork.com` | `web-public/apps/public-docs` |
-| `nl-internal-docs` | `devdocs.newsfork.com` | `core-platform/docs/devdocs` |
+| `www.newsfork.com` | `nl-marketing-web` | pending |
+| `docs.newsfork.com` | `nl-public-docs` | pending |
+| `devdocs.newsfork.com` | `nl-internal-docs` | pending |
 
-## Cutover order
+**Operator action**: Confirm nl-* custom domains are Active. Legacy `nf-*` Pages can be deleted after cutover.
 
-1. Create `nl-*` Pages projects and deploy via GitHub Actions (`workflow_dispatch`).
-2. Attach custom domains on new projects.
-3. Remove `docs.newsfork.com/*` from `news-labs-web-public-docs-router-prod`.
-4. Remove `www.newsfork.com` from `nf-web-public`; remove `devdocs.newsfork.com` from `nf-devdocs`.
-5. Audit `nl-marketing-web` Worker routes — delete if overlapping www.
-6. Deprecate `nf-web-public`, `nf-devdocs`, `nfdocs` (redirect or delete).
+| `news-labs-web-public-docs-router-prod` | **Removed** — Worker not on account; repo `workers/docs-router` deleted |
 
-## Verification
+## Legacy resources (deprecate)
+
+| Name | Action |
+| --- | --- |
+| `nf-web-public` | Delete after www cutover |
+| `nf-devdocs` | Delete after devdocs cutover |
+| `nfdocs` | Keep redirect to docs.newsfork.com |
+| `news-labs-web-public-docs-router-prod` | **Deleted** (2026-06-27) |
+| `nl-marketing-web` Worker | Remove routes overlapping www |
+
+See [LEGACY_PAGES_DEPRECATION.md](./LEGACY_PAGES_DEPRECATION.md).
+
+## Verification (pages.dev)
 
 ```bash
-curl -I https://docs.newsfork.com/getting-started/
-curl -I https://devdocs.newsfork.com/platform/overview/
-curl -I https://www.newsfork.com/
-curl -I https://nfdocs.pages.dev/
+curl -I https://nl-public-docs.pages.dev/getting-started/
+curl -I https://nl-internal-docs.pages.dev/platform/overview/
+curl -I https://nl-marketing-web.pages.dev/
+curl -I https://nl-public-docs.pages.dev/ko/getting-started/
 ```
+
+## CI targets (post-migration)
+
+| Workflow | Project |
+| --- | --- |
+| `deploy-www.yml` | `nl-marketing-web` |
+| `deploy-public-docs.yml` | `nl-public-docs` |
+| `deploy-devdocs.yml` | `nl-internal-docs` |
+
+Setup script: `pnpm run setup:cloudflare-docs` (web-public).
