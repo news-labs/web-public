@@ -1,6 +1,6 @@
 # web-public
 
-News-Labs 공개 웹 — 마케팅 사이트 + 공개 문서.
+News-Labs 공개 웹 — 마케팅 사이트 + 통합 사용자 문서.
 
 ## 구조
 
@@ -8,7 +8,9 @@ News-Labs 공개 웹 — 마케팅 사이트 + 공개 문서.
 web-public/
 ├── apps/
 │   ├── marketing-web/   # 마케팅 홈페이지 (Next.js 15 + Tailwind)
-│   └── public-docs/     # 공개 API 문서 (Astro Starlight)
+│   └── public-docs/     # 통합 사용자 문서 (Astro Starlight → docs.newsfork.com)
+├── workers/
+│   └── docs-router/     # (deprecated) legacy legal/API split router
 └── packages/
 ```
 
@@ -18,10 +20,15 @@ web-public/
 # 마케팅 사이트
 pnpm dev:www
 
-# 문서
+# 사용자 문서 (Starlight)
 pnpm dev:docs
 ```
 
 ## 배포
 
-Cloudflare Pages + Workers (OpenNext.js cloudflare adapter)
+| App | Pages project | URL |
+| --- | --- | --- |
+| marketing-web | `nf-web-public` | www.newsfork.com |
+| public-docs | `nf-public-docs` | docs.newsfork.com |
+
+Cloudflare setup: [docs/CLOUDFLARE_DOCS_SETUP.md](docs/CLOUDFLARE_DOCS_SETUP.md)

@@ -1,0 +1,54 @@
+---
+---
+
+<div class="lg:sl-flex">
+  {
+    Astro.props.toc && (
+      <aside class="right-sidebar-container">
+        <div class="right-sidebar">
+          <slot name="right-sidebar" />
+        </div>
+      </aside>
+    )
+  }
+  <div class="main-pane"><slot /></div>
+</div>
+
+<style>
+  .main-pane {
+    isolation: isolate;
+  }
+
+  @media (min-width: 72rem) {
+    .right-sidebar-container {
+      order: 2;
+      position: relative;
+      width: 20rem;
+      min-width: 20rem;
+      max-width: 20rem;
+      flex-shrink: 0;
+    }
+
+    .right-sidebar {
+      position: fixed;
+      top: 0;
+      padding-top: var(--sl-nav-height);
+      width: 20rem;
+      max-width: 20rem;
+      height: 100vh;
+      overflow-y: auto;
+      scrollbar-width: none;
+      box-sizing: border-box;
+    }
+
+    .main-pane {
+      width: 100%;
+    }
+
+    :global([data-has-sidebar][data-has-toc]) .main-pane {
+      --sl-content-margin-inline: auto 0;
+      order: 1;
+      width: calc(100% - 20rem);
+    }
+  }
+</style>
