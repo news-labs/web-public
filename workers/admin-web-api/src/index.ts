@@ -11,6 +11,7 @@ import { content } from "./routes/content.js";
 import { redirects } from "./routes/redirects.js";
 import { oauth } from "./routes/oauth.js";
 import { users } from "./routes/users.js";
+import { mountAdminUiRoutes } from "./lib/serve-admin-ui.js";
 
 const app = new Hono<{ Bindings: Env }>();
 app.use("*", cors());
@@ -30,7 +31,8 @@ app.route("/api/v1/design", design);
 app.route("/api/v1/content", content);
 app.route("/api/v1/redirects", redirects);
 
-app.get("*", (c) => c.env.ASSETS.fetch(c.req.raw));
+mountAdminUiRoutes(app);
+app.get("*", (c) => c.text("Not Found", 404));
 
 app.onError((err, c) => {
   console.error("[admin-web-api]", err);

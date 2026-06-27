@@ -8,7 +8,7 @@ import {
   getSessionToken,
   setSessionToken,
 } from "@core-labs/admin-shell";
-import { WEB_PORTAL } from "./portal.config";
+import { WEB_PORTAL, ADMIN_UI_BASENAME } from "./portal.config";
 import { SitesOverviewPage } from "./pages/sites-overview-page";
 import { SiteDetailPage } from "./pages/site-detail-page";
 import { ContentPage } from "./pages/content-page";
@@ -39,7 +39,7 @@ export function App() {
   }
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={ADMIN_UI_BASENAME}>
       <Routes>
         <Route element={<AdminLayout config={WEB_PORTAL} onLogout={() => setAuthed(false)} />}>
           <Route index element={<SitesOverviewPage />} />

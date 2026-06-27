@@ -74,7 +74,7 @@ oauth.get("/google/callback", async (c) => {
   );
 
   const origin = new URL(c.req.url).origin;
-  return c.redirect(`${origin}/?session=${encodeURIComponent(sessionToken)}`);
+  return c.redirect(`${origin}/cp/?session=${encodeURIComponent(sessionToken)}`);
 });
 
 export { oauth };

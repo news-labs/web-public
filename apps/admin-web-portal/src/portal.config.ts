@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import type { PortalConfig } from "@core-labs/admin-shell";
 
+export const ADMIN_UI_BASENAME = "/cp";
+
 export const WEB_PORTAL: PortalConfig = {
   id: "web",
   title: "News-Labs Web",
