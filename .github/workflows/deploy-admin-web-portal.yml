@@ -1,0 +1,42 @@
+name: Deploy Web Admin Portal
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/admin-web-portal/**"
+      - "workers/admin-web-api/**"
+      - "migrations/web-admin/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/deploy-admin-web-portal.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-nl-web-admin-portal
+  cancel-in-progress: false
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare labs-core (admin-web-portal)
+        run: node scripts/prepare-labs-core.mjs
+        env:
+          LABS_CORE_REPO: ${{ vars.LABS_CORE_REPO }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: pnpm/action-setup@v4
+        with: { version: "9.15.0" }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Cloudflare preflight
+        run: node scripts/preflight-cloudflare.mjs
+      - run: pnpm --filter admin-web-portal run build
+      - run: pnpm --filter admin-web-api run deploy

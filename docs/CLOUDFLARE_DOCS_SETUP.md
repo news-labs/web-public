@@ -10,9 +10,10 @@ Checklist for Newsfork docs on Cloudflare Pages (`nl-*` naming).
 | `nl-public-docs` | Pages | https://nl-public-docs.pages.dev |
 | `nl-internal-docs` | Pages (internal) | https://nl-internal-docs.pages.dev |
 | `nfdocs` | Pages (deprecated) | redirect to `docs.newsfork.com` |
-| `news-labs-web-public-docs-router-prod` | Worker (deprecated) | remove `docs.newsfork.com/*` route |
 
 Legacy (remove after cutover): `nf-web-public`, `nf-devdocs`, `nf-public-docs`, `nf-public-legal`.
+
+`news-labs-web-public-docs-router-prod` Worker: **deleted** (unified docs on `nl-public-docs`).
 
 ## Prerequisites
 
@@ -30,12 +31,20 @@ pnpm run setup:cloudflare-docs
 
 Creates `nl-marketing-web`, `nl-public-docs`, and `nl-internal-docs` (if missing), builds, deploys, and attempts custom domains.
 
+Activate custom domains (DNS + validation):
+
+```bash
+pnpm run activate:pages-domains
+```
+
+Requires API token **Zone → DNS → Edit** for `newsfork.com`. See `~/.config/news-labs/cloudflare.env.example`.
+
 ## Manual dashboard steps
 
 ### 1. docs.newsfork.com → nl-public-docs
 
-1. Remove `docs.newsfork.com/*` from `news-labs-web-public-docs-router-prod`
-2. **Workers & Pages** → **nl-public-docs** → **Custom domains** → `docs.newsfork.com`
+1. **Workers & Pages** → **nl-public-docs** → **Custom domains** → `docs.newsfork.com`
+2. Wait until status is **Active** (proxied CNAME is created automatically)
 
 ### 2. devdocs.newsfork.com → nl-internal-docs
 

@@ -9,8 +9,6 @@ web-public/
 ├── apps/
 │   ├── marketing-web/   # 마케팅 홈페이지 (Next.js → nl-marketing-web)
 │   └── public-docs/     # 사용자 문서 (Astro Starlight → nl-public-docs)
-├── workers/
-│   └── docs-router/     # (deprecated) legacy legal/API split router
 └── packages/
 ```
 
