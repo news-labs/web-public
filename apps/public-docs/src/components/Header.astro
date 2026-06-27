@@ -9,9 +9,8 @@ const shouldRenderSearch =
 const siteTitleHref = Astro.props.siteTitleHref ?? "/";
 const LOGO_HREF = siteTitleHref;
 const GETTING_STARTED_HREF = "/getting-started/";
+const GUIDES_HREF = "/v1/guides/";
 const API_HREF = "/v1/api/seeds-api/";
-const LEGAL_HREF = "/legal/privacy/";
-const WWW_HREF = import.meta.env.PUBLIC_DOCS_WWW_HREF || "https://www.newsfork.com";
 ---
 
 <div class="nf-header sl-flex">
@@ -23,11 +22,8 @@ const WWW_HREF = import.meta.env.PUBLIC_DOCS_WWW_HREF || "https://www.newsfork.c
   </div>
   <nav class="nav-links sl-flex" aria-label="Main">
     <a href={GETTING_STARTED_HREF} class="nav-link">Getting Started</a>
+    <a href={GUIDES_HREF} class="nav-link">Guides</a>
     <a href={API_HREF} class="nav-link">API</a>
-    <a href={LEGAL_HREF} class="nav-link">Legal</a>
-    <a href={WWW_HREF} class="nav-link" rel="noopener noreferrer" target="_blank">
-      www
-    </a>
   </nav>
   <div class="sl-flex right-group">
     <ThemeSelect {...Astro.props} />

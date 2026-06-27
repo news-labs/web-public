@@ -17,6 +17,8 @@
     "ENVIRONMENT": "development",
     "GITHUB_REPO": "news-labs/web-public",
     "GITHUB_WORKFLOW_DEPLOY_WWW": "deploy-www.yml",
-    "GITHUB_WORKFLOW_DEPLOY_DOCS": "deploy-public-docs.yml"
+    "GITHUB_WORKFLOW_DEPLOY_DOCS": "deploy-public-docs.yml",
+    "GITHUB_WORKFLOW_DEPLOY_TEMPLATE": "deploy-template.yml",
+    "CP_API_BASE_URL": "https://nl-cp-api-dev.newsfork.workers.dev"
   }
 }

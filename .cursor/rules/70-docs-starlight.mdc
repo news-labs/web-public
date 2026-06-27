@@ -2,6 +2,18 @@
 
 Unified user documentation for `docs.newsfork.com` — API reference, guides, user manual, legal policies, and company info.
 
+Layout reference: [docs/PLAN-docs-layout-vouus-parity.md](../docs/PLAN-docs-layout-vouus-parity.md) (Vouus-style Layout A splash + Layout B detail).
+
+## Layout A vs Layout B
+
+| Layout | Template | Example URLs |
+|--------|----------|--------------|
+| **A — Main** | `template: splash` + `hero` | `/`, `/ko/` |
+| **B — Detail** | default (no `template`) | `/getting-started/`, `/v1/api/seeds-api/` |
+
+- **Layout A:** no sidebar or right TOC; hero + full-width body.
+- **Layout B:** 2:5:2 grid (20rem nav + main + 20rem TOC). Use frontmatter `title` for H1 — do not add `#` H1 in markdown body.
+
 ## Content paths
 
 - Documentation pages live under `apps/public-docs/src/content/docs/`.
@@ -12,6 +24,7 @@ Unified user documentation for `docs.newsfork.com` — API reference, guides, us
 
 | Directory | Purpose |
 | --- | --- |
+| Overview (`/`) | Splash home link in sidebar |
 | `getting-started.md`, `manual-setup.md`, `changelog.md` | Start Here |
 | `v1/api/` | REST API reference |
 | `v1/guides/` | Integration and architecture guides (no internal engineering guides) |

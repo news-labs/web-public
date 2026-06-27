@@ -1,5 +1,5 @@
 ---
-title: getting Started
+title: Getting Started
 description: Welcome to the Newsfork seeds-research engine documentation.
 translatedFromHash: 463967b3de2e32a5287e4fd9be341b482252f2f28cc720eae145cf444d176fb4
 ---

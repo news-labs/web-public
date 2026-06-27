@@ -41,6 +41,7 @@ export default defineConfig({
       },
       plugins: [starlightClientMermaid()],
       sidebar: [
+        { label: "Overview", link: "/" },
         {
           label: "Start Here",
           items: [

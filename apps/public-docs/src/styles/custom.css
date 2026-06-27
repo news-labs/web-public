@@ -142,9 +142,9 @@ html {
   border-bottom: none !important;
 }
 
-:global(.sl-markdown-content) > h1:first-child,
-:global(.sl-markdown-content) > h1:first-of-type,
-:global(.sl-markdown-content) > header:first-child {
+/* Layout B: hide duplicate markdown H1 when PageTitle renders frontmatter title */
+[data-has-sidebar] :global(.sl-markdown-content) > h1:first-child,
+[data-has-sidebar] :global(.sl-markdown-content) > h1:first-of-type {
   display: none !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -152,15 +152,26 @@ html {
   height: 0 !important;
   overflow: hidden !important;
 }
-:global(.sl-markdown-content) > h1:first-child + hr,
-:global(.sl-markdown-content) > h1:first-of-type + hr,
-:global(.sl-markdown-content) > hr:first-child,
-:global(.sl-markdown-content) > hr:nth-child(2) {
+[data-has-sidebar] :global(.sl-markdown-content) > h1:first-child + hr,
+[data-has-sidebar] :global(.sl-markdown-content) > h1:first-of-type + hr {
   display: none !important;
 }
 
+:global(.content-panel) {
+  border-bottom: none !important;
+}
 :global(.content-panel) + :global(.content-panel) {
   border-top: none !important;
+}
+
+/* Hide decorative hr under title */
+:global(.sl-markdown-content hr) {
+  border: none !important;
+  border-bottom: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 0 !important;
+  visibility: hidden !important;
 }
 
 :global(.sl-markdown-content) h1 {
