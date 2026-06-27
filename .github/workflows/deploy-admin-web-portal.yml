@@ -38,5 +38,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Cloudflare preflight
         run: node scripts/preflight-cloudflare.mjs
+      - name: Provision production D1 (web admin)
+        run: node scripts/provision-admin-web-prod.mjs --apply-migrations
       - run: pnpm --filter admin-web-portal run build
       - run: pnpm --filter admin-web-api run deploy
