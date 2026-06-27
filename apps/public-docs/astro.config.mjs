@@ -21,6 +21,17 @@ export default defineConfig({
       description:
         "User documentation for Newsfork — API reference, guides, user manual, and policies.",
       favicon: "/favicon.svg",
+      locales: {
+        root: {
+          label: "English",
+          lang: "en",
+        },
+        ko: {
+          label: "한국어",
+          lang: "ko",
+        },
+      },
+      defaultLocale: "root",
       components: {
         Header: "./src/components/Header.astro",
         PageFrame: "./src/components/PageFrame.astro",

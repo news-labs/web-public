@@ -1,12 +1,27 @@
 ---
-title: Environment Setup
-description: analyzing configuration and setup scripts
+title: Environment Guide
+description: Development / Staging / Production 환경 설정 및 Cloudflare 리소스 구성
 sidebar:
   order: 1
-translatedFromHash: b259df8b15b9f21545a5dca839b8067ca6ce6b52b2a79eddbceb7e30e438bc24
 ---
 
-🏗️ Production-Grade Environment Architecture This project implements **Silicon Valley-standard environment isolation** with legal compliance and data governance in mind. ### 🎯 Core Principle > **Environment is in the configuration, not in variables** > Each environment has completely separate Cloudflare resources (R2, D1, KV, Queues) to prevent contamination and ensure legal compliance. --- ## 📁 Environment Structure Cloudflare Resources (Per Environment) ```
+## 🏗️ Production-Grade Environment Architecture
+
+This project implements **Silicon Valley-standard environment isolation** with legal compliance and data governance in mind.
+
+### 🎯 Core Principle
+
+> **Environment is in the configuration, not in variables**
+> 
+> Each environment has completely separate Cloudflare resources (R2, D1, KV, Queues) to prevent contamination and ensure legal compliance.
+
+---
+
+## 📁 Environment Structure
+
+### Cloudflare Resources (Per Environment)
+
+```
 Development:
 ├── Workers: newsfork-seeds-dev
 ├── R2: newsfork-datasets-dev, newsfork-metadata-dev
@@ -27,7 +42,11 @@ Production:
 ├── D1: newsfork-metadata-prod
 ├── KV: DOMAIN_KV (prod namespace)
 └── Queues: newsfork-research-prod, newsfork-contract-prod, newsfork-liveness-prod
-``` Data Storage ```
+```
+
+### Data Storage
+
+```
 R2 (Raw Data):
 ├── research/datasets/country=*/category=*/*.json
 ├── research/liveness/country=*/*.json
@@ -44,7 +63,13 @@ D1 (Metadata):
 GitHub (Audit Trail):
 ├── metadata/snapshot.json
 └── seeds/**/*.json
-``` --- 🚦 Environment Details # 🧪 Development (`dev`)
+```
+
+---
+
+## 🚦 Environment Details
+
+### 🧪 Development (`dev`)
 **Purpose**: Safe experimentation and feature development
 
 - **Safety**: ✅ Completely safe
@@ -74,7 +99,7 @@ GitHub (Audit Trail):
 
 ### Method 1: Wrangler CLI
 
- ```bash
+```bash
 # Development (local)
 pnpm run dev
 pnpm run dev:local
@@ -87,14 +112,16 @@ pnpm run deploy:staging
 
 # Production deployment
 pnpm run deploy:production
-``` 
+```
 
 ### Method 2: GitHub Actions
 
-- **Staging**: Automatic on push to `main` branch (when `src/**` , `package.json` , or `wrangler.jsonc` changes)
+- **Staging**: Automatic on push to `main` branch (when `src/**`, `package.json`, or `wrangler.jsonc` changes)
 - **Production**: Manual trigger via `workflow_dispatch` with environment selection
 
-### Database Migrations ```bash
+### Database Migrations
+
+```bash
 # Apply migrations to dev
 pnpm db:migrate
 
@@ -103,7 +130,24 @@ pnpm db:migrate:staging
 
 # Apply migrations to production
 pnpm db:migrate:production
-``` --- ## 🔧 Configuration ### Environment Variables (wrangler.jsonc) | Variable | Dev | Staging | Production | |----------|-----|---------|------------|___EN___|`CF_ENV`|`dev`|`staging`|`production`|___EN___|`DATA_PATH_PREFIX`|`dev`|`staging`|`prod`|___EN___|`ENVIRONMENT`|`development`|`staging`|`production`|___EN______EN___### Cloudflare Resources___EN______EN___|Resource | Dev | Staging | Production |___EN___|----------|-----|---------|------------|
+```
+
+---
+
+## 🔧 Configuration
+
+### Environment Variables (wrangler.jsonc)
+
+| Variable | Dev | Staging | Production |
+|----------|-----|---------|------------|
+| `CF_ENV` | `dev` | `staging` | `production` |
+| `DATA_PATH_PREFIX` | `dev` | `staging` | `prod` |
+| `ENVIRONMENT` | `development` | `staging` | `production` |
+
+### Cloudflare Resources
+
+| Resource | Dev | Staging | Production |
+|----------|-----|---------|------------|
 | R2 Datasets | `newsfork-datasets-dev` | `newsfork-datasets-staging` | `newsfork-datasets-prod` |
 | R2 Metadata | `newsfork-metadata-dev` | `newsfork-metadata-staging` | `newsfork-metadata-prod` |
 | D1 Database | `newsfork-metadata-dev` | `newsfork-metadata-staging` | `newsfork-metadata-prod` |
@@ -118,7 +162,7 @@ pnpm db:migrate:production
 
 ### Queue Configuration
 
-Currently, based on wrangler.jsonc, all Queues have **max_batch_size=1** (file-based processing):
+현재 wrangler.jsonc 기준, 모든 Queue는 **max_batch_size=1** (파일 단위 처리):
 
 | Queue | Max Batch Size | Max Batch Timeout | Max Retries | DLQ |
 |-------|----------------|-------------------|-------------|-----|
@@ -136,7 +180,7 @@ Currently, based on wrangler.jsonc, all Queues have **max_batch_size=1** (file-b
 
 ### Secrets (per environment)
 
- ```bash
+```bash
 # Development
 wrangler secret put GH_TOKEN
 wrangler secret put GH_OWNER
@@ -151,7 +195,7 @@ wrangler secret put GH_REPO --env staging
 wrangler secret put GH_TOKEN --env production
 wrangler secret put GH_OWNER --env production
 wrangler secret put GH_REPO --env production
-``` 
+```
 
 ---
 
@@ -173,20 +217,32 @@ wrangler secret put GH_REPO --env production
 
 ---
 
-## 🧪 Testing Each Environment NL______NL ### Development Testing NL______NL ```bash
+## 🧪 Testing Each Environment
+
+### Development Testing
+
+```bash
 # Run local Workers
 pnpm run dev:local
 
 # Test API
 curl http://localhost:8787/health
 curl http://localhost:8787/api/v1/datasets
-``` NL______NL ### Staging Testing NL______NL ```bash
+```
+
+### Staging Testing
+
+```bash
 # Deploy to staging
 pnpm run deploy:staging
 
 # Test API
 curl https://newsfork-seeds-staging.workers.dev/health
-``` NL______NL ### Production Testing NL______NL ```bash
+```
+
+### Production Testing
+
+```bash
 # Full test suite first
 pnpm test
 
@@ -195,7 +251,18 @@ pnpm run deploy:production
 
 # Test API
 curl https://newsfork-seeds-prod.workers.dev/health
-``` NL______NL --- NL______NL ## 🚨 Emergency Procedures ### Production Issue Response 1. **Stop**: Pause all Queue consumers if needed 2. **Assess**: Check Cloudflare Dashboard for errors 3. **Document**: Review DLQ for failed tasks 4. **Notify**: Alert compliance team if data affected
+```
+
+---
+
+## 🚨 Emergency Procedures
+
+### Production Issue Response
+
+1. **Stop**: Pause all Queue consumers if needed
+2. **Assess**: Check Cloudflare Dashboard for errors
+3. **Document**: Review DLQ for failed tasks
+4. **Notify**: Alert compliance team if data affected
 5. **Preserve**: Maintain audit trail in GitHub
 
 ### Environment Contamination
@@ -230,10 +297,10 @@ curl https://newsfork-seeds-prod.workers.dev/health
 
 ---
 
-## 🔗 Reference
+## 🔗 참고
 
-- Wrangler configuration: Project root `wrangler.jsonc` 
-- Migration: [Planning·Analysis → infra](../../plan/infra/cloudflare-migration-plan.md)
-- Deployment procedure: [Deployment procedure](./deployment.md)
+- Wrangler 설정: 프로젝트 루트 `wrangler.jsonc`
+- 마이그레이션: [기획·분석 → infra](../../plan/infra/cloudflare-migration-plan.md)
+- 배포 절차: [배포 절차](./deployment.md)
 
-**Production** is a legal/compliance boundary; use only after manual deployment and verification.
+**Production**은 법적·컴플라이언스 경계이므로 수동 배포와 검증 후에만 사용하세요.

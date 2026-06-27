@@ -1,16 +1,18 @@
 # Cloudflare docs infrastructure setup
 
-Checklist for the unified Newsfork user docs site on Cloudflare Pages.
+Checklist for Newsfork docs on Cloudflare Pages (`nl-*` naming).
 
 ## Resources
 
 | Resource | Type | URL |
 | --- | --- | --- |
-| `nf-public-docs` | Pages | https://nf-public-docs.pages.dev |
-| `nf-devdocs` | Pages (internal) | https://nf-devdocs.pages.dev |
-| `nfdocs` | Pages (deprecated) | https://nfdocs.pages.dev → redirects to docs.newsfork.com |
-| `nf-public-legal` | Pages (deprecated) | replaced by `nf-public-docs` |
+| `nl-marketing-web` | Pages | https://nl-marketing-web.pages.dev |
+| `nl-public-docs` | Pages | https://nl-public-docs.pages.dev |
+| `nl-internal-docs` | Pages (internal) | https://nl-internal-docs.pages.dev |
+| `nfdocs` | Pages (deprecated) | redirect to `docs.newsfork.com` |
 | `news-labs-web-public-docs-router-prod` | Worker (deprecated) | remove `docs.newsfork.com/*` route |
+
+Legacy (remove after cutover): `nf-web-public`, `nf-devdocs`, `nf-public-docs`, `nf-public-legal`.
 
 ## Prerequisites
 
@@ -26,105 +28,51 @@ node scripts/preflight-cloudflare.mjs
 pnpm run setup:cloudflare-docs
 ```
 
-Creates the `nf-public-docs` Pages project (if missing), deploys `public-docs`, and attempts to attach `docs.newsfork.com`.
-
-For **devdocs**, from `core-platform`:
-
-```bash
-pnpm run build:docs
-cd docs/devdocs && wrangler pages deploy dist --project-name=nf-devdocs
-```
+Creates `nl-marketing-web`, `nl-public-docs`, and `nl-internal-docs` (if missing), builds, deploys, and attempts custom domains.
 
 ## Manual dashboard steps
 
-### 1. docs.newsfork.com (Pages custom domain)
+### 1. docs.newsfork.com → nl-public-docs
 
-1. [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages**
-2. Open **nf-public-docs**
-3. **Custom domains** → **Set up a custom domain**
-4. Enter `docs.newsfork.com` (proxied CNAME is created automatically)
-5. Wait until status is **Active**
+1. Remove `docs.newsfork.com/*` from `news-labs-web-public-docs-router-prod`
+2. **Workers & Pages** → **nl-public-docs** → **Custom domains** → `docs.newsfork.com`
 
-Verify:
+### 2. devdocs.newsfork.com → nl-internal-docs
 
-```bash
-curl -I https://docs.newsfork.com/
-curl -I https://docs.newsfork.com/getting-started/
-curl -I https://docs.newsfork.com/legal/privacy/
-curl -I https://docs.newsfork.com/v1/api/seeds-api/
-```
+1. Remove domain from `nf-devdocs` if attached
+2. **nl-internal-docs** → **Custom domains** → `devdocs.newsfork.com`
+3. Cloudflare Access — see [core-platform/docs/devdocs/CLOUDFLARE_ACCESS.md](../core-platform/docs/devdocs/CLOUDFLARE_ACCESS.md)
 
-### 2. Remove legacy docs-router Worker route
+### 3. www.newsfork.com → nl-marketing-web
 
-The router split legal vs API docs before the unified site. After `nf-public-docs` is active:
+1. Remove domain from `nf-web-public`
+2. Remove overlapping `nl-marketing-web` **Worker** routes if present
+3. **nl-marketing-web** Pages → **Custom domains** → `www.newsfork.com`
 
-1. **Workers & Pages** → **news-labs-web-public-docs-router-prod**
-2. **Settings** → **Domains & Routes**
-3. Delete route: `docs.newsfork.com/*`
+### 4. Legacy redirects
 
-Do **not** delete the route until the Pages custom domain is Active.
-
-### 3. Legacy redirects
-
-| Legacy origin | Action |
+| Legacy | Action |
 | --- | --- |
-| `nfdocs.pages.dev/*` | Deploy `_redirects`: `/* https://docs.newsfork.com/:splat 301` |
-| `nf-public-legal.pages.dev/*` | Delete project or redirect to `docs.newsfork.com` |
-| `docs.newsfork.com/legal/` | Served by `public-docs/public/_redirects` → `/` |
-
-### 4. devdocs.newsfork.com (Pages custom domain)
-
-1. **Workers & Pages** → **nf-devdocs** → **Custom domains**
-2. Add `devdocs.newsfork.com` (proxied CNAME is created automatically)
-3. Wait until status is **Active**
-
-### 5. Cloudflare Access (internal devdocs)
-
-Zero Trust must be enabled on the account first.
-
-1. **Zero Trust** → enable Access (one-time)
-2. **Access** → **Applications** → **Add an application**
-3. Type: **Self-hosted**
-4. Domain: `devdocs.newsfork.com`
-5. Policy: **Allow** — emails `@news-labs.org` and/or GitHub org `news-labs`
-6. Save
-
-See also [core-platform/docs/devdocs/CLOUDFLARE_ACCESS.md](../../core-platform/docs/devdocs/CLOUDFLARE_ACCESS.md).
-
-### 6. API token permissions (optional, for full automation)
-
-Edit token at [Profile → API Tokens](https://dash.cloudflare.com/profile/api-tokens):
-
-| Permission | Scope |
-| --- | --- |
-| Account → Cloudflare Pages | Edit |
-| Zone → DNS | Edit (`newsfork.com`) |
-
-Store token in `~/.config/news-labs/cloudflare.env` — never commit to git.
+| `nfdocs.pages.dev/*` | `/* https://docs.newsfork.com/:splat 301` |
+| `nf-web-public`, `nf-devdocs` | Delete or redirect after cutover |
 
 ## CI deploy (production)
 
-Production deploys run via GitHub Actions only:
-
 | Workflow | Target |
 | --- | --- |
-| `deploy-public-docs.yml` | `nf-public-docs` |
-| `core-platform/deploy-devdocs.yml` | `nf-devdocs` |
-
-Required GitHub secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`  
-Optional var: `CF_WORKERS_SUBDOMAIN` (preflight account guard)
+| `deploy-www.yml` | `nl-marketing-web` |
+| `deploy-public-docs.yml` | `nl-public-docs` |
+| `core-platform/deploy-devdocs.yml` | `nl-internal-docs` |
 
 ## Site structure
 
 ```
-docs.newsfork.com/                    → public-docs home (Starlight splash)
-docs.newsfork.com/getting-started/    → user onboarding
-docs.newsfork.com/v1/api/*            → API reference
-docs.newsfork.com/v1/guides/*         → integration guides
-docs.newsfork.com/user-manual/*       → user manual
-docs.newsfork.com/legal/*             → privacy, terms, policies
-docs.newsfork.com/company/*           → about, contact
-docs.newsfork.com/resources/*         → FAQ, glossary
+docs.newsfork.com/                    → nl-public-docs (EN + ko locale)
+docs.newsfork.com/ko/getting-started/ → Korean user docs
+devdocs.newsfork.com/                 → nl-internal-docs (Access protected)
+www.newsfork.com/                     → nl-marketing-web
 ```
 
-Content source: `apps/public-docs/src/content/docs/` in this repo (English only; Korean i18n planned).
+Content: `apps/public-docs/src/content/docs/` (web-public), `docs/devdocs/src/content/docs/` (core-platform).
+
+See also [CLOUDFLARE_DASHBOARD_AUDIT.md](./CLOUDFLARE_DASHBOARD_AUDIT.md).

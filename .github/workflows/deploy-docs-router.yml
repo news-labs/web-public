@@ -1,6 +1,6 @@
 # Deprecated — docs.newsfork.com router Worker
 
-# Push deploy disabled after nf-public-docs cutover (unified docs on Pages custom domain).
+# Push deploy disabled after nl-public-docs cutover (unified docs on Pages custom domain).
 # Use workflow_dispatch only if you need to redeploy the legacy router during migration.
 
 name: Deploy docs.newsfork.com router Worker (deprecated)
