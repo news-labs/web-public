@@ -8,15 +8,20 @@ sidebar:
   order: 99
 ---
 
+## 2026-06-28
+
+### 공개·내부 문서 분리
+
+- 내부 아키텍처·배포·환경·레퍼런스 문서를 devdocs(Access)로 이전.
+- Manual Setup을 [API 빠른 시작](/ko/api-quickstart/)으로 대체.
+- 공개 사이트는 외부 API, 통합 가이드, Legal, 요금, FAQ만 제공.
+- CI 감사 추가: `scripts/audit-public-docs-sensitive.mjs`.
+
 ## 2026-01-29
 
 ### Starlight 인프라 및 첫 설계 문서
 
 - **Starlight 인프라 구축**: 프로젝트 `docs/` 폴더에 Astro Starlight 설치. 기본 언어 `ko`, 추가 언어 `en`으로 다국어 구조 구성.
 - **디렉토리 아키텍처**: `docs/src/content/docs/` 하위에 IA 적용.
-  - `v1/api/`, `v1/guides/`, `user-manual/`, `archive/whitepaper/` 폴더 생성 (ko/en 로케일별).
-- **첫 설계 문서**: `v1/guides/personalization-engine-design.md` 추가.
-  - 주제: Newsfork 뉴스 개인화 엔진(가중치 기반 알고리즘 및 파이프라인 설계).
-  - 내용: 사용자 클릭·체류 시간 기반 관심사 추출, Redis 캐시 전략.
-  - Mermaid.js 데이터 흐름도(graph TD) 포함.
-  - Frontmatter: status `draft`, version `1.0.0`.
+  - `v1/api/`, `v1/guides/` 폴더 생성 (ko/en 로케일별).
+- **첫 설계 문서**: 개인화 엔진 설계 (이후 내부 devdocs로 이전).

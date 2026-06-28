@@ -1,19 +1,20 @@
 ---
 title: Newsfork 문서
-description: Newsfork 시드·리서치 엔진 문서 — API 명세, 가이드, 사용자 매뉴얼, 정책
+description: Newsfork API 통합, Legal 정책, FAQ, 요금 안내
 template: splash
 hero:
-  tagline: Newsfork와 통합하고 구축하는 데 필요한 모든 문서.
+  tagline: Newsfork와 통합하고 구축하는 데 필요한 공개 문서.
   actions:
     - text: 시작하기
       link: /ko/getting-started/
       icon: rocket
       variant: primary
+    - text: API 빠른 시작
+      link: /ko/api-quickstart/
+      icon: document
     - text: API 참조
       link: /ko/v1/api/
       icon: document
-    - text: 가이드
-      link: /ko/v1/guides/
       variant: minimal
 ---
 
@@ -21,31 +22,31 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
 
 ## 개요
 
-Newsfork 문서는 API 통합, 운영 가이드, 사용자 매뉴얼, 법적 정책을 다룹니다. [시작하기](/ko/getting-started/)부터 시작하거나 [API 참조](/ko/v1/api/)로 바로 이동하세요.
+Newsfork 문서는 외부 API 개발자와 엔드유저를 위한 REST API 통합, Legal, FAQ, 요금 정보를 제공합니다. [시작하기](/ko/getting-started/) 또는 [API 빠른 시작](/ko/api-quickstart/)부터 시작하세요.
 
 ## 빠른 링크
 
 | 주제 | 링크 |
 | --- | --- |
-| 시작하기 | [시작하기 → Getting Started](/ko/getting-started/) |
-| 수동 설정 | [시작하기 → Manual Setup](/ko/manual-setup/) |
+| 시작하기 | [시작하기](/ko/getting-started/) |
+| API 빠른 시작 | [API 빠른 시작](/ko/api-quickstart/) |
 | API 참조 | [v1 API → 개요](/ko/v1/api/) |
-| 사용자 매뉴얼 | [User Manual → Overview](/ko/user-manual/manual-overview/) |
-| 개인정보 처리방침 | [Legal → Privacy](/ko/legal/privacy/) |
+| 개인정보 처리방침 | [Legal → Privacy Policy](/ko/legal/privacy-policy/) |
 | FAQ | [Resources → FAQ](/ko/resources/faq/) |
+| 요금 | [Company → Pricing](/ko/company/pricing/) |
 | 변경 이력 | [Changelog](/ko/changelog/) |
 
 <CardGrid stagger>
-  <Card title="시작하기" icon="rocket">
-    몇 분 안에 첫 API 요청을 설정하세요.
+  <Card title="API 빠른 시작" icon="rocket">
+    첫 인증 API 요청을 실행하세요.
   </Card>
   <Card title="API 참조" icon="document">
     요청·응답 예제가 포함된 REST API 명세.
   </Card>
   <Card title="가이드" icon="open-book">
-    시드, 리서치, 배포, 아키텍처 심화 가이드.
+    seeds, research, 데이터 스키마 통합 가이드.
   </Card>
   <Card title="법적 정책" icon="information">
-    개인정보, 이용약관, 쿠키, acceptable use 정책.
+    개인정보, 이용약관, 쿠키, DPA, SLA.
   </Card>
 </CardGrid>

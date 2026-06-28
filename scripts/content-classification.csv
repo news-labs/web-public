@@ -1,0 +1,48 @@
+slug,locale,action,target_devdocs_path,notes
+getting-started,en+ko,keep,,Remove internal links
+manual-setup,en+ko,rewrite,api-quickstart,Replace with API Quickstart
+changelog,en+ko,keep,,Strip internal infra entries
+project-overview,en+ko,delete,platform/overview,Orphan; redirect to devdocs
+v1/api/index,en+ko,keep,,Redact Cloudflare binding details
+v1/api/seeds-api,en+ko,keep,,
+v1/api/data-management-api,en+ko,keep,,
+v1/api/infrastructure-api,en+ko,keep,,
+v1/api/category-reference,en+ko,keep,,
+v1/api/output-json-scheme,en+ko,keep,,
+v1/guides/index,en+ko,keep,,Remove system-architecture refs
+v1/guides/seeds,en+ko,keep,,
+v1/guides/research,en+ko,keep,,
+v1/guides/test,en+ko,migrate,engineering/seeds-ops/testing,
+v1/guides/upload-to-r2,en+ko,migrate,engineering/seeds-ops/upload-to-r2,
+v1/guides/r2-operations-standard,en+ko,migrate,engineering/seeds-ops/r2-operations,
+v1/guides/automated-translation-pipeline-design,en+ko,migrate,engineering/seeds-ops/translation-pipeline-design,
+v1/guides/system-architecture/engine-based-architecture-v6,en+ko,migrate,products/seeds/architecture/engine-v6,
+v1/guides/system-architecture/queues-domain-fanout-and-worker-roles,en+ko,migrate,products/seeds/architecture/queue-fanout,
+v1/guides/system-architecture/seed-engine-workflow,en+ko,migrate,products/seeds/architecture/seed-engine-workflow,
+v1/guides/system-architecture/r2-raw-prod-model,en+ko,migrate,products/seeds/architecture/r2-raw-prod,
+v1/guides/system-architecture/raw-prod-input-output-datasets,en+ko,migrate,products/seeds/architecture/raw-prod-datasets,
+v1/guides/system-architecture/news-pool-structure-and-collection-guide,en+ko,migrate,products/seeds/architecture/news-pool,
+v1/guides/system-architecture/personalization-engine-design,en+ko,migrate,products/seeds/architecture/personalization,
+v1/guides/system-architecture/distributed-build-and-edge-caching-architecture,en+ko,migrate,products/seeds/architecture/edge-caching,
+v1/guides/system-architecture/error-handling-design,en+ko,migrate,products/seeds/architecture/error-handling,
+v1/guides/system-architecture/technology-stack-definition-and-developer-guide,en+ko,migrate,products/seeds/architecture/tech-stack,
+v1/guides/system-architecture/json-structure-design,en+ko,split,products/seeds/architecture/json-structure-design,Public: API schema only
+v1/guides/system-architecture/fork-news-seed-data,en+ko,split,products/seeds/architecture/fork-news-seed-data,Public: seed contract fields only
+v1/guides/system-architecture/source-domain-to-source-url-discovery,en+ko,split,products/seeds/architecture/source-domain-discovery,Public: summary for API consumers
+user-manual/environment,en+ko,migrate,engineering/seeds-ops/environment,
+user-manual/deployment,en+ko,migrate,engineering/seeds-ops/deployment,
+user-manual/local-testing,en+ko,migrate,engineering/seeds-ops/local-testing,
+user-manual/local-runnable-project-structure,en+ko,migrate,engineering/seeds-ops/project-structure,
+user-manual/test-and-deployment,en+ko,migrate,engineering/seeds-ops/test-and-deploy,
+user-manual/translation-pipeline,en+ko,migrate,engineering/seeds-ops/translation-pipeline,
+user-manual/manual-overview,en+ko,merge,products/seeds/index,
+user-manual/index,en+ko,delete,,Replaced by moved stubs
+reference/ai-native-cursor-git-sop,en+ko,migrate,engineering/development-workflow/ai-native-cursor-git-sop,
+reference/folder-and-filename-conventions-tldr,en+ko,delete,platform/naming-standard,Link to existing devdocs page
+reference/git-branch-usage,en+ko,migrate,engineering/development-workflow/git-branch-usage,
+reference/fork-news-competitive-analysis,en+ko,migrate,internal/strategy/fork-news-competitive-analysis,
+reference/index,en+ko,delete,,
+ko/v1/guides/github-scan-poc,ko-only,migrate,internal/experiments/github-scan-poc,
+legal/*,en+ko,keep,,
+company/*,en+ko,keep,,
+resources/*,en+ko,keep,,Remove devdocs mentions

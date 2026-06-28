@@ -14,6 +14,7 @@
     --nf-card: 0 0% 100%;
     --nf-card-foreground: 240 10% 3.9%;
     --nf-radius: 0.75rem;
+    --nf-footer-bg: 240 4.8% 95.9%;
   }
 
   .dark {
@@ -26,6 +27,7 @@
     --nf-accent-2: 239 84% 67%;
     --nf-card: 240 3.7% 15.9%;
     --nf-card-foreground: 0 0% 98%;
+    --nf-footer-bg: 240 6% 10%;
   }
 
   * {

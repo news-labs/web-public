@@ -173,11 +173,10 @@ Research queue processing:
 
 ## Queue Configuration
 
-Research queue settings (from `wrangler.jsonc`):
+호스팅 플랫폼에서 배치 큐 동작이 설정됩니다. 일반적인 기본값:
 
 ```json
 {
-  "queue": "newsfork-research-staging",
   "max_batch_size": 10,
   "max_batch_timeout": 30,
   "max_retries": 3,

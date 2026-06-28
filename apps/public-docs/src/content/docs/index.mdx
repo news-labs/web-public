@@ -1,6 +1,6 @@
 ---
 title: Newsfork Docs
-description: User documentation for Newsfork — API reference, guides, user manual, and policies.
+description: User documentation for Newsfork — API reference, integration guides, legal policies, and company info.
 template: splash
 hero:
   tagline: Everything you need to integrate and build with Newsfork.
@@ -9,11 +9,12 @@ hero:
       link: /getting-started/
       icon: rocket
       variant: primary
+    - text: API Quickstart
+      link: /api-quickstart/
+      icon: document
     - text: API Reference
       link: /v1/api/
       icon: document
-    - text: Guides
-      link: /v1/guides/
       variant: minimal
 ---
 
@@ -21,32 +22,32 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
 
 ## Overview
 
-Newsfork Docs covers API integration, operational guides, user manuals, and legal policies. Start with [Getting Started](/getting-started/) or jump directly to the [API reference](/v1/api/).
+Newsfork Docs covers REST API integration, legal policies, pricing, and support for external developers and end users. Start with [Getting Started](/getting-started/) or [API Quickstart](/api-quickstart/).
 
 ## Quick links
 
 | Topic | Link |
 | --- | --- |
 | Getting Started | [Start Here → Getting Started](/getting-started/) |
-| Manual Setup | [Start Here → Manual Setup](/manual-setup/) |
+| API Quickstart | [Start Here → API Quickstart](/api-quickstart/) |
 | API Reference | [v1 API → Overview](/v1/api/) |
-| User Manual | [User Manual → Overview](/user-manual/manual-overview/) |
-| Privacy Policy | [Legal → Privacy](/legal/privacy/) |
-| Terms of Service | [Legal → Terms](/legal/terms/) |
+| Privacy Policy | [Legal → Privacy Policy](/legal/privacy-policy/) |
+| Terms of Service | [Legal → Terms of Service](/legal/terms-of-service/) |
 | FAQ | [Resources → FAQ](/resources/faq/) |
+| Pricing | [Company → Pricing](/company/pricing/) |
 | Changelog | [Changelog](/changelog/) |
 
 <CardGrid stagger>
-  <Card title="Getting Started" icon="rocket">
-    Set up your first API request in minutes.
+  <Card title="API Quickstart" icon="rocket">
+    Make your first authenticated API request.
   </Card>
   <Card title="API Reference" icon="document">
     Complete REST API reference with request and response examples.
   </Card>
   <Card title="Guides" icon="open-book">
-    In-depth guides for seeds, research, deployment, and architecture.
+    Integration guides for seeds, research, and data schemas.
   </Card>
   <Card title="Legal & Policies" icon="information">
-    Privacy, terms, cookies, and acceptable use policies.
+    Privacy, terms, cookies, DPA, SLA, and supplemental practices.
   </Card>
 </CardGrid>

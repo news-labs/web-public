@@ -10,6 +10,7 @@ on:
       - "pnpm-workspace.yaml"
       - "scripts/preflight-cloudflare.mjs"
       - "scripts/account-guard.mjs"
+      - "scripts/audit-public-docs-sensitive.mjs"
       - ".github/workflows/deploy-public-docs.yml"
   workflow_dispatch:
 
@@ -47,6 +48,9 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CF_WORKERS_SUBDOMAIN: ${{ vars.CF_WORKERS_SUBDOMAIN }}
+
+      - name: Audit public-docs for sensitive content
+        run: node scripts/audit-public-docs-sensitive.mjs
 
       - name: Build public-docs
         run: pnpm --filter public-docs run build
