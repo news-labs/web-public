@@ -30,6 +30,8 @@ When changing layout chrome, diff these files across both repos:
 | `PageTitle.astro` | same | same |
 | `custom.css` | `src/styles/` | `src/styles/` |
 
+**PageFrame invariant:** read `hasSidebar` from `Astro.locals.starlightRoute` (not `Astro.props`). Starlight sets `data-has-sidebar` on `<html>` from the route; using `Astro.props` leaves the left nav empty while padding remains.
+
 ## Site-specific differences
 
 | Item | public-docs | devdocs |
