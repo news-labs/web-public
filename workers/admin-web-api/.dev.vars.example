@@ -1,5 +1,5 @@
 WEB_ADMIN_API_KEY=dev-web-admin-key
-CP_API_BASE_URL=https://nl-cp-api.newsfork.workers.dev
+CP_API_BASE_URL=https://nl-api-cp.newsfork.workers.dev
 CP_SERVICE_TOKEN=
 GITHUB_TOKEN=
 GITHUB_WORKFLOW_DEPLOY_TEMPLATE=deploy-template.yml

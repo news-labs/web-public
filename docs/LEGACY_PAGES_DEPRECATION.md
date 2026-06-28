@@ -23,8 +23,8 @@ After `nl-*` cutover is verified, deprecate these projects in the Cloudflare das
 | `nf-public-legal` | `nl-public-docs` | Delete or redirect |
 | `nfdocs` | `nl-public-docs` | Keep redirect: `/* https://docs.newsfork.com/:splat 301` |
 | `news-labs-web-public-docs-router-prod` | **Deleted** — unified docs on `nl-public-docs` |
-| `nl-hub-pages-news-site-dev` | `nl-hub-pages-news-site-prod` | Delete after hub prod verified |
-| `nl-hub-pages-news-site-stg` | `nl-hub-pages-news-site-prod` | Delete after hub prod verified |
+| `nl-hub-pages-news-site-dev` | `nl-hub-news-site` | Delete after hub prod verified |
+| `nl-hub-pages-news-site-stg` | `nl-hub-news-site` | Delete after hub prod verified |
 
 ## nfdocs redirect
 

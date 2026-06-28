@@ -14,7 +14,7 @@ See the approved plan (2026-06-27) for full IA, personas, GitHub template GitOps
 1. Tenant-first: Brand → Region → Locale context bar on every page
 2. Metadata at scale: 100k+/day static pages — meta only in admin UI
 3. Templates in Git: HTML/CSS/layout via GitHub CI; content in R2 + D1
-4. CP as source of truth: `/api/v1/diaspora/*` proxied to `nl-cp-api`
+4. CP as source of truth: `/api/v1/diaspora/*` proxied to `nl-api-cp`
 
 ## Navigation groups
 

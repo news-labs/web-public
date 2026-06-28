@@ -1,7 +1,7 @@
 # Web Admin ↔ CP API Contract
 
 BFF: `web-public/workers/admin-web-api`  
-Upstream: `nl-cp-api` (`CP_API_BASE_URL`)
+Upstream: `nl-api-cp` (`CP_API_BASE_URL`)
 
 ## Proxied routes (passthrough auth via `CP_SERVICE_TOKEN`)
 
@@ -26,7 +26,7 @@ Upstream: `nl-cp-api` (`CP_API_BASE_URL`)
 
 | Variable | Description |
 |----------|-------------|
-| `CP_API_BASE_URL` | e.g. `https://nl-cp-api.newsfork.workers.dev` |
+| `CP_API_BASE_URL` | e.g. `https://nl-api-cp.newsfork.workers.dev` |
 | `CP_SERVICE_TOKEN` | Service Bearer for CP (falls back to `WEB_ADMIN_API_KEY`) |
 | `GITHUB_TOKEN` | GitHub API for CI runs |
 | `GITHUB_WORKFLOW_DEPLOY_TEMPLATE` | Template deploy workflow filename |

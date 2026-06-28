@@ -1,5 +1,5 @@
 /**
- * Control Plane API proxy — forwards diaspora and tenant routes to nl-cp-api.
+ * Control Plane API proxy — forwards diaspora and tenant routes to nl-api-cp.
  */
 
 import { Hono } from "hono";

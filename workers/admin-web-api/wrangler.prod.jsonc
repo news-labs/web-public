@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "nl-web-admin-portal-prod",
+  "name": "nl-portal-web-admin",
   "main": "src/index.ts",
   "compatibility_date": "2026-01-20",
   "compatibility_flags": ["nodejs_compat"],
@@ -19,6 +19,6 @@
     "GITHUB_WORKFLOW_DEPLOY_WWW": "deploy-www.yml",
     "GITHUB_WORKFLOW_DEPLOY_DOCS": "deploy-public-docs.yml",
     "GITHUB_WORKFLOW_DEPLOY_TEMPLATE": "deploy-template.yml",
-    "CP_API_BASE_URL": "https://nl-cp-api.newsfork.workers.dev"
+    "CP_API_BASE_URL": "https://nl-api-cp.newsfork.workers.dev"
   }
 }
