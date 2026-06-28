@@ -2,6 +2,19 @@
 
 After `nl-*` cutover is verified, deprecate these projects in the Cloudflare dashboard.
 
+## Cleanup status (2026-06-28)
+
+| Status | Item |
+| --- | --- |
+| Done | Removed dev/stg Wrangler configs and deploy workflows across news-labs |
+| Done | Prod-only deploy workflows (`deploy-prod.yml`, updated `deploy.yml`) |
+| Done | labs-core cleanup scripts + `docs/runbooks/worker-cleanup.md` |
+| Pending | Run `cleanup-nonprod-workers.mjs --dry-run` then `--apply` after inventory review |
+| Pending | Run `cleanup-nonprod-bindings.mjs` after Worker/Pages cleanup |
+| Pending | Remove legacy Pages projects listed below from Cloudflare dashboard |
+
+## Legacy projects
+
 | Legacy project | Replacement | Action |
 | --- | --- | --- |
 | `nf-web-public` | `nl-marketing-web` | Remove custom domains; delete or redirect |
@@ -10,6 +23,8 @@ After `nl-*` cutover is verified, deprecate these projects in the Cloudflare das
 | `nf-public-legal` | `nl-public-docs` | Delete or redirect |
 | `nfdocs` | `nl-public-docs` | Keep redirect: `/* https://docs.newsfork.com/:splat 301` |
 | `news-labs-web-public-docs-router-prod` | **Deleted** — unified docs on `nl-public-docs` |
+| `nl-hub-pages-news-site-dev` | `nl-hub-pages-news-site-prod` | Delete after hub prod verified |
+| `nl-hub-pages-news-site-stg` | `nl-hub-pages-news-site-prod` | Delete after hub prod verified |
 
 ## nfdocs redirect
 

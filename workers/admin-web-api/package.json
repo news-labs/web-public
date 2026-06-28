@@ -4,11 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev -c wrangler.dev.jsonc",
+    "dev": "wrangler dev -c wrangler.prod.jsonc --local",
     "deploy": "wrangler deploy -c wrangler.prod.jsonc",
-    "deploy:stg": "wrangler deploy -c wrangler.stg.jsonc",
     "typecheck": "tsc --noEmit",
-    "build": "tsc --noEmit"
+    "build": "tsc --noEmit",
+    "deploy:prod": "wrangler deploy -c wrangler.prod.jsonc"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.3",
