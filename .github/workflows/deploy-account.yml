@@ -62,6 +62,15 @@ jobs:
       - name: E2E smoke (static UI)
         run: pnpm --filter account-web run test:e2e
 
+      - name: Ensure Pages project exists
+        run: |
+          if ! pnpm --filter account-web exec wrangler pages project list | grep -q 'nl-account-web'; then
+            pnpm --filter account-web exec wrangler pages project create nl-account-web --production-branch main
+          fi
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
       - name: Deploy to Cloudflare Pages
         working-directory: apps/account-web
         run: pnpm exec wrangler pages deploy out --project-name=nl-account-web --commit-dirty=true
