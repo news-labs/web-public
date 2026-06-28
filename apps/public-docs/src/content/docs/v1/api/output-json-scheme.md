@@ -82,4 +82,4 @@ The Research → Seed pipeline discovers `entry_url` from `source_domain` throug
 ## Next steps
 
 - [Category Reference](/v1/api/category-reference/) — Category definitions.
-- [Seed engine workflow](/v1/guides/system-architecture/seed-engine-workflow/) — End-to-end pipeline.
+- [JSON structure design](/v1/guides/json-structure-design/) — Schema reference.

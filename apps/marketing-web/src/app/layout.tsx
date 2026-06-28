@@ -2,8 +2,9 @@ import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { Analytics } from "@/components/Analytics";
+import { AnalyticsLoader } from "@/components/AnalyticsLoader";
 import "./globals.css";
 
 const inter = Inter({
@@ -52,13 +53,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        <Analytics />
       </head>
       <body className={`${inter.className} min-h-screen bg-background text-foreground antialiased`}>
         <ThemeProvider>
           <Navbar />
           <main>{children}</main>
           <Footer />
+          <CookieConsentBanner />
+          <AnalyticsLoader />
         </ThemeProvider>
       </body>
     </html>

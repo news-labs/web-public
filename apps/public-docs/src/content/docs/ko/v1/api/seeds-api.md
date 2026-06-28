@@ -49,7 +49,7 @@ Seed Engine은 **"어떻게 가져올지"**를 정의합니다.
 
 ## 인증
 
-`Authorization` 헤더로 API 자격 증명을 전송하세요. [API 개요](/ko/v1/api/#인증) 및 [수동 설정](/ko/manual-setup/)을 참조하세요.
+`Authorization` 헤더로 API 자격 증명을 전송하세요. [API 개요](/ko/v1/api/#인증) 및 [API Quickstart](/ko/api-quickstart/)을 참조하세요.
 
 ## 다음 단계
 

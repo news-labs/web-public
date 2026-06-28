@@ -59,7 +59,7 @@ export default defineConfig({
           label: "Start Here",
           items: [
             { label: "Getting Started", slug: "getting-started" },
-            { label: "Manual Setup", slug: "manual-setup" },
+            { label: "API Quickstart", slug: "api-quickstart" },
           ],
         },
         {
@@ -71,16 +71,15 @@ export default defineConfig({
           autogenerate: { directory: "v1/guides" },
         },
         {
-          label: "User Manual",
-          autogenerate: { directory: "user-manual" },
-        },
-        {
-          label: "Reference",
-          autogenerate: { directory: "reference" },
-        },
-        {
           label: "Legal",
-          autogenerate: { directory: "legal" },
+          items: [
+            { label: "Terms of Service", slug: "legal/terms-of-service" },
+            { label: "Privacy Policy", slug: "legal/privacy-policy" },
+            { label: "Cookie Policy", slug: "legal/cookie-policy" },
+            { label: "Data Processing Agreement", slug: "legal/data-processing-agreement" },
+            { label: "Service Level Agreement", slug: "legal/service-level-agreement" },
+            { label: "Supplemental product practices", slug: "legal/supplemental-practices" },
+          ],
         },
         {
           label: "Company",

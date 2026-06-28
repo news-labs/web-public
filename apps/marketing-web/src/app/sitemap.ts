@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: "/blog/", changeFrequency: "weekly" as const, priority: 0.7 },
     { url: "/about/", changeFrequency: "monthly" as const, priority: 0.6 },
     { url: "/contact/", changeFrequency: "yearly" as const, priority: 0.5 },
+    { url: "/developers/system-status/", changeFrequency: "weekly" as const, priority: 0.5 },
   ];
 
   const blogRoutes = getAllSlugs().map((slug) => ({

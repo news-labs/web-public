@@ -49,8 +49,4 @@ Send API credentials in the `Authorization` header. See [API overview](/v1/api/#
 ## Next steps
 
 - [Seeds, Research & Health API](/v1/api/seeds-api/) — Core engine endpoints.
-- [Queues domain fanout guide](/v1/guides/system-architecture/queues-domain-fanout-and-worker-roles/) — Worker roles.
-
-## Notes
-
-- Implementation: `src/routes/queues.ts`. Queue bindings: RESEARCH_QUEUE, LIVENESS_QUEUE, CONTRACT_QUEUE, etc. (`wrangler.jsonc`).
+- [JSON structure design](/v1/guides/json-structure-design/) — Output schema reference.

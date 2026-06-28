@@ -50,7 +50,7 @@ The Seed Engine defines **"how to retrieve"**.
 
 ## Authentication
 
-Send API credentials in the `Authorization` header. See [API overview](/v1/api/#authentication) and [Manual Setup](/manual-setup/).
+Send API credentials in the `Authorization` header. See [API overview](/v1/api/#authentication) and [API Quickstart](/api-quickstart/).
 
 ## Next steps
 

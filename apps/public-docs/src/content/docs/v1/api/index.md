@@ -5,26 +5,25 @@ sidebar:
   order: 0
 ---
 
-**Who should read this** — Use this page for **base paths** and **authentication** before calling any REST API. Product-only users can start from [Getting Started](/getting-started/) or [Guides](/v1/guides/).
+**Who should read this** — Use this page for **base paths** and **authentication** before calling any REST API. Start from [Getting Started](/getting-started/) or [API Quickstart](/api-quickstart/) if you are new.
 
 ## Overview
 
-Newsfork exposes REST APIs for health checks, research discovery, seed contracts, dataset management, and queue-based batch processing. All APIs run on Cloudflare Workers with R2, D1, KV, and Queues bindings.
+Newsfork exposes a hosted REST API for health checks, research discovery, seed contracts, dataset management, and queue-based batch processing.
 
 ## Base URLs
 
-Your deployment provides base URLs for:
-
-- **Health** — Process and readiness checks (`/health`).
-- **Research & Seeds** — URL discovery and seed contracts (`/api/v1/research`, `/api/v1/seeds`).
-- **Data management** — R2 datasets and metadata sync (`/api/v1/datasets`, `/api/v1/metadata`).
-- **Infrastructure** — Queue batch jobs (`/api/v1/queues`).
-
-Do not hard-code production URLs in client-side code without your security team's approval.
+Your account onboarding provides the base URL for your environment. Do not hard-code production URLs in client-side code without your security team's approval.
 
 ## Authentication
 
-Most API calls require a valid **API key** or session token. Send credentials in the `Authorization` header (or as your integration guide specifies). See [Manual Setup](/manual-setup/) for local credentials.
+Most API calls require a valid **API key**. Send credentials in the `Authorization` header:
+
+```http
+Authorization: Bearer YOUR_API_KEY
+```
+
+See [API Quickstart](/api-quickstart/) for examples.
 
 ## Main API areas
 
@@ -37,6 +36,6 @@ Most API calls require a valid **API key** or session token. Send credentials in
 
 ## Next steps
 
-- [Getting Started](/getting-started/) — Roles and integration order.
-- [Seeds, Research & Health API](/v1/api/seeds-api/) — Core endpoints.
-- [Guides](/v1/guides/) — Architecture and operations.
+- [API Quickstart](/api-quickstart/) — First request
+- [Seeds, Research & Health API](/v1/api/seeds-api/) — Core endpoints
+- [Guides](/v1/guides/) — Integration concepts

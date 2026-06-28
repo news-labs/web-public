@@ -1,0 +1,185 @@
+---
+title: Service Level Agreement
+description: Uptime commitments, support policies, and remedies for Newsfork.
+lastUpdated: 2026-06-28
+---
+
+**Version:** 1.0
+
+**Effective Date:** 28 June 2026
+
+**Last Updated:** 28 June 2026
+
+## 1. Introduction
+
+### 1.1 Purpose
+
+This Service Level Agreement ("SLA") describes availability commitments, support policies, and remedies for the Newsfork platform provided by [LEGAL_ENTITY_NAME] ("Company," "we," "us," or "our").
+
+### 1.2 Applicability
+
+This SLA applies to customers with a valid paid subscription or Enterprise agreement incorporating this SLA.
+
+This SLA does not apply to:
+
+- Free tier usage (best-effort availability)
+- Beta or preview features
+- Services provided at no charge
+
+### 1.3 Incorporation
+
+This SLA is incorporated into the [Terms of Service](/legal/terms-of-service/). Where this SLA provides enhanced commitments, this SLA governs.
+
+## 2. Definitions
+
+| Term | Definition |
+| --- | --- |
+| **Downtime** | Period when the covered Service is unavailable or materially degraded per our monitoring. |
+| **Monthly Uptime Percentage** | (Total minutes − Downtime + Excluded Downtime) ÷ Total minutes × 100 |
+| **Scheduled Maintenance** | Planned maintenance communicated in advance (Section 5). |
+| **Service Credit** | Credit against future subscription fees when uptime commitments are not met. |
+
+## 3. Service Scope
+
+### 3.1 Covered Services
+
+| Component | Description | SLA Coverage |
+| --- | --- | --- |
+| **API** | `api.newsfork.com` REST + RAG endpoints | Covered (Pro+) |
+| **Dashboard** | Account signup and API key management | Covered (Pro+) |
+| **Crawl Pipeline** | Seed orchestration and ingestion workers | Covered (Enterprise) |
+| **Documentation** | `docs.newsfork.com` | Best effort |
+| **Marketing Site** | `www.newsfork.com` | Not covered |
+
+### 3.2 Feature Categories
+
+| Feature | SLA Commitment |
+| --- | --- |
+| REST API, search, RAG, webhooks | Full SLA (Pro+) |
+| MCP tools | Full SLA (Pro+, subject to subprocessor availability) |
+| Beta/preview features | No SLA |
+
+## 4. Service Availability
+
+### 4.1 Uptime Commitment
+
+| Subscription Tier | Uptime Commitment |
+| --- | --- |
+| **Enterprise** | 99.99% (custom agreements may vary) |
+| **Pro** | 99.9% (≈ 43 minutes downtime/month) |
+| **Free** | Best effort (no SLA credit) |
+
+Uptime is calculated monthly (UTC).
+
+### 4.2 Measurement
+
+Uptime is measured by our monitoring systems checking availability at regular intervals (typically every 60 seconds).
+
+### 4.3 Exclusions from Uptime Calculation
+
+Excluded: scheduled maintenance, emergency maintenance, Customer-caused issues, third-party network issues, force majeure, DDoS attacks, suspension for breach or non-payment.
+
+### 4.4 Transparency
+
+Status information is published at [www.newsfork.com/developers/system-status/](https://www.newsfork.com/developers/system-status/). Live incident history — coming soon.
+
+## 5. Scheduled Maintenance
+
+- **Primary window:** Sundays, 02:00–06:00 UTC
+- **Routine maintenance notice:** 3–7 days
+- **Major upgrades:** 14 days
+- Emergency maintenance may occur with minimal notice for critical security or stability issues.
+
+## 6. Incident Management
+
+### 6.1 Severity Levels
+
+| Severity | Definition |
+| --- | --- |
+| **Severity 1 – Critical** | Complete API outage affecting all or most users |
+| **Severity 2 – High** | Major feature unavailable or severe degradation |
+| **Severity 3 – Medium** | Limited functionality issue with workaround |
+| **Severity 4 – Low** | Minor issues, documentation questions |
+
+### 6.2 Response Time Targets
+
+| Severity | Pro | Enterprise |
+| --- | --- | --- |
+| **Severity 1** | 1 hour | 30 minutes |
+| **Severity 2** | 4 hours | 2 hours |
+| **Severity 3** | 1 business day | 8 business hours |
+| **Severity 4** | 2 business days | 1 business day |
+
+Business hours: 09:00–18:00 UTC, Monday–Friday.
+
+### 6.3 Resolution Targets
+
+| Severity | Target Resolution |
+| --- | --- |
+| **Severity 1** | 4 hours |
+| **Severity 2** | 24 hours |
+| **Severity 3** | 5 business days |
+| **Severity 4** | Best effort |
+
+## 7. Support Channels
+
+| Channel | Availability |
+| --- | --- |
+| **Email** | [hello@newsfork.com](mailto:hello@newsfork.com) — 24/7 submission |
+| **Docs / FAQ** | [docs.newsfork.com/resources/faq/](/resources/faq/) |
+| **Slack / Phone** | Enterprise only |
+
+## 8. Data Backup and Recovery
+
+| Element | Commitment |
+| --- | --- |
+| Backup frequency | Daily automated backups |
+| Backup retention | 30 days rolling |
+| RPO | Typically ≤ 24 hours |
+| RTO (Severity 1) | Target 4 hours |
+
+Customers should maintain their own exports of critical data.
+
+## 9. Service Credits
+
+### 9.1 Eligibility
+
+Service Credits apply when Monthly Uptime Percentage falls below the committed level for reasons not excluded under Section 4.3 (Pro and Enterprise only).
+
+### 9.2 Credit Schedule (Pro tier — 99.9% commitment)
+
+| Monthly Uptime | Service Credit |
+| --- | --- |
+| 99.0% – 99.89% | 5% of monthly fee |
+| 95.0% – 98.99% | 10% |
+| 90.0% – 94.99% | 25% |
+| Below 90.0% | 50% |
+
+### 9.3 Credit Request Process
+
+Submit to [hello@newsfork.com](mailto:hello@newsfork.com) within **30 days** of the affected month with account details and impact description. We respond within 15 business days.
+
+Credits apply to future invoices only and are the sole remedy for uptime failures.
+
+## 10. Security and Monitoring
+
+We maintain encryption, access controls, security assessments, and 24/7 infrastructure monitoring. See [Privacy Policy](/legal/privacy-policy/) and [DPA](/legal/data-processing-agreement/).
+
+## 11. Customer Responsibilities
+
+Customers must maintain connectivity, secure credentials, use supported clients, report issues promptly, and cooperate with support troubleshooting.
+
+## 12. Changes to This SLA
+
+Material adverse changes will be communicated at least 30 days in advance. Customer may object and terminate affected services without penalty if parties cannot agree.
+
+## 13. Governing Law
+
+This SLA is governed by the laws of the **Republic of Korea**. Disputes are resolved as set forth in the Terms of Service.
+
+## Contact
+
+- **Company:** [LEGAL_ENTITY_NAME]
+- **Email:** [hello@newsfork.com](mailto:hello@newsfork.com)
+- **Status Page:** [www.newsfork.com/developers/system-status/](https://www.newsfork.com/developers/system-status/)
+- **Address:** [INSERT REGISTERED ADDRESS]

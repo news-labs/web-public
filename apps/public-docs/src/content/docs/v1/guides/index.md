@@ -1,11 +1,11 @@
 ---
 title: Guides overview
-description: Integration and architecture guides for Newsfork — seeds, research, deployment, and system design.
+description: Integration guides for Newsfork Seeds — seeds, research, and data schemas.
 sidebar:
   order: 0
 ---
 
-Browse in-depth guides for integrating with Newsfork, operating seeds and research pipelines, and understanding system architecture.
+Integration guides for external API developers. These pages explain concepts and schemas — not internal infrastructure or deployment procedures.
 
 ## Guide areas
 
@@ -13,11 +13,12 @@ Browse in-depth guides for integrating with Newsfork, operating seeds and resear
 | --- | --- |
 | Seeds | [Seeds guide](/v1/guides/seeds/) |
 | Research | [Research guide](/v1/guides/research/) |
-| System architecture | [Architecture guides](/v1/guides/system-architecture/) |
-| R2 operations | [R2 operations standard](/v1/guides/r2-operations-standard/) |
+| JSON structure | [JSON structure design](/v1/guides/json-structure-design/) |
+| Seed data model | [Fork-News seed data](/v1/guides/fork-news-seed-data/) |
+| Source discovery | [Source domain discovery](/v1/guides/source-domain-discovery/) |
 
 ## Next steps
 
-- [Getting Started](/getting-started/) — first API request and setup
-- [API reference](/v1/api/seeds-api/) — REST endpoints and schemas
-- [User manual](/user-manual/manual-overview/) — deployment and environment
+- [API Quickstart](/api-quickstart/) — first authenticated request
+- [API reference](/v1/api/) — REST endpoints and schemas
+- [FAQ](/resources/faq/) — billing and support

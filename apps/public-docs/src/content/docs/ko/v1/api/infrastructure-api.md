@@ -41,6 +41,7 @@ Contract(Seed 계약) 생성 배치. **Request body:** `country`, `category`, `d
 
 ---
 
-## 참고
+## 다음 단계
 
-- 구현: `src/routes/queues.ts`. Queue 바인딩: RESEARCH_QUEUE, LIVENESS_QUEUE, CONTRACT_QUEUE 등 (`wrangler.jsonc`).
+- [Seeds API](/ko/v1/api/seeds-api/) — 핵심 엔드포인트
+- [JSON 구조 설계](/ko/v1/guides/json-structure-design/) — 출력 스키마

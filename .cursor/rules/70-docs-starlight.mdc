@@ -1,8 +1,10 @@
 # Starlight docs (`apps/public-docs`)
 
-Unified user documentation for `docs.newsfork.com` — API reference, guides, user manual, legal policies, and company info.
+Unified **public** user documentation for `docs.newsfork.com` — external API reference, integration guides, legal policies, pricing, FAQ, and company info.
 
 Layout reference: [docs/PLAN-docs-layout-vouus-parity.md](../docs/PLAN-docs-layout-vouus-parity.md) (Vouus-style Layout A splash + Layout B detail).
+
+Content separation plan: [apps/public-docs/docs/PLAN-content-separation.md](../apps/public-docs/docs/PLAN-content-separation.md).
 
 ## Layout A vs Layout B
 
@@ -20,22 +22,35 @@ Layout reference: [docs/PLAN-docs-layout-vouus-parity.md](../docs/PLAN-docs-layo
 - Korean locale: `apps/public-docs/src/content/docs/ko/`.
 - Each sidebar `autogenerate` directory should have an `index.md` or `index.mdx` with frontmatter `title`.
 
+## Public vs internal boundary
+
+**Never publish on public-docs:**
+
+- Wrangler deploy, CI/CD, or `wrangler secret` instructions
+- Cloudflare Worker/resource names (`nl-*`, binding keys)
+- Internal architecture (queues, R2 raw/prod pipelines, engine internals)
+- Admin portal URLs, org account isolation, security runbooks
+- Git/Cursor SOP, competitive analysis, internal strategy
+
+Internal engineering guides live in `core-platform/docs/devdocs` (`devdocs.newsfork.com`, Cloudflare Access).
+
+Before adding a page, check `scripts/content-classification.csv` and run `node scripts/audit-public-docs-sensitive.mjs`.
+
 ## Sidebar sections
 
 | Directory | Purpose |
 | --- | --- |
 | Overview (`/`) | Splash home link in sidebar |
-| `getting-started.md`, `manual-setup.md`, `changelog.md` | Start Here |
-| `v1/api/` | REST API reference |
-| `v1/guides/` | Integration and architecture guides (no internal engineering guides) |
-| `user-manual/` | End-user manual |
-| `reference/` | Conventions and reference material |
-| `legal/` | Privacy, terms, cookies, acceptable use |
-| `company/` | About, contact |
+| `getting-started.md`, `api-quickstart.md`, `changelog.md` | Start Here |
+| `v1/api/` | REST API reference (external developers) |
+| `v1/guides/` | Integration guides only — seeds, research, public JSON schemas |
+| `legal/` | Privacy, terms, cookies, DPA, SLA |
+| `company/` | About, contact, pricing |
 | `resources/` | FAQ, glossary |
-
-Internal engineering guides live in `core-platform/docs/devdocs` (`nl-internal-docs`).
+| `moved/` | Stub pages for retired internal URLs (hidden from sidebar) |
 
 ## Deploy
 
 Production deploys to Cloudflare Pages project `nl-public-docs` via `.github/workflows/deploy-public-docs.yml`.
+
+CI runs `scripts/audit-public-docs-sensitive.mjs` before deploy.

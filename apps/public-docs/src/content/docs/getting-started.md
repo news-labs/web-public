@@ -1,22 +1,27 @@
 ---
 title: Getting Started
-description: Welcome to the Newsfork seeds-research engine documentation.
-translatedFromHash: 463967b3de2e32a5287e4fd9be341b482252f2f28cc720eae145cf444d176fb4
+description: Welcome to the Newsfork Seeds platform documentation.
 ---
 
 Welcome to the Newsfork documentation.
 
 ## Introduction
 
-Newsfork Seeds is a system for **discovering (Research)** and managing **seed contract(Seed)** news sources.
+Newsfork Seeds helps you **discover news sources (Research)** and manage **collection contracts (Seed)** through a hosted REST API.
 
-- **Research**: Where to look (URL discovery)
-- **Seed**: How to collect (content contract definition)
+- **Research**: URL and source discovery
+- **Seed**: How to collect — content contract definitions
 
-Uses Cloudflare Workers, Queues, R2, D1, KV, with GitHub handling the audit trail (SSOT).
+## Who should read what
 
-## Next Steps
+| Audience | Start here |
+| --- | --- |
+| API integrators | [API Quickstart](/api-quickstart/) → [v1 API](/v1/api/) |
+| Product & legal | [Pricing](/company/pricing/), [FAQ](/resources/faq/), [Privacy Policy](/legal/privacy-policy/) |
 
-- [v1 API](/v1/api/) — API specification and overview
-- [v1 Guides](/v1/guides/) — Architecture, development, and operations guides
-- [User Manual](/user-manual/manual-overview/) — Deployment, environment, testing
+## Next steps
+
+- [API Quickstart](/api-quickstart/) — First authenticated request
+- [v1 API](/v1/api/) — REST API reference
+- [Guides](/v1/guides/) — Integration concepts (seeds, research, schemas)
+- [FAQ](/resources/faq/) — Billing, support, and common questions

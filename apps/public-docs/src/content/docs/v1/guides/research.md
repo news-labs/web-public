@@ -139,11 +139,10 @@ Research queue processing:
 
 ## Queue Configuration
 
-Research queue settings (from `wrangler.jsonc`):
+Batch queue behavior is configured on the hosted platform. Typical defaults:
 
  ```json
 {
-  "queue": "newsfork-research-staging",
   "max_batch_size": 10,
   "max_batch_timeout": 30,
   "max_retries": 3,
