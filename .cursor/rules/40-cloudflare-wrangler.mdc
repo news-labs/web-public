@@ -7,10 +7,17 @@ alwaysApply: true
 
 # Cloudflare Wrangler (templates)
 
-## Environments
+## Environments (prod-only policy)
 
-- Maintain **separate** `wrangler.dev.toml`, `wrangler.stg.toml`, and `wrangler.prod.toml` for services that deploy to multiple stages.
-- Keep `compatibility_date` intentional; bump when adopting new runtime APIs.
+- Maintain **one** production config per Worker: `wrangler.prod.toml` or `wrangler.prod.jsonc`.
+- Pin `account_id` in every prod config.
+- **Do not** add `wrangler.dev.toml` / `wrangler.stg.toml` or non-prod deploy workflows.
+- Local development: `wrangler dev -c wrangler.prod.toml --local` and `wrangler d1 migrations apply … --local -c wrangler.prod.toml`.
+- Production deploy: **CI only** (`preflight-cloudflare.mjs` before `wrangler deploy`).
+
+## Compatibility
+
+Keep `compatibility_date` intentional; bump when adopting new runtime APIs.
 
 ## Bindings
 
@@ -19,7 +26,8 @@ alwaysApply: true
 
 ## Naming
 
-- Align Worker **name** with `<org>-<product>-<resource>-<domain>-<env>` or your org’s standard; stay consistent across env files.
+- Align Worker **name** with `<org>-<product>-<resource>-<domain>-prod` (or org standard with `-prod` suffix).
+- Queue and binding resource names use `-prod` suffix in production.
 
 ## Queues
 
@@ -29,5 +37,8 @@ alwaysApply: true
 
 - Never commit secrets. Use Wrangler secrets / CI OIDC and `.env` locally from `.env.example` only.
 - **Never use `wrangler login` (OAuth)** for org/product work. Use `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` via direnv (`~/.config/<org>/cloudflare.env`). See **`15-org-account-isolation.mdc`**.
-- Pin `account_id` in every `wrangler.prod.toml`.
-- Production deploy and `wrangler secret put` for prod: **CI only** (`preflight-cloudflare.mjs` before deploy).
+- Production `wrangler secret put`: **CI only**.
+
+## Cleanup
+
+Non-prod Cloudflare resources are retired. See `docs/runbooks/worker-cleanup.md` in labs-core.
