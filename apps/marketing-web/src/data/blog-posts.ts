@@ -103,7 +103,7 @@ export const BLOG_POSTS: BlogPost[] = [
       "**Semantic search** — Natural-language RAG queries with citations.",
       "**Edge-native API** — Sub-50ms response times from 300+ Cloudflare locations.",
       "**MCP tools** — Seven tools for AI agent news consumption.",
-      "Start free with 1,000 API requests per month — no credit card required. Get your API key at api.newsfork.com/signup.",
+      "Start free with 1,000 API requests per month — no credit card required. Get your API key at account.newsfork.com/signup.",
       "Read the docs at docs.newsfork.com. Questions? hello@newsfork.com.",
     ],
   },

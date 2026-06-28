@@ -36,6 +36,12 @@ const DOMAIN_TARGETS = [
     recordName: "www",
     target: "nl-marketing-web.pages.dev",
   },
+  {
+    project: "nl-account-web",
+    fqdn: "account.newsfork.com",
+    recordName: "account",
+    target: "nl-account-web.pages.dev",
+  },
 ];
 
 async function cf(path, init = {}) {

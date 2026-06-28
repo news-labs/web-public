@@ -8,8 +8,13 @@ import {
   Zap,
 } from "lucide-react";
 
-export const SIGNUP_URL = "https://api.newsfork.com/signup";
-export const SIGNIN_URL = "https://api.newsfork.com";
+export const ACCOUNT_SIGNIN_URL = "https://account.newsfork.com/login";
+export const ACCOUNT_SIGNUP_URL = "https://account.newsfork.com/signup";
+
+/** @deprecated Use ACCOUNT_SIGNIN_URL */
+export const SIGNIN_URL = ACCOUNT_SIGNIN_URL;
+/** @deprecated Use ACCOUNT_SIGNUP_URL */
+export const SIGNUP_URL = ACCOUNT_SIGNUP_URL;
 
 export const HOME_STATS = [
   { value: "100+", label: "Countries covered" },
