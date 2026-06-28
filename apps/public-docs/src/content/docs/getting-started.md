@@ -17,6 +17,6 @@ Uses Cloudflare Workers, Queues, R2, D1, KV, with GitHub handling the audit trai
 
 ## Next Steps
 
-- [v1 API](/ko/v1/api/) — API Specification
-- [v1 Guides](/ko/v1/guides/) — Architecture·Development·Operations Guides
-- [User Manual](/ko/user-manual/) — Deployment, Environment, Testing
+- [v1 API](/v1/api/) — API specification and overview
+- [v1 Guides](/v1/guides/) — Architecture, development, and operations guides
+- [User Manual](/user-manual/manual-overview/) — Deployment, environment, testing

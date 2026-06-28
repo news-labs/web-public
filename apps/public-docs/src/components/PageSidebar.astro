@@ -2,7 +2,8 @@
 import MobileTableOfContents from "virtual:starlight/components/MobileTableOfContents";
 import TableOfContents from "virtual:starlight/components/TableOfContents";
 
-const site = Astro.site?.toString() || "https://docs.newsfork.com/legal";
+const { toc } = Astro.locals.starlightRoute;
+const site = Astro.site?.toString() || "https://docs.newsfork.com";
 const currentUrl = Astro.url.pathname;
 const fullUrl = `${site}${currentUrl.endsWith("/") ? currentUrl : currentUrl + "/"}`;
 const chatGptPrompt = `Can you summarize this page: ${fullUrl}`;
@@ -10,14 +11,14 @@ const chatGptUrl = `https://chat.openai.com/?q=${encodeURIComponent(chatGptPromp
 ---
 
 {
-  Astro.props.toc && (
+  toc && (
     <>
       <div class="lg:sl-hidden">
-        <MobileTableOfContents {...Astro.props} />
+        <MobileTableOfContents />
       </div>
       <div class="right-sidebar-panel sl-hidden lg:sl-block">
         <div class="sl-container">
-          <TableOfContents {...Astro.props} />
+          <TableOfContents />
           <div class="toc-actions">
             <a
               href={chatGptUrl}
@@ -55,10 +56,21 @@ const chatGptUrl = `https://chat.openai.com/?q=${encodeURIComponent(chatGptPromp
     e.preventDefault();
     const pageTitle = document.querySelector("h1")?.textContent || document.title;
     const pageUrl = window.location.href;
+    const description =
+      document.querySelector('meta[name="description"]')?.getAttribute("content") || "";
     const mainContent =
       document.querySelector("[data-pagefind-body]") || document.querySelector("main") || document.body;
     const textContent = mainContent?.textContent?.replace(/\s+/g, " ").trim().slice(0, 15000) || "";
-    const forAI = `Page: ${pageTitle}\nURL: ${pageUrl}\n\nContent:\n${textContent}`;
+    const forAI = [
+      `Page: ${pageTitle}`,
+      description ? `Description: ${description}` : "",
+      `URL: ${pageUrl}`,
+      "",
+      "Content:",
+      textContent,
+    ]
+      .filter(Boolean)
+      .join("\n");
     navigator.clipboard.writeText(forAI).then(() => {
       const label = btn.querySelector(".toc-action-label");
       if (label) {
