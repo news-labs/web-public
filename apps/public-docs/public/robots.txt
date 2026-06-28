@@ -1,0 +1,5 @@
+# Public user documentation — crawl allowed (marketing + docs only policy).
+User-agent: *
+Allow: /
+
+Sitemap: https://docs.newsfork.com/sitemap-index.xml

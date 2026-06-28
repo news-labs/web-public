@@ -43,6 +43,15 @@ export default defineConfig({
         TwoColumnContent: "./src/components/TwoColumnContent.astro",
         PageSidebar: "./src/components/PageSidebar.astro",
       },
+      head: [
+        {
+          tag: "meta",
+          attrs: {
+            name: "robots",
+            content: "index, follow",
+          },
+        },
+      ],
       plugins: [starlightClientMermaid()],
       sidebar: [
         { label: "Overview", link: "/" },
