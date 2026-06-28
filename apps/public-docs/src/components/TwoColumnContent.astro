@@ -1,9 +1,10 @@
 ---
+const { toc } = Astro.locals.starlightRoute;
 ---
 
 <div class="lg:sl-flex">
   {
-    Astro.props.toc && (
+    toc && (
       <aside class="right-sidebar-container">
         <div class="right-sidebar">
           <slot name="right-sidebar" />

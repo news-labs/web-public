@@ -123,6 +123,16 @@ html {
 :global(.sidebar-content) a {
   font-size: 0.875rem;
   font-weight: 500;
+  border-radius: 0.375rem;
+  padding-inline: 0.5rem;
+  padding-block: 0.25rem;
+}
+:global(#starlight__sidebar) a[aria-current="page"],
+:global(#starlight__sidebar) a[aria-current="true"],
+:global(.sidebar-content) a[aria-current="page"],
+:global(.sidebar-content) a[aria-current="true"] {
+  background-color: var(--sl-color-accent);
+  color: #ffffff !important;
 }
 
 :global(.main-pane) > :global(.content-panel):first-child,
@@ -209,4 +219,7 @@ html {
 }
 :global(.right-sidebar-panel) :global(nav) a[aria-current="true"] {
   color: var(--sl-color-accent);
+}
+:root[data-theme="light"] :global(.right-sidebar-panel) :global(nav) a[aria-current="true"] {
+  color: #0284c7;
 }

@@ -21,6 +21,10 @@ export default defineConfig({
       description:
         "User documentation for Newsfork — API reference, guides, user manual, and policies.",
       favicon: "/favicon.svg",
+      editLink: {
+        baseUrl: "https://github.com/news-labs/web-public/edit/main/apps/public-docs/",
+      },
+      pagination: true,
       locales: {
         root: {
           label: "English",

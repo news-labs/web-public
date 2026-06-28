@@ -1,16 +1,16 @@
 ---
 title: Category Reference
-description: API Common Categories and Specifications Reference
+description: API common categories and specifications reference.
 sidebar:
   order: 4
 translatedFromHash: 82b450df26bcb7446595ee2d349348b14206871a486634472ad7e18562be4d27
 ---
 
+**Who should read this** — Authors defining Research and Seed contracts. Use with [Output JSON Scheme](/v1/api/output-json-scheme/) for pipeline output structure.
+
 ## Overview
 
 Category indicates **the nature of the content (What it is)**. It is defined based on the essence of the information covered, not the source.
-
----
 
 ## Main Categories (Common to Research & Seed)
 
@@ -29,8 +29,6 @@ Category indicates **the nature of the content (What it is)**. It is defined bas
 
 At the Seed stage, determine `nature` as one or more of the above values.
 
----
-
 ## Government / Organization is not a Category
 
 | Concept | Where to Place |
@@ -39,8 +37,6 @@ At the Seed stage, determine `nature` as one or more of the above values.
 | **Organization** | `source.type = "organization"` |
 | **NGO / Intl Org** | `source.type = "ngo"` |
 | **Company** | `source.type = "company"` |
-
----
 
 ## Medium (Content Format)
 
@@ -52,8 +48,6 @@ At the Seed stage, determine `nature` as one or more of the above values.
 | **audio** | Podcast |
 | **document** | PDF, DOC |
 
----
-
 ## Research → Seed Role Separation
 
 | Engine | Role |
@@ -61,3 +55,8 @@ At the Seed stage, determine `nature` as one or more of the above values.
 | **Research Engine** | "Where to look" (URL discovery) |
 | **Seed Engine** | "How to fetch" (contract creation) |
 | **Scraper** | "Actual collection" (execution) |
+
+## Next steps
+
+- [Output JSON Scheme](/v1/api/output-json-scheme/) — Pipeline output structure.
+- [Seeds guide](/v1/guides/seeds/) — Seed contract workflow.

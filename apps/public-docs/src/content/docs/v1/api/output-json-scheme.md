@@ -1,10 +1,12 @@
 ---
 title: Output JSON Scheme
-description: Research → Seed pipeline output JSON structure
+description: Research → Seed pipeline output JSON structure.
 sidebar:
   order: 5
 translatedFromHash: 82e47b9b2c471d8062186cdd6fcfdf3e5573620ae50542922bf631da7aaa964c
 ---
+
+**Who should read this** — Engineers consuming Research → Seed pipeline output. Pair with [Category Reference](/v1/api/category-reference/) for `nature` values.
 
 ## Overview
 
@@ -13,20 +15,20 @@ The Research → Seed pipeline discovers `entry_url` from `source_domain` throug
 ## Pipeline Stages
 
 ```
-[1] Well-known RSS Feeds (11개 표준 경로)
-   ↓ (없으면)
-[2] Sitemap.xml 분석 (뉴스/미디어 URL 추출)
-   ↓ (없으면)
-[3] Robots.txt 힌트 (Sitemap/Allow 경로)
-   ↓ (없으면)
-[4] HTML 패턴 탐색 (RSS 링크, 네비게이션)
-   ↓ (없으면)
-[5] 수동 검토 필요 (자동화 한계)
+[1] Well-known RSS Feeds (11 standard paths)
+   ↓ (if none)
+[2] Sitemap.xml analysis (news/media URL extraction)
+   ↓ (if none)
+[3] Robots.txt hints (Sitemap/Allow paths)
+   ↓ (if none)
+[4] HTML pattern discovery (RSS links, navigation)
+   ↓ (if none)
+[5] Manual review required (automation limit)
 ```
 
 ## Output JSON Structure
 
- ```json
+```json
 {
   "meta": {
     "generated_at": "2026-01-24T14:23:45.777Z",
@@ -61,7 +63,7 @@ The Research → Seed pipeline discovers `entry_url` from `source_domain` throug
     }
   ]
 }
-``` 
+```
 
 ## Content Nature Automatic Classification
 
@@ -76,3 +78,8 @@ The Research → Seed pipeline discovers `entry_url` from `source_domain` throug
 
 - **Research**: Discover "where to look" (URL list only)
 - **Seed**: Contract "how to retrieve" (nature identification + collection strategy)
+
+## Next steps
+
+- [Category Reference](/v1/api/category-reference/) — Category definitions.
+- [Seed engine workflow](/v1/guides/system-architecture/seed-engine-workflow/) — End-to-end pipeline.
