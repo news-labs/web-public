@@ -1,5 +1,5 @@
-import { getApibayPortalConfig } from "../../lib/apibay-portal";
-import { redirectWithSecurityHeaders } from "../../lib/security-headers";
+import { getApibayPortalConfig } from "../../../lib/apibay-portal";
+import { redirectWithSecurityHeaders } from "../../../lib/security-headers";
 
 interface Env {
   APIBAY_PORTAL_ORIGIN?: string;
