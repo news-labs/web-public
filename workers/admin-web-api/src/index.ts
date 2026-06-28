@@ -18,7 +18,7 @@ import { media } from "./routes/media.js";
 import { analytics } from "./routes/analytics.js";
 import { integrations } from "./routes/integrations.js";
 import { changeHistory } from "./routes/change-history.js";
-import { mountAdminUiRoutes } from "./lib/serve-admin-ui.js";
+import { mountLegacyGatewayRedirects } from "./lib/legacy-gateway-redirect.js";
 
 const app = new Hono<{ Bindings: Env }>();
 app.use("*", cors());
@@ -46,7 +46,7 @@ app.route("/api/v1/analytics", analytics);
 app.route("/api/v1/integrations", integrations);
 app.route("/api/v1/history", changeHistory);
 
-mountAdminUiRoutes(app);
+mountLegacyGatewayRedirects(app);
 app.get("*", (c) => c.text("Not Found", 404));
 
 app.onError((err, c) => {

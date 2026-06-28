@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build && node scripts/stage-cp-assets.mjs",
+    "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@core-labs/admin-shell": "file:../../../../labs-core/packages/admin-shell",
+    "@core-labs/admin-shell": "file:../../../infra-control-plane/packages/admin-shell",
     "lucide-react": "^0.469.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

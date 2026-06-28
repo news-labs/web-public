@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import type { Env } from "../types/env.js";
 import { createSessionToken } from "../lib/crypto.js";
+import { gatewaySpaPath, oauthPublicOrigin } from "../lib/oauth-public-origin.js";
 
 const oauth = new Hono<{ Bindings: Env }>();
 
@@ -8,7 +9,8 @@ oauth.get("/google/url", (c) => {
   const clientId = c.env.GOOGLE_CLIENT_ID;
   if (!clientId) return c.json({ error: "Google OAuth not configured" }, 501);
 
-  const redirectUri = new URL("/api/v1/oauth/google/callback", c.req.url).toString();
+  const origin = oauthPublicOrigin(c.env, c.req.url);
+  const redirectUri = `${origin}/api/v1/oauth/google/callback`;
   const state = crypto.randomUUID();
   const params = new URLSearchParams({
     client_id: clientId,
@@ -30,7 +32,8 @@ oauth.get("/google/callback", async (c) => {
     return c.json({ error: "OAuth misconfigured or missing code" }, 400);
   }
 
-  const redirectUri = new URL("/api/v1/oauth/google/callback", c.req.url).toString();
+  const origin = oauthPublicOrigin(c.env, c.req.url);
+  const redirectUri = `${origin}/api/v1/oauth/google/callback`;
   const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -73,8 +76,8 @@ oauth.get("/google/callback", async (c) => {
     secret,
   );
 
-  const origin = new URL(c.req.url).origin;
-  return c.redirect(`${origin}/cp/?session=${encodeURIComponent(sessionToken)}`);
+  const spaBase = gatewaySpaPath(c.env, "ops/web");
+  return c.redirect(`${spaBase}?session=${encodeURIComponent(sessionToken)}`);
 });
 
 export { oauth };

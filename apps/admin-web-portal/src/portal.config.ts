@@ -24,15 +24,19 @@ import {
   Zap,
 } from "lucide-react";
 import type { PortalConfig } from "@core-labs/admin-shell";
+import { isAdminGatewayMode } from "@core-labs/admin-shell";
 
-export const ADMIN_UI_BASENAME = "/cp";
+export const ADMIN_UI_BASENAME = "/ops/web";
+
+const gatewayMode = isAdminGatewayMode();
 
 export const WEB_PORTAL: PortalConfig = {
   id: "web",
   title: "News-Labs Web",
   subtitle: "Enter your web admin API key or sign in with Google",
   storageKey: "nl_web_admin_key",
-  apiBaseUrl: import.meta.env.VITE_API_URL ?? "",
+  apiBaseUrl: gatewayMode ? "" : (import.meta.env.VITE_API_URL ?? ""),
+  gatewayBffSegment: gatewayMode ? "web" : undefined,
   version: "Web Admin v1.0",
   pinnedNavItems: [{ href: "/", label: "Dashboard", icon: LayoutDashboard }],
   navGroups: [
