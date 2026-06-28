@@ -8,7 +8,7 @@ import {
   useTenantContext,
 } from "@core-labs/admin-shell";
 import { WEB_PORTAL } from "../portal.config";
-import { getAuthToken } from "@core-labs/admin-shell";
+import { getAuthToken, rewriteGatewayApiPath } from "@core-labs/admin-shell";
 import { fetchMediaAssets } from "../lib/api";
 
 export function MediaLibraryPage() {
@@ -28,7 +28,8 @@ export function MediaLibraryPage() {
     form.append("assetType", "image");
     const token = getAuthToken(WEB_PORTAL.storageKey);
     try {
-      await fetch(`${WEB_PORTAL.apiBaseUrl}/api/v1/media/upload`, {
+      const uploadPath = rewriteGatewayApiPath("/api/v1/media/upload", WEB_PORTAL.gatewayBffSegment);
+      await fetch(`${WEB_PORTAL.apiBaseUrl}${uploadPath}`, {
         method: "POST",
         headers: token ? { Authorization: `Bearer ${token}` } : {},
         body: form,

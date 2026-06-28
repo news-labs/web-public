@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Globe } from "lucide-react";
 import {
   LoginCard,
+  RequirePortalRole,
   getStoredApiKey,
   getSessionToken,
   setSessionToken,
@@ -173,7 +174,11 @@ export function App() {
           <Route path="publish-log" element={<PublishLogPage />} />
           <Route path="history" element={<BuildHistoryPage />} />
           <Route path="history/changes" element={<ChangeHistoryPage />} />
-          <Route path="deploy" element={<DeployPage />} />
+          <Route path="deploy" element={
+            <RequirePortalRole config={WEB_PORTAL} allowed={["web_admin", "admin"]}>
+              <DeployPage />
+            </RequirePortalRole>
+          } />
           <Route path="analytics" element={<AnalyticsOverviewPage />} />
           <Route path="analytics/regions" element={<AnalyticsRegionsPage />} />
           <Route path="analytics/languages" element={<AnalyticsLanguagesPage />} />
@@ -181,7 +186,11 @@ export function App() {
           <Route path="analytics/web-vitals" element={<WebVitalsPage />} />
           <Route path="integrations/github" element={<GithubReposPage />} />
             <Route path="integrations/ci" element={<CiRunsPage />} />
-            <Route path="audit" element={<AuditLogPage />} />
+            <Route path="audit" element={
+              <RequirePortalRole config={WEB_PORTAL} allowed={["web_admin", "admin"]}>
+                <AuditLogPage />
+              </RequirePortalRole>
+            } />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

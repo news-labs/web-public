@@ -1,7 +1,7 @@
-import { createApiClient } from "@core-labs/admin-shell";
+import { createApiClientFromPortal } from "@core-labs/admin-shell";
 import { WEB_PORTAL } from "../portal.config";
 
-export const api = createApiClient(WEB_PORTAL.apiBaseUrl, WEB_PORTAL.storageKey);
+export const api = createApiClientFromPortal(WEB_PORTAL);
 
 // ── Legacy site deploy ──────────────────────────────────────────────
 

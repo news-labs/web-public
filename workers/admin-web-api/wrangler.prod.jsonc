@@ -4,7 +4,6 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-01-20",
   "compatibility_flags": ["nodejs_compat"],
-  "assets": { "directory": "../../apps/admin-web-portal/dist", "binding": "ASSETS", "run_worker_first": true },
   "d1_databases": [
     {
       "binding": "WEB_ADMIN_DB",
@@ -19,6 +18,7 @@
     "GITHUB_WORKFLOW_DEPLOY_WWW": "deploy-www.yml",
     "GITHUB_WORKFLOW_DEPLOY_DOCS": "deploy-public-docs.yml",
     "GITHUB_WORKFLOW_DEPLOY_TEMPLATE": "deploy-template.yml",
-    "CP_API_BASE_URL": "https://nl-api-cp.newsfork.workers.dev"
+    "CP_API_BASE_URL": "https://nl-api-cp.newsfork.workers.dev",
+    "ADMIN_GATEWAY_URL": "https://admin.newsfork.com"
   }
 }
