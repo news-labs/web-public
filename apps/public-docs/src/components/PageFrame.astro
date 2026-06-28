@@ -1,7 +1,7 @@
 ---
 import MobileMenuToggle from "virtual:starlight/components/MobileMenuToggle";
 
-const { hasSidebar } = Astro.props;
+const { hasSidebar } = Astro.locals.starlightRoute;
 
 const CHAT_HREF = "https://www.newsfork.com/contact";
 const COMMUNITY_HREF = "https://www.newsfork.com/contact";
@@ -37,8 +37,8 @@ const structuredDataJson = JSON.stringify({
   <header class="header"><slot name="header" /></header>
   {
     hasSidebar && (
-      <nav class="sidebar" aria-label={Astro.locals.t("sidebarNav.accessibleLabel")}>
-        <MobileMenuToggle {...Astro.props} />
+      <nav class="sidebar print:hidden" aria-label={Astro.locals.t("sidebarNav.accessibleLabel")}>
+        <MobileMenuToggle />
         <div id="starlight__sidebar" class="sidebar-pane">
           <div class="sidebar-content sl-flex">
             <slot name="sidebar" />
@@ -443,16 +443,15 @@ const structuredDataJson = JSON.stringify({
     }
     .sidebar-pane {
       --sl-sidebar-visibility: visible;
-      width: 20rem;
-      min-width: 20rem;
-      max-width: 20rem;
+      width: var(--sl-sidebar-width);
       background-color: var(--sl-color-bg-sidebar);
+      border-inline-end: 1px solid var(--sl-color-hairline-shade);
     }
   }
 
   @media (min-width: 50rem) {
     :global([data-has-sidebar]) .main-frame {
-      padding-inline-start: 20rem;
+      padding-inline-start: var(--sl-sidebar-width);
     }
   }
 </style>

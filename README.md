@@ -26,6 +26,6 @@ pnpm dev:docs
 | marketing-web | `nl-marketing-web` | www.newsfork.com |
 | public-docs | `nl-public-docs` | docs.newsfork.com |
 
-Internal docs: `core-platform/docs/devdocs` → `nl-internal-docs` → devdocs.newsfork.com
+Internal docs: [devdocs.newsfork.com](https://devdocs.newsfork.com/products/web-public/) (source: `core-platform/docs/devdocs`)
 
-Cloudflare setup: [docs/CLOUDFLARE_DOCS_SETUP.md](docs/CLOUDFLARE_DOCS_SETUP.md)
+Cloudflare setup: [devdocs — Cloudflare docs setup](https://devdocs.newsfork.com/deployment/cloudflare-docs-setup/)
