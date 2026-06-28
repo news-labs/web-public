@@ -1,0 +1,5 @@
+# Cloudflare Pages — Newsfork account portal (account.newsfork.com)
+# Custom domain: account.newsfork.com
+
+name = "nl-account-web"
+pages_build_output_dir = "out"

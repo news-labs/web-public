@@ -24,7 +24,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     period: "forever",
     description: "Perfect for prototyping and evaluation.",
     cta: "Get API key",
-    ctaHref: "https://api.newsfork.com/signup",
+    ctaHref: "https://account.newsfork.com/signup",
     highlight: false,
     features: [
       "1,000 API requests / month",
@@ -42,7 +42,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     period: "/ month",
     description: "For teams building production applications.",
     cta: "Start 14-day trial",
-    ctaHref: "https://api.newsfork.com/signup?plan=pro",
+    ctaHref: "https://account.newsfork.com/signup?plan=pro",
     highlight: true,
     badge: "Most popular",
     features: [

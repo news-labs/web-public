@@ -14,4 +14,5 @@ dist/
 coverage/
 .vitest/
 apps/marketing-web/out/
+apps/account-web/out/
 
