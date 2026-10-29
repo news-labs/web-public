@@ -6,4 +6,4 @@ Internal documentation for web-public lives in devdocs:
 
 Public user docs: https://docs.newsfork.com/
 
-Do not add new markdown files here; update devdocs in `core-platform/docs/devdocs`.
+Do not add new internal engineering markdown here. SSOT: `core-platform/docs/devdocs` — [Documentation location](https://devdocs.newsfork.com/platform/documentation-location/).
