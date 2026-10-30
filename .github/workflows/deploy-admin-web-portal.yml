@@ -24,10 +24,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare labs-core (admin-web-portal)
+      - name: Prepare admin-shell (infra-control-plane)
         run: node scripts/prepare-labs-core.mjs
         env:
-          LABS_CORE_REPO: ${{ vars.LABS_CORE_REPO }}
+          # Override vars.LABS_CORE_REPO if still pointing at retired news-labs/labs-core.
+          LABS_CORE_REPO: news-labs/infra-control-plane
+          LABS_CORE_CHECKOUT_TOKEN: ${{ secrets.LABS_CORE_CHECKOUT_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: pnpm/action-setup@v4
         with: { version: "9.15.0" }
