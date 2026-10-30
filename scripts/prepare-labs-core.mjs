@@ -16,9 +16,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, "..");
 const adminAppPkg = join(repoRoot, "apps/admin-web-portal/package.json");
 
-/** Sibling checkout path used by package.json file: dependency. */
-const infraControlPlanePath = resolve(repoRoot, "../../infra-control-plane");
-const legacyLabsCorePath = resolve(repoRoot, "../../labs-core");
+/**
+ * package.json: file:../../../infra-control-plane/packages/admin-shell
+ * from apps/admin-web-portal → ../../.. = parent of repoRoot in Actions
+ * (…/work/web-public/infra-control-plane), not …/work/infra-control-plane.
+ */
+const infraControlPlanePath = resolve(repoRoot, "../infra-control-plane");
+const legacyLabsCorePath = resolve(repoRoot, "../labs-core");
+const legacyOrgLabsCorePath = resolve(repoRoot, "../../labs-core");
 
 function adminShellAt(root) {
   return join(root, "packages/admin-shell");
@@ -28,7 +33,7 @@ if (!existsSync(adminAppPkg)) {
   process.exit(0);
 }
 
-for (const root of [infraControlPlanePath, legacyLabsCorePath]) {
+for (const root of [infraControlPlanePath, legacyLabsCorePath, legacyOrgLabsCorePath]) {
   if (existsSync(adminShellAt(root))) {
     console.log("admin-shell present:", adminShellAt(root));
     process.exit(0);
