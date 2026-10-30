@@ -20,6 +20,12 @@ export function MediaLibraryPage() {
   const [uploading, setUploading] = useState(false);
 
   const handleUpload = async (file: File) => {
+    // Korean Times Image Guidelines — banner/article max 100 KB (news-hub MEDIA_SPEC).
+    const maxBytes = 100 * 1024;
+    if (file.size > maxBytes) {
+      window.alert(`Image exceeds ${maxBytes} bytes (got ${file.size}). Resize before upload.`);
+      return;
+    }
     setUploading(true);
     const form = new FormData();
     form.append("file", file);
