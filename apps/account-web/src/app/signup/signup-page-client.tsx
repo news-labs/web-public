@@ -8,6 +8,7 @@ function SignupContent() {
   const searchParams = useSearchParams();
   const email = searchParams.get("email") ?? "";
   const plan = searchParams.get("plan") ?? undefined;
+  const returnUrl = searchParams.get("return_url") ?? undefined;
   const oauthError = searchParams.get("error") ?? undefined;
 
   return (
@@ -15,6 +16,7 @@ function SignupContent() {
       flow="signup"
       initialEmail={email}
       plan={plan}
+      returnUrl={returnUrl}
       oauthError={oauthError ? "Sign-up could not be completed. Please try again." : undefined}
     />
   );

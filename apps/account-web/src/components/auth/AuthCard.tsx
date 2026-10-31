@@ -20,10 +20,12 @@ interface AuthCardProps {
   flow: AuthFlow;
   initialEmail?: string;
   plan?: string;
+  /** Post-login brand / hub return (forwarded to apibay as return_url). */
+  returnUrl?: string;
   oauthError?: string;
 }
 
-export function AuthCard({ flow, initialEmail = "", plan, oauthError }: AuthCardProps) {
+export function AuthCard({ flow, initialEmail = "", plan, returnUrl, oauthError }: AuthCardProps) {
   const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(oauthError ?? null);
@@ -36,6 +38,7 @@ export function AuthCard({ flow, initialEmail = "", plan, oauthError }: AuthCard
 
   const query = new URLSearchParams();
   if (plan) query.set("plan", plan);
+  if (returnUrl) query.set("return_url", returnUrl);
 
   const googleHref = buildGoogleAuthUrl(flow, query);
   const alternateHref = isLogin ? ACCOUNT_SIGNUP_URL : ACCOUNT_SIGNIN_URL;
