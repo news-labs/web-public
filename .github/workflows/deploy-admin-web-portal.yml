@@ -21,9 +21,19 @@ env:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, news-labs, contabo]
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf .git
+          git init
+          git fetch --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${GITHUB_SHA}"
+          git checkout --force FETCH_HEAD
+      - name: Node 22 and pnpm
+        run: bash scripts/ci/use-node-pnpm.sh
       - name: Prepare admin-shell (infra-control-plane)
         run: node scripts/prepare-labs-core.mjs
         env:
@@ -31,12 +41,6 @@ jobs:
           LABS_CORE_REPO: news-labs/infra-control-plane
           LABS_CORE_CHECKOUT_TOKEN: ${{ secrets.LABS_CORE_CHECKOUT_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: pnpm/action-setup@v4
-        with: { version: "9.15.0" }
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Cloudflare preflight
         run: node scripts/preflight-cloudflare.mjs

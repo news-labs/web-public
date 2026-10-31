@@ -21,23 +21,23 @@ concurrency:
 jobs:
   deploy:
     name: Build and deploy user docs
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, news-labs, contabo]
     permissions:
       contents: read
       deployments: write
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "pnpm"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf .git
+          git init
+          git fetch --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${GITHUB_SHA}"
+          git checkout --force FETCH_HEAD
+      - name: Node 22 and pnpm
+        run: bash scripts/ci/use-node-pnpm.sh
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --filter public-docs...
