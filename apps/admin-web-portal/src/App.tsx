@@ -78,9 +78,9 @@ export function useWebTenantContext() {
 // ── App ───────────────────────────────────────────────────────────────────
 
 export function App() {
-  // Legacy admin API-key / Google OAuth auth
+  // Legacy ops auth (Email OTP session)
   const [legacyAuthed, setLegacyAuthed] = useState(
-    () => Boolean(getStoredApiKey(WEB_PORTAL.storageKey) || getSessionToken(WEB_PORTAL.storageKey)),
+    () => Boolean(getSessionToken(WEB_PORTAL.storageKey)),
   );
 
   // Tenant-user auth (webmaster / designer)

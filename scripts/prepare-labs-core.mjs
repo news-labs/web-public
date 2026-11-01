@@ -1,13 +1,11 @@
 #!/usr/bin/env node
 /**
- * Ensures @core-labs/admin-shell is available for admin-web-portal.
- *
- * Local: expects sibling `infra-control-plane` (or legacy `labs-core`) under the
- * news-labs org folder — matches `file:../../../infra-control-plane/packages/admin-shell`.
- * CI: clones LABS_CORE_REPO into that sibling path when missing.
+ * Ensures @core-labs/admin-shell for admin-web-portal.
+ * package.json: file:../../../infra-control-plane/packages/admin-shell
+ * → clone/link sibling infra-control-plane next to this repo checkout.
  */
 
-import { existsSync } from "node:fs";
+import { existsSync, rmSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -15,44 +13,34 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, "..");
 const adminAppPkg = join(repoRoot, "apps/admin-web-portal/package.json");
-
-/**
- * package.json: file:../../../infra-control-plane/packages/admin-shell
- * from apps/admin-web-portal → ../../.. = parent of repoRoot in Actions
- * (…/work/web-public/infra-control-plane), not …/work/infra-control-plane.
- */
 const infraControlPlanePath = resolve(repoRoot, "../infra-control-plane");
-const legacyLabsCorePath = resolve(repoRoot, "../labs-core");
-const legacyOrgLabsCorePath = resolve(repoRoot, "../../labs-core");
+const adminShellPath = join(infraControlPlanePath, "packages/admin-shell");
+const otpMarker = join(adminShellPath, "src/components/auth/otp-login-card.tsx");
 
-function adminShellAt(root) {
-  return join(root, "packages/admin-shell");
-}
+if (!existsSync(adminAppPkg)) process.exit(0);
 
-if (!existsSync(adminAppPkg)) {
+const needsRefresh = !existsSync(otpMarker);
+if (existsSync(adminShellPath) && !needsRefresh) {
+  console.log("admin-shell present:", adminShellPath);
   process.exit(0);
 }
 
-for (const root of [infraControlPlanePath, legacyLabsCorePath, legacyOrgLabsCorePath]) {
-  if (existsSync(adminShellAt(root))) {
-    console.log("admin-shell present:", adminShellAt(root));
-    process.exit(0);
-  }
+if (needsRefresh && existsSync(infraControlPlanePath)) {
+  console.log("Refreshing infra-control-plane admin-shell (OTP marker missing)");
+  rmSync(infraControlPlanePath, { recursive: true, force: true });
 }
 
-// Prefer infra-control-plane (package.json file: dep). Legacy labs-core repo is retired.
 const repo = process.env.LABS_CORE_REPO || "news-labs/infra-control-plane";
 const token = process.env.LABS_CORE_CHECKOUT_TOKEN ?? process.env.GITHUB_TOKEN;
-const cloneTarget = infraControlPlanePath;
-
-console.log(`Cloning ${repo} → ${cloneTarget}`);
 const cloneUrl = token
   ? `https://x-access-token:${token}@github.com/${repo}.git`
   : `https://github.com/${repo}.git`;
-execSync(`git clone --depth 1 "${cloneUrl}" "${cloneTarget}"`, { stdio: "inherit" });
 
-if (!existsSync(adminShellAt(cloneTarget))) {
-  console.error(`Cloned ${repo} but admin-shell package missing at ${adminShellAt(cloneTarget)}`);
+console.log(`Cloning ${repo} → ${infraControlPlanePath}`);
+execSync(`git clone --depth 1 "${cloneUrl}" "${infraControlPlanePath}"`, { stdio: "inherit" });
+
+if (!existsSync(join(adminShellPath, "src/index.ts"))) {
+  console.error(`Cloned ${repo} but admin-shell missing at ${adminShellPath}`);
   process.exit(1);
 }
 
