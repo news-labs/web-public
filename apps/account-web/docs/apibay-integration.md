@@ -10,7 +10,7 @@ Account portal UI lives on `account.newsfork.com`. **Signup, login, API keys, bi
 | Get API key / Sign up | `https://account.newsfork.com/signup` | `https://api.newsfork.com/signup` |
 | Google OAuth | `/api/auth/google?flow=login\|signup` | `https://api.newsfork.com/oauth/google` |
 | Post-auth dashboard | — | `https://api.newsfork.com` (portal home) |
-| Hub push link | Brand `/sign-in` | `return_url` → `/api/auth/hub-callback?next=…` → brand `/auth/callback` |
+| Hub push link | Brand `/sign-in` | `return_url` → `/api/auth/hub/callback?next=…` → brand `/auth/callback` |
 
 Query parameters (`plan`, `email`, `return_url`, etc.) are forwarded from account login/signup UI → continue/OAuth → apibay.
 
@@ -21,7 +21,8 @@ Query parameters (`plan`, `email`, `return_url`, etc.) are forwarded from accoun
 | `GET /api/auth/continue` | `flow=login\|signup\|forgot`; merges query → 302 to apibay portal path |
 | `GET /api/auth/google` | `flow=login\|signup`; 302 to apibay Google OAuth start |
 | `GET /api/auth/google/callback` | 302 to apibay callback (canonical OAuth on api host) |
-| `GET /api/auth/hub-callback` | Validates `next` brand `/auth/callback`; copies `user_id`/`uid`; 302 |
+| `GET /api/auth/hub/callback` | Validates `next` brand `/auth/callback`; copies `user_id`/`uid`; 302 |
+| `GET /api/auth/hub-callback` | Alias of hub/callback (legacy links) |
 | `POST /api/auth/logout` | Clears account cookies; 302 to apibay logout or portal home |
 
 ## Allowlist (return_url / post-login)
@@ -41,7 +42,7 @@ Configure:
 - `https://account.newsfork.com`
 - `https://account.newsfork.com/login`
 - `https://account.newsfork.com/signup`
-- `https://account.newsfork.com/api/auth/hub-callback` (**required** for hub push account link)
+- `https://account.newsfork.com/api/auth/hub/callback` (**required** for hub push account link)
 - `https://api.newsfork.com`
 - `https://api.newsfork.com/*`
 - Optional direct brand callbacks: `https://koryy.com/auth/callback`, `https://tokyy.com/auth/callback`
@@ -76,10 +77,9 @@ If apibay exposes browser auth APIs, allow origin:
 
 ## Operator checklist
 
-- [ ] apibay: allow `account.newsfork.com` (+ hub-callback URL) in OAuth redirect / return URL allowlist
-- [ ] apibay: append `user_id` on post-login redirect to `return_url`
-- [ ] apibay: optional P2 redirect `api.newsfork.com/signup` → `account.newsfork.com/signup`
-- [ ] apibay: optional P2 redirect `api.newsfork.com/login` → `account.newsfork.com/login`
-- [ ] DNS: `account` CNAME → `nl-account-web.pages.dev` (see `scripts/activate-nl-pages-domains.mjs`)
-- [ ] Verify E2E: brand Sign in → account → apibay → hub-callback → `/auth/callback?user_id=` → push prefs linked
+- [x] apibay: allow `account.newsfork.com` (+ hub/callback URL) in return_url allowlist (`dashboard/lib/return-url.ts`)
+- [x] apibay: append `user_id` on post-login redirect to `return_url`
+- [x] apibay: P2 bare `/login` `/signup` → `account.newsfork.com` (skip when `return_url` / `account_origin` / `from`)
+- [ ] DNS: `account` CNAME → `nl-account-web.pages.dev` (Zone DNS Edit or Dashboard)
+- [ ] Verify E2E: brand Sign in → account → apibay → hub/callback → `/auth/callback?user_id=` → push prefs linked
 - [ ] Verify E2E: www CTA → account UI → apibay → API key visible

@@ -163,10 +163,22 @@ async function main() {
   }
 
   const zoneId = await getZoneId();
-  await ensureCname(zoneId);
+  let dnsOk = false;
+  try {
+    await ensureCname(zoneId);
+    dnsOk = true;
+  } catch (err) {
+    console.error(err instanceof Error ? err.message : err);
+    // Pages custom domain can still be attached; validation waits on CNAME.
+    await ensurePagesDomain();
+    await retryValidation();
+    throw err;
+  }
   await ensurePagesDomain();
   await retryValidation();
-  console.log(`\n✅ account DNS setup done for ${HOSTNAME} → ${CNAME_TARGET}\n`);
+  if (dnsOk) {
+    console.log(`\n✅ account DNS setup done for ${HOSTNAME} → ${CNAME_TARGET}\n`);
+  }
 }
 
 main().catch((err) => {
