@@ -1,7 +1,11 @@
-import { useState } from "react";
-import { Globe, Loader2 } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
+import { Globe } from "lucide-react";
 import { Button, Input } from "@core-labs/admin-shell";
-import { loginWebTenantUser, type WebTenantSession } from "../lib/tenant-session";
+import {
+  loginWebTenantOtp,
+  requestWebTenantOtp,
+  type WebTenantSession,
+} from "../lib/tenant-session";
 import { WEB_PORTAL } from "../portal.config";
 
 interface WebTenantLoginPageProps {
@@ -10,17 +14,40 @@ interface WebTenantLoginPageProps {
 
 export function WebTenantLoginPage({ onSuccess }: WebTenantLoginPageProps) {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
+  const [step, setStep] = useState<"email" | "code">("email");
+  const [cooldown, setCooldown] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
+  const cpApiBase = import.meta.env.VITE_CP_API_URL ?? WEB_PORTAL.apiBaseUrl;
+
+  const sendCode = async () => {
     setLoading(true);
     setError("");
     try {
-      const cpApiBase = import.meta.env.VITE_CP_API_URL ?? WEB_PORTAL.apiBaseUrl;
-      const session = await loginWebTenantUser(cpApiBase, email, password);
+      const seconds = await requestWebTenantOtp(cpApiBase, email.trim().toLowerCase());
+      setStep("code");
+      setCode("");
+      setCooldown(seconds);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not send code");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verify = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const session = await loginWebTenantOtp(cpApiBase, email.trim().toLowerCase(), code.trim());
       if (session.tenants.length === 0) {
         setError("No web admin tenants assigned to your account.");
         return;
@@ -33,52 +60,91 @@ export function WebTenantLoginPage({ onSuccess }: WebTenantLoginPageProps) {
     }
   };
 
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (step === "email") void sendCode();
+    else void verify();
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm space-y-6">
         <div className="flex flex-col items-center gap-2 text-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <Globe className="h-6 w-6" />
+            <Globe className="h-6 w-6" aria-hidden />
           </div>
           <h1 className="text-2xl font-bold">Web Admin Portal</h1>
-          <p className="text-sm text-muted-foreground">Sign in as webmaster or designer</p>
+          <p className="text-sm text-muted-foreground">Email OTP for webmaster / designer</p>
         </div>
 
-        <form onSubmit={(e) => void handleLogin(e)} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor="email">Email</label>
+            <label className="text-sm font-medium" htmlFor="email">
+              Email
+            </label>
             <Input
               id="email"
               type="email"
+              autoComplete="email"
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={loading || step === "code"}
               autoFocus
               required
             />
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor="password">Password</label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
+          {step === "code" ? (
+            <div className="space-y-2">
+              <label className="text-sm font-medium" htmlFor="code">
+                Login code
+              </label>
+              <Input
+                id="code"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                value={code}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+                disabled={loading}
+                required
+              />
+            </div>
+          ) : null}
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {error ? (
+            <p className="text-sm text-destructive" role="alert">
+              {error}
+            </p>
+          ) : null}
 
-          <Button type="submit" className="w-full" disabled={loading || !email || !password}>
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Signing in…
-              </>
-            ) : "Sign in"}
+          <Button type="submit" className="w-full" disabled={loading}>
+            {step === "email" ? (loading ? "Sending…" : "Send code") : loading ? "Signing in…" : "Sign in"}
           </Button>
+
+          {step === "code" ? (
+            <div className="flex justify-between text-sm">
+              <button
+                type="button"
+                className="text-muted-foreground underline-offset-4 hover:underline"
+                onClick={() => {
+                  setStep("email");
+                  setCode("");
+                }}
+                disabled={loading}
+              >
+                Use another email
+              </button>
+              <button
+                type="button"
+                className="text-muted-foreground underline-offset-4 hover:underline disabled:opacity-50"
+                onClick={() => void sendCode()}
+                disabled={loading || cooldown > 0}
+              >
+                {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
+              </button>
+            </div>
+          ) : null}
         </form>
       </div>
     </div>

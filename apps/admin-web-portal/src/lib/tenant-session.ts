@@ -59,31 +59,59 @@ export function getWebTenantApiHeaders(tenantId: string): HeadersInit {
   };
 }
 
-/** Login using the CP platform_user endpoint (shared with editor-portal). */
-export async function loginWebTenantUser(
-  cpApiBaseUrl: string,
-  email: string,
-  password: string,
-): Promise<WebTenantSession> {
-  const res = await fetch(`${cpApiBaseUrl}/api/v1/auth/user-login`, {
+/** Request Email OTP (audience=tenant). Enumeration-safe: always ok unless 503. */
+export async function requestWebTenantOtp(cpApiBaseUrl: string, email: string): Promise<number> {
+  const res = await fetch(`${cpApiBaseUrl}/api/v1/auth/otp/request`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, audience: "tenant" }),
+  });
+  if (res.status === 503) throw new Error("Email delivery unavailable");
+  if (!res.ok) throw new Error("Could not send code");
+  const body = (await res.json().catch(() => ({}))) as { resend_after_seconds?: number };
+  return body.resend_after_seconds ?? 60;
+}
+
+/** Verify Email OTP and persist tenant session. */
+export async function loginWebTenantOtp(
+  cpApiBaseUrl: string,
+  email: string,
+  code: string,
+): Promise<WebTenantSession> {
+  const res = await fetch(`${cpApiBaseUrl}/api/v1/auth/otp/verify`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, code, audience: "tenant" }),
   });
 
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: "Login failed" })) as { error?: string };
-    throw new Error(err.error ?? "Login failed");
+    const err = (await res.json().catch(() => ({ error: "Login failed" }))) as { error?: string };
+    throw new Error(err.error ?? "Invalid or expired code");
   }
 
-  const data = await res.json() as WebTenantSession;
-
-  // Filter to only show designer/webmaster relevant tenants
-  const webTenants = data.tenants.filter((t) =>
+  const data = (await res.json()) as WebTenantSession & { session_token?: string; token?: string };
+  const token = data.token ?? data.session_token ?? "";
+  const tenants = (data.tenants ?? []).filter((t) =>
     t.roles.some((r) => ["webmaster", "designer"].includes(r)),
   );
 
-  const session = { ...data, tenants: webTenants };
+  const session: WebTenantSession = {
+    token,
+    user: data.user,
+    tenants,
+  };
   saveWebTenantSession(session);
   return session;
+}
+
+/** @deprecated Password login removed — use loginWebTenantOtp */
+export async function loginWebTenantUser(
+  cpApiBaseUrl: string,
+  email: string,
+  _password: string,
+): Promise<WebTenantSession> {
+  void _password;
+  void email;
+  void cpApiBaseUrl;
+  throw new Error("password_login_removed — use Email OTP");
 }
