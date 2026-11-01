@@ -7,6 +7,7 @@ import {
 import { redirectWithSecurityHeaders } from "../../lib/security-headers";
 
 interface Env {
+  API_PORTAL_ORIGIN?: string;
   APIBAY_PORTAL_ORIGIN?: string;
   APIBAY_SIGNUP_PATH?: string;
   APIBAY_LOGIN_PATH?: string;

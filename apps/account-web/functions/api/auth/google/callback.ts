@@ -2,6 +2,7 @@ import { getApibayPortalConfig } from "../../../lib/apibay-portal";
 import { redirectWithSecurityHeaders } from "../../../lib/security-headers";
 
 interface Env {
+  API_PORTAL_ORIGIN?: string;
   APIBAY_PORTAL_ORIGIN?: string;
   APIBAY_GOOGLE_OAUTH_PATH?: string;
   ACCOUNT_PORTAL_ORIGIN?: string;
