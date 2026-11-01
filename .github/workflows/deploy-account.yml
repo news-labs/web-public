@@ -20,7 +20,8 @@ concurrency:
 jobs:
   deploy:
     name: Build and deploy
-    runs-on: [self-hosted, news-labs, contabo]
+    # ubuntu-latest: avoid single Contabo runner queue blocking account prod deploys
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       deployments: write
@@ -57,7 +58,7 @@ jobs:
         run: pnpm --filter account-web run test:apibay
 
       - name: Install Playwright browsers
-        run: pnpm --filter account-web exec playwright install chromium
+        run: pnpm --filter account-web exec playwright install --with-deps chromium
 
       - name: E2E smoke (static UI)
         run: pnpm --filter account-web run test:e2e
