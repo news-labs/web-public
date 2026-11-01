@@ -18,18 +18,24 @@ export interface ApibayPortalConfig {
 }
 
 export function getApibayPortalConfig(env?: Record<string, string | undefined>): ApibayPortalConfig {
-  const portalOrigin = (env?.APIBAY_PORTAL_ORIGIN ?? DEFAULT_ORIGIN).replace(/\/$/, "");
+  // Canonical: API_PORTAL_ORIGIN. Legacy APIBAY_PORTAL_ORIGIN kept as transitional alias.
+  const portalOrigin = (
+    env?.API_PORTAL_ORIGIN ??
+    env?.APIBAY_PORTAL_ORIGIN ??
+    DEFAULT_ORIGIN
+  ).replace(/\/$/, "");
   const extraReturnHosts = (env?.ACCOUNT_RETURN_URL_HOSTS ?? "")
     .split(",")
     .map((h) => h.trim().toLowerCase())
     .filter(Boolean);
   return {
     portalOrigin,
-    signupPath: env?.APIBAY_SIGNUP_PATH ?? "/signup",
-    loginPath: env?.APIBAY_LOGIN_PATH ?? "/login",
-    forgotPasswordPath: env?.APIBAY_FORGOT_PASSWORD_PATH ?? "/forgot-password",
-    googleOauthPath: env?.APIBAY_GOOGLE_OAUTH_PATH ?? "/oauth/google",
-    logoutPath: env?.APIBAY_LOGOUT_PATH ?? "/logout",
+    signupPath: env?.API_SIGNUP_PATH ?? env?.APIBAY_SIGNUP_PATH ?? "/signup",
+    loginPath: env?.API_LOGIN_PATH ?? env?.APIBAY_LOGIN_PATH ?? "/login",
+    forgotPasswordPath:
+      env?.API_FORGOT_PASSWORD_PATH ?? env?.APIBAY_FORGOT_PASSWORD_PATH ?? "/forgot-password",
+    googleOauthPath: env?.API_GOOGLE_OAUTH_PATH ?? env?.APIBAY_GOOGLE_OAUTH_PATH ?? "/oauth/google",
+    logoutPath: env?.API_LOGOUT_PATH ?? env?.APIBAY_LOGOUT_PATH ?? "/logout",
     accountOrigin: (env?.ACCOUNT_PORTAL_ORIGIN ?? "https://account.newsfork.com").replace(/\/$/, ""),
     extraReturnHosts,
   };

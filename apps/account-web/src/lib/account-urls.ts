@@ -1,5 +1,8 @@
 export const ACCOUNT_ORIGIN = "https://account.newsfork.com";
-export const APIBAY_PORTAL_ORIGIN = "https://api.newsfork.com";
+/** Canonical portal origin on news-labs `nl-api-gateway`. */
+export const API_PORTAL_ORIGIN = "https://api.newsfork.com";
+/** @deprecated Use `API_PORTAL_ORIGIN` — transitional alias during apibay cutover. */
+export const APIBAY_PORTAL_ORIGIN = API_PORTAL_ORIGIN;
 
 export const ACCOUNT_SIGNIN_URL = `${ACCOUNT_ORIGIN}/login`;
 export const ACCOUNT_SIGNUP_URL = `${ACCOUNT_ORIGIN}/signup`;

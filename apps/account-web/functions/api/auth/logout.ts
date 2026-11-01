@@ -2,6 +2,7 @@ import { getApibayPortalConfig } from "../../lib/apibay-portal";
 import { SECURITY_HEADERS } from "../../lib/security-headers";
 
 interface Env {
+  API_PORTAL_ORIGIN?: string;
   APIBAY_PORTAL_ORIGIN?: string;
   APIBAY_LOGOUT_PATH?: string;
   ACCOUNT_PORTAL_ORIGIN?: string;

@@ -4,7 +4,7 @@ import {
   getApibayPortalConfig,
   sanitizeHubNextUrl,
   sanitizeReturnUrl,
-} from "../functions/lib/apibay-portal";
+} from "../functions/lib/apibay-portal.ts";
 
 const config = getApibayPortalConfig();
 
@@ -61,6 +61,14 @@ if (!withReturn.includes("return_url=")) {
 }
 if (!decodeURIComponent(withReturn).includes("/api/auth/push-callback")) {
   throw new Error(`login return_url should target push-callback: ${withReturn}`);
+}
+
+const aliased = getApibayPortalConfig({
+  API_PORTAL_ORIGIN: "https://api.newsfork.com",
+  APIBAY_PORTAL_ORIGIN: "https://legacy.example",
+});
+if (aliased.portalOrigin !== "https://api.newsfork.com") {
+  throw new Error(`API_PORTAL_ORIGIN should win over APIBAY_*: ${aliased.portalOrigin}`);
 }
 
 console.log("✅ apibay-portal URL builders OK");

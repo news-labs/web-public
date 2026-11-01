@@ -13,6 +13,7 @@ import { getApibayPortalConfig, sanitizeHubNextUrl } from "../../lib/apibay-port
 import { redirectWithSecurityHeaders } from "../../lib/security-headers";
 
 interface Env {
+  API_PORTAL_ORIGIN?: string;
   APIBAY_PORTAL_ORIGIN?: string;
   ACCOUNT_PORTAL_ORIGIN?: string;
   ACCOUNT_RETURN_URL_HOSTS?: string;
