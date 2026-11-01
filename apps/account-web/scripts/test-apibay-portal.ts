@@ -53,14 +53,14 @@ const withReturn = buildApibayPortalUrl(
   config,
   new URLSearchParams({
     email: "user@example.com",
-    return_url: "https://account.newsfork.com/api/auth/hub/callback?next=https%3A%2F%2Fkoryy.com%2Fauth%2Fcallback",
+    return_url: "https://account.newsfork.com/api/auth/push-callback?next=https%3A%2F%2Fkoryy.com%2Fauth%2Fcallback",
   }),
 );
 if (!withReturn.includes("return_url=")) {
-  throw new Error(`login should forward hub callback return_url: ${withReturn}`);
+  throw new Error(`login should forward push-callback return_url: ${withReturn}`);
 }
-if (!decodeURIComponent(withReturn).includes("/api/auth/hub/callback")) {
-  throw new Error(`login return_url should target hub/callback: ${withReturn}`);
+if (!decodeURIComponent(withReturn).includes("/api/auth/push-callback")) {
+  throw new Error(`login return_url should target push-callback: ${withReturn}`);
 }
 
 console.log("✅ apibay-portal URL builders OK");

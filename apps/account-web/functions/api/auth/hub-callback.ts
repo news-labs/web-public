@@ -1,2 +1,2 @@
-/** Alias for /api/auth/hub/callback — older return_url links. */
-export { onRequestGet } from "./hub/callback";
+/** Legacy alias for older return_url links. */
+export { onRequestGet } from "./push-callback";
