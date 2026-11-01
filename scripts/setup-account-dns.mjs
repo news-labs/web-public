@@ -78,10 +78,36 @@ async function ensureCname(zoneId) {
     }),
   });
   if (!create.body.success) {
+    const code = create.body.errors?.[0]?.code;
+    if (code === 10000) {
+      printManualDns();
+      throw new Error(
+        "Create DNS failed: API token lacks Zone → DNS → Edit on newsfork.com (code 10000)",
+      );
+    }
     throw new Error(`Create DNS failed: ${JSON.stringify(create.body.errors)}`);
   }
   console.log(`✅ Created CNAME ${HOSTNAME}`);
   return create.body.result;
+}
+
+function printManualDns() {
+  console.log(`
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Manual DNS (token lacks Zone → DNS → Edit)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dashboard → newsfork.com → DNS → Records:
+
+| Type  | Name    | Content                  | Proxy |
+|-------|---------|--------------------------|-------|
+| CNAME | account | nl-account-web.pages.dev | ON    |
+
+Then: Workers & Pages → nl-account-web → Custom domains → Add account.newsfork.com
+
+Or expand CLOUDFLARE_API_TOKEN with Zone DNS Edit and re-run:
+  workflow_dispatch "Setup account.newsfork.com DNS"
+`);
 }
 
 async function ensurePagesDomain() {
