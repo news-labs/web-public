@@ -172,8 +172,9 @@ Dashboard → newsfork.com → DNS → Records:
 | Type  | Name     | Content                    | Proxy |
 |-------|----------|----------------------------|-------|
 | CNAME | docs     | nl-public-docs.pages.dev   | ON    |
-| CNAME | devdocs  | nl-internal-docs.pages.dev   | ON    |
-| CNAME | www      | nl-marketing-web.pages.dev   | ON    |
+| CNAME | devdocs  | nl-internal-docs.pages.dev | ON    |
+| CNAME | www      | nl-marketing-web.pages.dev | ON    |
+| CNAME | account  | nl-account-web.pages.dev   | ON    |
 
 Then: Workers & Pages → each nl-* project → Custom domains → Activate
 

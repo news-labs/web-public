@@ -1,0 +1,42 @@
+name: Setup account.newsfork.com DNS
+
+# CNAME account → nl-account-web (hub push /api/auth/hub-callback)
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: setup-account-dns
+  cancel-in-progress: false
+
+jobs:
+  setup:
+    name: CNAME account → nl-account-web
+    runs-on: [self-hosted, news-labs, contabo]
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf .git
+          git init
+          git fetch --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "${GITHUB_SHA}"
+          git checkout --force FETCH_HEAD
+      - name: Node 22 and pnpm
+        run: bash scripts/ci/use-node-pnpm.sh
+
+      - name: Cloudflare preflight
+        run: node scripts/preflight-cloudflare.mjs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_WORKERS_SUBDOMAIN: ${{ vars.CF_WORKERS_SUBDOMAIN }}
+
+      - name: Configure DNS and Pages custom domain
+        run: CI=true node scripts/setup-account-dns.mjs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
