@@ -40,6 +40,8 @@ const CORE_RETURN_HOSTS = new Set([
   "account.newsfork.com",
   "api.newsfork.com",
   "www.newsfork.com",
+  /** Until account CNAME exists — Pages.dev host for hub push E2E. */
+  "nl-account-web.pages.dev",
 ]);
 
 /** Hub brand apex hosts (push auth callback). Subdomains of these are also allowed. */
