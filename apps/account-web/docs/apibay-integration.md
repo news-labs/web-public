@@ -1,6 +1,9 @@
 # apibay-labs portal integration (account.newsfork.com)
 
-Account portal UI lives on `account.newsfork.com`. **Signup, login, API keys, billing, and sessions remain on apibay-labs** at `api.newsfork.com`.
+> **Ownership (내재화 SSOT):** `api.newsfork.com`은 news-labs Worker **`nl-api-gateway`**가 호스트한다. apibay-labs는 **이행기 핸드오프 대상**이며 Phase 4 전 폐기 예정, Phase 5에서 SaaS 추출만. 환경 변수 `APIBAY_PORTAL_ORIGIN`은 이행기 이름이며, 코드 전환 시 **`API_PORTAL_ORIGIN`**을 canonical alias로 사용한다 (동일 기본값 `https://api.newsfork.com`).  
+> Canonical plan: [API Newsfork 플랫폼 마스터플랜](https://devdocs.newsfork.com/internal/admin-planning/api-newsfork-platform-masterplan/)
+
+Account portal UI lives on `account.newsfork.com`. **As-Is (이행기):** signup, login, API keys, billing, and sessions still hand off to the portal origin at `api.newsfork.com` (today via apibay bridge; To-Be = news-labs `nl-api-gateway`).
 
 ## Canonical URLs
 
@@ -55,7 +58,7 @@ Configure:
 Register when enabling account-hosted OAuth bridge:
 
 - `https://account.newsfork.com/api/auth/google/callback` (optional bridge)
-- Primary OAuth remains on `api.newsfork.com` per apibay defaults
+- Primary OAuth remains on `api.newsfork.com` (news-labs host; 이행기 브리지가 apibay 경로를 경유할 수 있음)
 
 ## CORS
 
@@ -67,7 +70,8 @@ If apibay exposes browser auth APIs, allow origin:
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
-| `APIBAY_PORTAL_ORIGIN` | `https://api.newsfork.com` | Portal base URL |
+| `APIBAY_PORTAL_ORIGIN` | `https://api.newsfork.com` | Portal base URL (이행기 이름) |
+| `API_PORTAL_ORIGIN` | `https://api.newsfork.com` | **Canonical alias** (동일 origin; 코드 전환 시 우선) |
 | `APIBAY_SIGNUP_PATH` | `/signup` | Signup path |
 | `APIBAY_LOGIN_PATH` | `/login` | Login path |
 | `APIBAY_FORGOT_PASSWORD_PATH` | `/forgot-password` | Forgot password |
