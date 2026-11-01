@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev --port 3001",
     "build": "next build",
-    "deploy": "wrangler pages deploy out --project-name=nl-account-web",
+    "deploy": "wrangler pages deploy out --project-name=nl-account-web --branch main",
     "typecheck": "tsc --noEmit",
     "test:apibay": "tsx scripts/test-apibay-portal.ts",
     "test:e2e": "playwright test",
