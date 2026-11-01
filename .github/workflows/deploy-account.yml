@@ -73,7 +73,8 @@ jobs:
 
       - name: Deploy to Cloudflare Pages
         working-directory: apps/account-web
-        run: pnpm exec wrangler pages deploy out --project-name=nl-account-web --commit-dirty=true
+        # --branch main → production (without it wrangler creates preview-only deploys)
+        run: pnpm exec wrangler pages deploy out --project-name=nl-account-web --branch main --commit-dirty=true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
