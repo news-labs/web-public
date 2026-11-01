@@ -2,9 +2,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Globe } from "lucide-react";
 import {
-  LoginCard,
+  OtpLoginCard,
   RequirePortalRole,
-  getStoredApiKey,
   getSessionToken,
   setSessionToken,
 } from "@core-labs/admin-shell";
@@ -138,9 +137,16 @@ export function App() {
   }
 
   if (legacyAuthed) {
-    // Use LoginCard fallback for api-key admins
-    if (!getStoredApiKey(WEB_PORTAL.storageKey) && !getSessionToken(WEB_PORTAL.storageKey)) {
-      return <LoginCard config={WEB_PORTAL} icon={Globe} onSuccess={() => setLegacyAuthed(true)} />;
+    if (!getSessionToken(WEB_PORTAL.storageKey)) {
+      return (
+        <OtpLoginCard
+          config={WEB_PORTAL}
+          icon={Globe}
+          audience="ops"
+          portal="web"
+          onSuccess={() => setLegacyAuthed(true)}
+        />
+      );
     }
   }
 
