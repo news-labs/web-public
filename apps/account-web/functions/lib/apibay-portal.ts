@@ -75,10 +75,9 @@ function isAllowedReturnHost(hostname: string, extra: string[]): boolean {
  */
 function isAllowedReturnPath(url: URL): boolean {
   const host = url.hostname.toLowerCase();
-  // F3 ops host — Domain/Content Admin paths (not public brand /auth/callback).
-  if (host.startsWith("ops.") && isBrandReturnHost(host.slice(4))) {
-    const path = url.pathname.replace(/\/+$/, "") || "/";
-    return path === "/" || path.startsWith("/domain") || path.startsWith("/content");
+  // ops.{brand} entry retired — do not accept as return_url (use cms.newsfork.com).
+  if (host.startsWith("ops.")) {
+    return false;
   }
   if (isBrandReturnHost(host)) {
     const path = url.pathname.replace(/\/+$/, "") || "/";
