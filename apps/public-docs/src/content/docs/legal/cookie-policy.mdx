@@ -1,12 +1,12 @@
 ---
 title: Cookie Policy
 description: How Newsfork uses cookies and similar technologies.
-lastUpdated: 2026-06-28
+lastUpdated: 2026-11-02
 ---
 
 **Effective Date:** 28 June 2026
 
-**Last Updated:** 28 June 2026
+**Last Updated:** 2 November 2026
 
 ## 1. Introduction
 
@@ -65,12 +65,17 @@ These cookies help us understand how visitors interact with our websites.
 | --- | --- | --- | --- |
 | nf-theme | Dark/light mode preference | 1 year | Newsfork |
 | cookie_consent | Your cookie consent preferences | 1 year | Newsfork |
+| nl_consent | Brand news site cookie consent (`granted` / `denied`) | 1 year | Newsfork |
+| nl-consent (localStorage) | Same preference for AdSense / personalisation gating | 1 year | Newsfork |
+| nl-consent-push (localStorage) | Optional emergency Web Push opt-in intent (separate from cookies) | 1 year | Newsfork |
 
 **Legal basis:** Consent for non-essential preferences.
 
 ### 4.4 Marketing/Advertising Cookies
 
-We do not currently use marketing or advertising cookies on our websites or platform.
+Brand news sites (for example KORY / TOKY) may load advertising scripts (such as Google AdSense) only after you choose **Accept all** (`nl_consent=granted`). Choosing **Necessary only** keeps advertising cookies off.
+
+Web Push / browser notifications are **not cookies**. When offered on the consent screen or later, they require a separate browser permission prompt and can be changed anytime in alert settings.
 
 ## 5. Third-Party Cookies
 
@@ -112,6 +117,8 @@ We do not currently respond to Do Not Track signals. Manage cookies as described
 ## 8. Cookies and the Newsfork Platform
 
 Within the platform (`account.newsfork.com` for sign-in and sign-up; `api.newsfork.com` for the developer portal and API), we primarily use strictly necessary cookies for session management, authentication, and security.
+
+Brand diaspora news sites use the same consent model described above (`nl_consent` / localStorage) so advertising and optional push alerts stay behind an explicit choice.
 
 ## 9. Updates to This Policy
 
