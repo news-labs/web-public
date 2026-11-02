@@ -46,6 +46,9 @@ const CORE_RETURN_HOSTS = new Set([
   "account.newsfork.com",
   "api.newsfork.com",
   "www.newsfork.com",
+  /** F4/F5 — Admin / cms alias handoff targets. */
+  "admin.newsfork.com",
+  "cms.newsfork.com",
   /** Until account CNAME exists — Pages.dev host for hub push E2E. */
   "nl-account-web.pages.dev",
 ]);
@@ -71,7 +74,13 @@ function isAllowedReturnHost(hostname: string, extra: string[]): boolean {
  * Account / apibay hosts may use any https path.
  */
 function isAllowedReturnPath(url: URL): boolean {
-  if (isBrandReturnHost(url.hostname)) {
+  const host = url.hostname.toLowerCase();
+  // F3 ops host — Domain/Content Admin paths (not public brand /auth/callback).
+  if (host.startsWith("ops.") && isBrandReturnHost(host.slice(4))) {
+    const path = url.pathname.replace(/\/+$/, "") || "/";
+    return path === "/" || path.startsWith("/domain") || path.startsWith("/content");
+  }
+  if (isBrandReturnHost(host)) {
     const path = url.pathname.replace(/\/+$/, "") || "/";
     return path === "/auth/callback";
   }
