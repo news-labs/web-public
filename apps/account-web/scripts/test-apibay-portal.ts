@@ -40,6 +40,8 @@ const brandWww = sanitizeReturnUrl("https://www.tokyy.com/auth/callback", config
 if (!brandWww) throw new Error("allowlist should permit www.tokyy.com/auth/callback");
 
 const brandBadPath = sanitizeReturnUrl("https://koryy.com/ops/push", config.accountOrigin);
+const opsRetired = sanitizeReturnUrl("https://ops.koryy.com/domain", config.accountOrigin);
+if (opsRetired) throw new Error("ops host return_url must be rejected");
 if (brandBadPath !== null) throw new Error("brand hosts must only allow /auth/callback");
 
 const hubNext = sanitizeHubNextUrl("https://koryy.com/auth/callback");
