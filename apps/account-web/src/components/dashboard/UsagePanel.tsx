@@ -10,7 +10,7 @@ export function UsagePanel() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Usage</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Weighted request units for the current UTC month and the last 30 days.
+          Quota uses weighted units (UTC month). Most news endpoints cost 1 unit; semantic and MCP calls may cost more.
         </p>
       </div>
     );
@@ -28,7 +28,7 @@ export function UsagePanel() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Usage</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Weighted request units for the current UTC month and the last 30 days.
+          Quota uses weighted units (UTC month). Most news endpoints cost 1 unit; semantic and MCP calls may cost more.
         </p>
       </div>
 

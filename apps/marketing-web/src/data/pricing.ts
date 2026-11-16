@@ -27,7 +27,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     ctaHref: "https://account.newsfork.com/signup",
     highlight: false,
     features: [
-      "1,000 API requests / month",
+      "1,000 weighted units / month",
       "10 countries",
       "24-hour data freshness",
       "Keyword search",
@@ -46,7 +46,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     highlight: true,
     badge: "Most popular",
     features: [
-      "50,000 API requests / month",
+      "50,000 weighted units / month",
       "All 100+ countries",
       "Real-time data (<5 min freshness)",
       "Semantic search + RAG",
@@ -111,7 +111,7 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "Is there a free tier?",
-    a: "Yes. The Free plan includes 1,000 API requests per month, 10 countries, 24-hour data freshness, and keyword search — no credit card required.",
+    a: "Yes. The Free plan includes 1,000 weighted units per month (most news calls = 1 unit), 10 countries, 24-hour data freshness, and keyword search — no credit card required.",
   },
   {
     q: "How does News-V scoring work?",

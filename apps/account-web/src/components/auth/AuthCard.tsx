@@ -12,6 +12,7 @@ import {
   EMAIL_RE,
 } from "@/lib/account-urls";
 import { accountApi, describeError } from "@/lib/account-api";
+import { sanitizeDashboardNext } from "@/lib/safe-next";
 
 export type AuthFlow = "login" | "signup";
 
@@ -21,12 +22,14 @@ interface AuthCardProps {
   plan?: string;
   /** Post-login destination (CMS / hub push); sanitized server-side by the BFF. */
   returnUrl?: string;
+  /** Same-origin dashboard deep-link after OTP (e.g. `/dashboard/keys/`). */
+  nextPath?: string;
 }
 
 const INPUT_CLASS =
   "mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none ring-accent focus:ring-2";
 
-export function AuthCard({ flow, initialEmail = "", plan, returnUrl }: AuthCardProps) {
+export function AuthCard({ flow, initialEmail = "", plan, returnUrl, nextPath }: AuthCardProps) {
   const [step, setStep] = useState<"email" | "code">("email");
   const [email, setEmail] = useState(initialEmail);
   const [name, setName] = useState("");
@@ -38,6 +41,7 @@ export function AuthCard({ flow, initialEmail = "", plan, returnUrl }: AuthCardP
 
   const isLogin = flow === "login";
   const wantsPro = plan === "pro" || plan === "pro_monthly" || plan === "pro_annual";
+  const safeNext = sanitizeDashboardNext(nextPath);
   const title = step === "code" ? "Check your email" : isLogin ? "Log in" : "Create account";
   const subtitle =
     step === "code"
@@ -48,12 +52,13 @@ export function AuthCard({ flow, initialEmail = "", plan, returnUrl }: AuthCardP
           : "We will email you a one-time code — no password needed."
         : wantsPro
           ? "Create your account, then continue to a 14-day Pro trial. A card is required at checkout; you will not be charged until the trial ends."
-          : "Free plan: 1,000 requests per month, no credit card required.";
+          : "Free plan: 1,000 weighted units / month (most news calls = 1 unit). No credit card required.";
 
   const switchHref = (() => {
     const url = new URL(isLogin ? ACCOUNT_SIGNUP_URL : ACCOUNT_SIGNIN_URL);
     if (plan) url.searchParams.set("plan", plan);
     if (returnUrl) url.searchParams.set("return_url", returnUrl);
+    if (safeNext) url.searchParams.set("next", safeNext);
     return url.toString();
   })();
 
@@ -96,6 +101,10 @@ export function AuthCard({ flow, initialEmail = "", plan, returnUrl }: AuthCardP
       });
       if (res.next) {
         window.location.assign(res.next);
+        return;
+      }
+      if (safeNext && !wantsPro) {
+        window.location.assign(safeNext);
         return;
       }
       const dest = wantsPro ? DASHBOARD_BILLING_PATH : DASHBOARD_PATH;

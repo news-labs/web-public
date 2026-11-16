@@ -113,7 +113,7 @@ export const TESTIMONIALS = [
 
 export const PRICING_BAND = {
   headline: "Plans that scale with your API usage",
-  subline: "Start with 1,000 free requests per month. Upgrade when you need real-time data, semantic search, and MCP tools.",
+  subline: "Start with 1,000 free weighted units per month. Upgrade when you need real-time data, semantic search, and MCP tools.",
 };
 
 export const CODE_EXAMPLE = {
@@ -146,7 +146,7 @@ export const TRIPLE_CTA = [
   },
   {
     title: "Start for free",
-    description: "1,000 requests/month, no credit card.",
+    description: "1,000 weighted units/month, no credit card.",
     cta: "Get API key",
     href: SIGNUP_URL,
     external: true,

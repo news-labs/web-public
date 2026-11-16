@@ -179,7 +179,9 @@ export function BillingPanel() {
             {note && <p className="mt-1 text-sm text-muted-foreground">{note}</p>}
             <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
               <li>
-                {plan.monthlyUnits === null ? "Unlimited" : NUM.format(plan.monthlyUnits)} weighted units / month
+                {plan.monthlyUnits === null
+                  ? "Unlimited weighted units / month"
+                  : `${NUM.format(plan.monthlyUnits)} weighted units / month`}
               </li>
               {plan.features.map((f) => (
                 <li key={f}>{featureLabel(f)}</li>
