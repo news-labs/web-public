@@ -12,6 +12,7 @@ export const DOCS_LEGAL_BASE = "https://docs.newsfork.com/legal";
 export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const DASHBOARD_PATH = "/dashboard/";
+export const DASHBOARD_BILLING_PATH = "/dashboard/billing/";
 export const API_BASE_URL = "https://api.newsfork.com";
 export const API_DOCS_URL = "https://docs.newsfork.com/";
 export const PRICING_URL = "https://newsfork.com/pricing/";

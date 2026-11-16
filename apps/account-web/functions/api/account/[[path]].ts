@@ -97,7 +97,12 @@ export async function onRequest(context: Context): Promise<Response> {
 
   let target: { path: string; method: string; body?: unknown } | null = null;
   if (method === "GET" && route === "me") target = { path: "/v1/account/me", method };
-  else if (method === "GET" && route === "usage") {
+  else if (method === "PATCH" && route === "me") {
+    const body = await readBody(request);
+    target = { path: "/v1/account/me", method, body };
+  } else if (method === "DELETE" && route === "me") {
+    target = { path: "/v1/account/me", method };
+  } else if (method === "GET" && route === "usage") {
     const days = new URL(request.url).searchParams.get("days") ?? "30";
     target = { path: `/v1/account/usage?days=${encodeURIComponent(days)}`, method };
   } else if (method === "GET" && route === "keys") target = { path: "/v1/account/keys", method };
@@ -115,5 +120,9 @@ export async function onRequest(context: Context): Promise<Response> {
   }
   if (!target) return respond({ error: "not_found" }, 404);
 
-  return relay(await callGateway(env, target.path, { ...target, sessionToken }), {}, true);
+  const res = await callGateway(env, target.path, { ...target, sessionToken });
+  if (method === "DELETE" && route === "me" && res.ok) {
+    return relay(res, { "set-cookie": clearSessionCookie() }, true);
+  }
+  return relay(res, {}, true);
 }

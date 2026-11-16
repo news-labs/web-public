@@ -77,7 +77,13 @@ export const accountApi = {
     request<{ created: boolean; next?: string | null }>("verify", { method: "POST", body: input }),
   logout: () => request<{ ok: true }>("logout", { method: "POST", body: {} }),
   me: () => request<Overview>("me"),
-  usage: (days = 30) => request<{ days: DailyUsage[] }>(`usage?days=${days}`),
+  updateProfile: (patch: { name?: string | null; company?: string | null }) =>
+    request<{ consumer: Overview["consumer"] }>("me", { method: "PATCH", body: patch }),
+  deleteAccount: () => request<{ ok: true }>("me", { method: "DELETE" }),
+  usage: (days = 30) =>
+    request<{ days: DailyUsage[]; month: Overview["usage"]["month"] | null; monthlyLimit: number | null }>(
+      `usage?days=${days}`,
+    ),
   keys: () => request<{ keys: ApiKeySummary[] }>("keys"),
   createKey: (label: string) =>
     request<{ key: ApiKeySummary; apiKey: string }>("keys", { method: "POST", body: { label } }),
@@ -104,6 +110,9 @@ const ERROR_MESSAGES: Record<string, string> = {
   price_not_configured: "Online billing is not available yet. Contact hello@newsfork.com to upgrade.",
   portal_not_configured: "Billing management is temporarily unavailable. Contact hello@newsfork.com.",
   no_billing_customer: "No billing account yet. Upgrade to Pro first.",
+  empty_patch: "Nothing to update.",
+  cancel_subscription_first:
+    "Cancel your Pro subscription in Manage billing first, then delete the account.",
 };
 
 export function describeError(err: unknown): string {

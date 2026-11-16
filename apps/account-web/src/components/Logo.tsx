@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-export function Logo({ className = "" }: { className?: string }) {
+export function Logo({ className = "", href = "/login" }: { className?: string; href?: string }) {
   return (
-    <Link href="/login" className={`flex items-center gap-2.5 ${className}`}>
+    <Link href={href} className={`flex items-center gap-2.5 ${className}`}>
       <svg
         width="32"
         height="32"

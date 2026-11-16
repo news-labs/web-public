@@ -37,4 +37,11 @@ test.describe("account portal static UI", () => {
     const body = await response?.text();
     expect(body).toContain("Disallow: /");
   });
+
+  test("dashboard shell exposes account navigation (auth redirect)", async ({ page }) => {
+    await page.goto("/dashboard/billing/");
+    // Unauthenticated clients are sent to login by the dashboard data loader.
+    await page.waitForURL(/\/login\/?/);
+    await expect(page.getByRole("heading", { name: "Log in" })).toBeVisible();
+  });
 });

@@ -9,14 +9,17 @@ function LoginContent() {
   const email = searchParams.get("email") ?? "";
   const plan = searchParams.get("plan") ?? undefined;
   const returnUrl = searchParams.get("return_url") ?? undefined;
+  const deleted = searchParams.get("deleted") === "1";
 
   return (
-    <AuthCard
-      flow="login"
-      initialEmail={email}
-      plan={plan}
-      returnUrl={returnUrl}
-    />
+    <div className="space-y-4">
+      {deleted && (
+        <p className="rounded-lg border border-border bg-muted px-3 py-2 text-sm" role="status">
+          Your account was deleted. You can create a new one any time.
+        </p>
+      )}
+      <AuthCard flow="login" initialEmail={email} plan={plan} returnUrl={returnUrl} />
+    </div>
   );
 }
 
