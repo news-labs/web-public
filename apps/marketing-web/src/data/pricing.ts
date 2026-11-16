@@ -1,7 +1,6 @@
 /**
- * Marketing copy for www.newsfork.com/pricing.
- * Quota / RPM / price must match the gateway plan SSOT: edge-api-gateway `src/plans.ts`
- * (served at https://api.newsfork.com/v1/plans).
+ * Marketing pricing for www.newsfork.com.
+ * Quota / RPM / price must match edge-api-gateway `src/plans.ts` (GET /v1/plans).
  */
 
 export interface PricingPlan {
@@ -29,49 +28,33 @@ export const PRICING_PLANS: PricingPlan[] = [
     highlight: false,
     features: [
       "1,000 API requests / month",
-      "10 requests / minute",
-      "Government news & sources API",
-      "Country, language, date and keyword filters",
-      "Self-serve API keys & usage dashboard",
+      "10 countries",
+      "24-hour data freshness",
+      "Keyword search",
       "Community support",
+      "Public docs",
     ],
   },
   {
     id: "pro",
     name: "Pro",
-    price: "$79",
+    price: "$10",
     period: "/ month",
     description: "For teams building production applications.",
-    cta: "Talk to us",
-    ctaHref: "/contact/?intent=pro",
+    cta: "Start 14-day trial",
+    ctaHref: "https://account.newsfork.com/signup?plan=pro",
     highlight: true,
     badge: "Most popular",
     features: [
       "50,000 API requests / month",
-      "100 requests / minute",
-      "Everything in Free",
-      "Semantic search + RAG answers",
-      "MCP tools for AI agents (beta)",
-      "News score on every document",
+      "All 100+ countries",
+      "Real-time data (<5 min freshness)",
+      "Semantic search + RAG",
+      "Webhooks & streaming",
+      "News-V scoring",
+      "MCP tools for AI agents",
       "Email support",
-    ],
-  },
-  {
-    id: "enterprise",
-    name: "Enterprise",
-    price: "Custom",
-    period: "",
-    description: "Dedicated infrastructure and custom contracts.",
-    cta: "Contact sales",
-    ctaHref: "/contact/?intent=enterprise",
-    highlight: false,
-    features: [
-      "Custom request volume and rate limits",
-      "Custom seed contracts (sources)",
-      "Private data pipeline",
-      "Contracted SLA",
-      "Priority support",
-      "Invoice billing",
+      "99.9% uptime SLA",
     ],
   },
 ];
@@ -84,45 +67,49 @@ export interface FaqItem {
 export const PRICING_FAQ: FaqItem[] = [
   {
     q: "What counts as an API request?",
-    a: "Each authenticated call to the Newsfork API counts as weighted units: news, article and source lookups are 1, semantic search is 2, RAG answers are 3, and MCP tool calls are weighted by tool. Every response returns X-Quota-Used and X-Quota-Remaining headers.",
+    a: "Any call to the Newsfork REST API — search, article fetch, feed query, semantic query, or MCP tool invocation — counts as one request. Webhook deliveries do not count.",
   },
   {
-    q: "When does my quota reset?",
-    a: "Quotas reset at the start of each calendar month (UTC). Your dashboard at account.newsfork.com shows usage for the current month and the last 30 days.",
+    q: "Can I upgrade or downgrade at any time?",
+    a: "Yes. Plan changes take effect immediately and are prorated to the current billing period.",
   },
   {
-    q: "What happens if I exceed my quota or rate limit?",
-    a: "Requests beyond the monthly quota or per-minute limit return HTTP 429 with a Retry-After header and the reset time. Upgrade to Pro or contact us for higher limits.",
+    q: "Is there a free trial for the Pro plan?",
+    a: "Yes, Pro comes with a 14-day free trial on your first subscription.",
   },
   {
-    q: "How do I upgrade to Pro?",
-    a: "Create a free account first, then contact us from the dashboard. Self-serve card checkout is coming soon.",
+    q: "What payment methods are accepted?",
+    a: "We accept all major credit cards and other local payment methods via Stripe. Pro is $10/month or $100/year.",
+  },
+  {
+    q: "What happens if I exceed my monthly quota?",
+    a: "We notify you at 80% and 100% of your quota. Requests beyond the limit return a 429 response. You can purchase add-on packs or upgrade your plan.",
   },
   {
     q: "Do MCP tool calls count toward my quota?",
-    a: "Yes. MCP tools are available on Pro and Enterprise and are metered against the same monthly quota as REST endpoints.",
+    a: "Yes. Each MCP tool invocation (search, article fetch, trending, etc.) counts as one API request, the same as REST endpoints.",
   },
   {
-    q: "Can Enterprise customers pay by invoice?",
-    a: "Yes. Enterprise plans support annual invoicing, custom contracts, and procurement-friendly billing terms.",
+    q: "Are webhooks billed separately?",
+    a: "No. Webhook deliveries are included with the Pro plan and do not count toward your monthly request quota.",
   },
 ];
 
 export const HOME_FAQ: FaqItem[] = [
   {
     q: "What counts as one API request?",
-    a: "Each authenticated API call counts as weighted units — 1 for news and source lookups, more for semantic search, RAG answers and MCP tools. Usage headers on every response show what is left this month.",
+    a: "Any call to the Newsfork REST API — search, article fetch, feed query, semantic query, or MCP tool invocation — counts as one request. Webhook deliveries do not count.",
   },
   {
     q: "Which countries and categories are included?",
-    a: "All plans include every country in the corpus — filter with ?country=SG and list sources with /v1/sources. Coverage grows continuously as new official sources are onboarded.",
+    a: "Free and Pro include the full corpus — filter with ?country=SG and list sources with /v1/sources. Coverage grows as new official sources are onboarded.",
   },
   {
     q: "Is there a free tier?",
-    a: "Yes. The Free plan includes 1,000 API requests per month at 10 requests per minute, with self-serve API keys — no credit card required.",
+    a: "Yes. The Free plan includes 1,000 API requests per month, 10 countries, 24-hour data freshness, and keyword search — no credit card required.",
   },
   {
     q: "How does News-V scoring work?",
-    a: "Every article receives a composite score from 1.0 to 10.0 across five dimensions: timeliness, impact, relevance, urgency, and source authority. Full scoring metadata is available on Pro and Enterprise plans.",
+    a: "Every article receives a composite score from 1.0 to 10.0 across five dimensions: timeliness, impact, relevance, urgency, and source authority. Full scoring metadata is available on the Pro plan.",
   },
 ];
