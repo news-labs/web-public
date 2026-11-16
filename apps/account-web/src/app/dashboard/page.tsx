@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { DashboardClient } from "@/components/dashboard/DashboardClient";
+import { OverviewPanel } from "@/components/dashboard/OverviewPanel";
 
 export const metadata: Metadata = {
-  title: "Dashboard",
+  title: "Overview",
 };
 
-export default function DashboardPage() {
-  return <DashboardClient />;
+export default function DashboardOverviewPage() {
+  return <OverviewPanel />;
 }

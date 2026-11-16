@@ -4,7 +4,13 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ONBOARDING_PANEL_CLASS } from "@/lib/onboarding-layout";
-import { ACCOUNT_SIGNIN_URL, ACCOUNT_SIGNUP_URL, DASHBOARD_PATH, EMAIL_RE } from "@/lib/account-urls";
+import {
+  ACCOUNT_SIGNIN_URL,
+  ACCOUNT_SIGNUP_URL,
+  DASHBOARD_BILLING_PATH,
+  DASHBOARD_PATH,
+  EMAIL_RE,
+} from "@/lib/account-urls";
 import { accountApi, describeError } from "@/lib/account-api";
 
 export type AuthFlow = "login" | "signup";
@@ -92,7 +98,8 @@ export function AuthCard({ flow, initialEmail = "", plan, returnUrl }: AuthCardP
         window.location.assign(res.next);
         return;
       }
-      const next = new URL(DASHBOARD_PATH, window.location.origin);
+      const dest = wantsPro ? DASHBOARD_BILLING_PATH : DASHBOARD_PATH;
+      const next = new URL(dest, window.location.origin);
       if (plan) next.searchParams.set("plan", plan);
       window.location.assign(next.pathname + next.search);
     } catch (err) {
