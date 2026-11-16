@@ -62,8 +62,8 @@ export interface DailyUsage {
 export const accountApi = {
   requestCode: (email: string) =>
     request<{ ok: true; expiresIn: number; debugCode?: string }>("otp", { method: "POST", body: { email } }),
-  verify: (input: { email: string; code: string; name?: string; company?: string }) =>
-    request<{ created: boolean }>("verify", { method: "POST", body: input }),
+  verify: (input: { email: string; code: string; name?: string; company?: string; returnUrl?: string }) =>
+    request<{ created: boolean; next?: string | null }>("verify", { method: "POST", body: input }),
   logout: () => request<{ ok: true }>("logout", { method: "POST", body: {} }),
   me: () => request<Overview>("me"),
   usage: (days = 30) => request<{ days: DailyUsage[] }>(`usage?days=${days}`),

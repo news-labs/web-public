@@ -13,12 +13,14 @@ interface AuthCardProps {
   flow: AuthFlow;
   initialEmail?: string;
   plan?: string;
+  /** Post-login destination (CMS / hub push); sanitized server-side by the BFF. */
+  returnUrl?: string;
 }
 
 const INPUT_CLASS =
   "mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none ring-accent focus:ring-2";
 
-export function AuthCard({ flow, initialEmail = "", plan }: AuthCardProps) {
+export function AuthCard({ flow, initialEmail = "", plan, returnUrl }: AuthCardProps) {
   const [step, setStep] = useState<"email" | "code">("email");
   const [email, setEmail] = useState(initialEmail);
   const [name, setName] = useState("");
@@ -67,12 +69,17 @@ export function AuthCard({ flow, initialEmail = "", plan }: AuthCardProps) {
     setBusy(true);
     setError(null);
     try {
-      await accountApi.verify({
+      const res = await accountApi.verify({
         email,
         code: code.trim(),
         name: name.trim() || undefined,
         company: company.trim() || undefined,
+        returnUrl,
       });
+      if (res.next) {
+        window.location.assign(res.next);
+        return;
+      }
       const next = new URL(DASHBOARD_PATH, window.location.origin);
       if (plan) next.searchParams.set("plan", plan);
       window.location.assign(next.pathname + next.search);

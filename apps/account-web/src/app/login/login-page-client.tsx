@@ -8,12 +8,14 @@ function LoginContent() {
   const searchParams = useSearchParams();
   const email = searchParams.get("email") ?? "";
   const plan = searchParams.get("plan") ?? undefined;
+  const returnUrl = searchParams.get("return_url") ?? undefined;
 
   return (
     <AuthCard
       flow="login"
       initialEmail={email}
       plan={plan}
+      returnUrl={returnUrl}
     />
   );
 }

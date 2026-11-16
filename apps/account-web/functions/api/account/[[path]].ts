@@ -7,10 +7,11 @@ import {
   type GatewayEnv,
 } from "../../lib/gateway";
 import { SECURITY_HEADERS } from "../../lib/security-headers";
+import { getApibayPortalConfig, sanitizeReturnUrl } from "../../lib/apibay-portal";
 
 interface Context {
   request: Request;
-  env: GatewayEnv;
+  env: GatewayEnv & Record<string, unknown>;
   params: { path?: string[] | string };
 }
 
@@ -74,7 +75,12 @@ export async function onRequest(context: Context): Promise<Response> {
     const data = (await res.json().catch(() => ({}))) as { sessionToken?: string; [k: string]: unknown };
     if (!res.ok || !data.sessionToken) return respond(data, res.status === 200 ? 502 : res.status);
     const { sessionToken, ...rest } = data;
-    return respond(rest, 200, { "set-cookie": sessionCookie(sessionToken) });
+    const config = getApibayPortalConfig(env as Record<string, string | undefined>);
+    const next =
+      typeof body.returnUrl === "string"
+        ? sanitizeReturnUrl(body.returnUrl, config.accountOrigin, config.extraReturnHosts)
+        : null;
+    return respond({ ...rest, next }, 200, { "set-cookie": sessionCookie(sessionToken) });
   }
 
   if (method === "GET" && route === "plans") {
