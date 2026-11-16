@@ -29,7 +29,7 @@ export default function PricingPage() {
 
       <section className="py-20 md:py-24">
         <div className="container mx-auto max-w-6xl px-4">
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
             {PRICING_PLANS.map((plan) => (
               <div
                 key={plan.id}

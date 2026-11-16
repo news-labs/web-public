@@ -38,7 +38,7 @@ export const PRICING_PLANS: PricingPlan[] = [
   {
     id: "pro",
     name: "Pro",
-    price: "$79",
+    price: "$10",
     period: "/ month",
     description: "For teams building production applications.",
     cta: "Start 14-day trial",
@@ -55,26 +55,6 @@ export const PRICING_PLANS: PricingPlan[] = [
       "MCP tools for AI agents",
       "Email support",
       "99.9% uptime SLA",
-    ],
-  },
-  {
-    id: "enterprise",
-    name: "Enterprise",
-    price: "Custom",
-    period: "",
-    description: "Dedicated infrastructure and custom contracts.",
-    cta: "Contact sales",
-    ctaHref: "/contact/?intent=enterprise",
-    highlight: false,
-    features: [
-      "Unlimited API requests",
-      "Dedicated edge workers",
-      "Custom seed contracts",
-      "Private data pipeline",
-      "SLA up to 99.99%",
-      "Priority support (Slack / phone)",
-      "Custom data retention",
-      "Audit log & compliance exports",
     ],
   },
 ];
@@ -95,11 +75,11 @@ export const PRICING_FAQ: FaqItem[] = [
   },
   {
     q: "Is there a free trial for the Pro plan?",
-    a: "Yes, Pro comes with a 14-day free trial. No credit card required to start.",
+    a: "Yes, Pro comes with a 14-day free trial on your first subscription.",
   },
   {
     q: "What payment methods are accepted?",
-    a: "We accept all major credit cards via Stripe. Enterprise customers can be invoiced.",
+    a: "We accept all major credit cards and other local payment methods via Stripe. Pro is $10/month or $100/year.",
   },
   {
     q: "What happens if I exceed my monthly quota?",
@@ -111,11 +91,7 @@ export const PRICING_FAQ: FaqItem[] = [
   },
   {
     q: "Are webhooks billed separately?",
-    a: "No. Webhook deliveries are included with Pro and Enterprise plans and do not count toward your monthly request quota.",
-  },
-  {
-    q: "Can Enterprise customers pay by invoice?",
-    a: "Yes. Enterprise plans support annual invoicing, custom contracts, and procurement-friendly billing terms.",
+    a: "No. Webhook deliveries are included with the Pro plan and do not count toward your monthly request quota.",
   },
 ];
 
