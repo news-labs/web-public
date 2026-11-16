@@ -12,9 +12,10 @@ test.describe("account portal static UI", () => {
     );
   });
 
-  test("signup page collects optional profile fields", async ({ page }) => {
+  test("signup page collects optional profile fields and states weighted units", async ({ page }) => {
     await page.goto("/signup/");
     await expect(page.getByRole("heading", { name: "Create account" })).toBeVisible();
+    await expect(page.getByText(/1,000 weighted units/i)).toBeVisible();
     await expect(page.getByLabel(/Company/)).toBeVisible();
     await expect(page.getByRole("button", { name: "Continue" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Log in" })).toHaveAttribute(
@@ -38,15 +39,16 @@ test.describe("account portal static UI", () => {
     expect(body).toContain("Disallow: /");
   });
 
-  test("dashboard shell exposes account navigation", async ({ page }) => {
+  test("unauthenticated dashboard redirects to login when account API returns 401", async ({ page }) => {
+    await page.route("**/api/account/**", async (route) => {
+      await route.fulfill({
+        status: 401,
+        contentType: "application/json",
+        body: JSON.stringify({ error: "unauthorized" }),
+      });
+    });
     await page.goto("/dashboard/billing/");
-    // Static export serves the shell HTML; auth redirect only happens after the account API call.
-    await expect(page.getByRole("navigation", { name: "Account" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Overview" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Usage" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "API keys" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Billing" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Settings" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Billing" })).toBeVisible();
+    await expect(page).toHaveURL(/\/login\/\?next=/);
+    await expect(page.getByRole("heading", { name: "Log in" })).toBeVisible();
   });
 });

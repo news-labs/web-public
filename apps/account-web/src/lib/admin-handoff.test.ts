@@ -6,7 +6,7 @@ import {
   cmsBrandPath,
   isAllowedAdminReturnUrl,
   opsDomainPath,
-} from "./admin-handoff.ts";
+} from "./admin-handoff";
 
 describe("admin-handoff", () => {
   it("builds cms brand paths as canonical entry", () => {

@@ -28,6 +28,7 @@ export function OverviewPanel() {
   const paid = isPaidBilling(billing);
   const canUpgrade = plan.id === "free" && !paid;
   const canManage = billing !== null && (paid || billing.hasBillingAccount);
+  const needsFirstKey = overview.keys.active === 0;
   const { used, limit, remaining, resetAt } = usage.month;
   const pct = limit ? Math.min(100, Math.round((used / limit) * 100)) : 0;
 
@@ -49,6 +50,24 @@ export function OverviewPanel() {
         <h1 className="text-2xl font-bold tracking-tight">Overview</h1>
         <p className="mt-1 text-sm text-muted-foreground">Plan, usage, and quick links for your API account.</p>
       </div>
+
+      {needsFirstKey && (
+        <section className={`${CARD} border-accent/40`} aria-labelledby="first-key-heading">
+          <h2 id="first-key-heading" className="text-lg font-semibold">
+            Create your first API key
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Keys authenticate requests to <code className="rounded bg-muted px-1">{API_BASE_URL}</code>. The secret is
+            shown once at creation.
+          </p>
+          <Link
+            href="/dashboard/keys/"
+            className="mt-4 inline-flex h-10 items-center justify-center rounded-lg bg-accent px-5 text-sm font-medium text-accent-foreground hover:opacity-90"
+          >
+            Go to API keys
+          </Link>
+        </section>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section className={CARD} aria-labelledby="plan-heading">
@@ -80,7 +99,9 @@ export function OverviewPanel() {
           </div>
           <ul className="mt-4 space-y-1 text-sm text-muted-foreground">
             <li>
-              {plan.monthlyUnits === null ? "Unlimited" : NUM.format(plan.monthlyUnits)} weighted units / month
+              {plan.monthlyUnits === null
+                ? "Unlimited weighted units / month"
+                : `${NUM.format(plan.monthlyUnits)} weighted units / month`}
             </li>
             <li>
               {usage.rateLimitPerMinute === null ? "Custom" : NUM.format(usage.rateLimitPerMinute)} requests / minute
@@ -127,7 +148,8 @@ export function OverviewPanel() {
             {remaining !== null ? `${NUM.format(remaining)} remaining · ` : ""}Resets {formatDate(resetAt)} (UTC month)
           </p>
           <p className="mt-3 text-xs text-muted-foreground">
-            Last 30 days: {days.length === 0 ? "no requests yet" : `${days.reduce((n, d) => n + d.units, 0)} units`}
+            Last 30 days:{" "}
+            {days.length === 0 ? "no usage yet" : `${days.reduce((n, d) => n + d.units, 0)} weighted units`}
           </p>
           <Link href="/dashboard/usage/" className="mt-4 inline-block text-sm text-foreground underline-offset-2 hover:underline">
             View usage

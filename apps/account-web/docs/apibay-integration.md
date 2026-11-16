@@ -1,104 +1,74 @@
 # Account portal (account.newsfork.com)
 
-> **2026-11 cutover:** signup/login, API keys and usage are served natively. The apibay handoff (`/api/auth/continue`, `/api/auth/google`) was removed — those paths 404'd on `nl-api-gateway` and `api.newsfork.com/login` redirected back here (loop).
+> **Role boundary (SSOT):** `account.newsfork.com` is the **API consumer self-serve portal** (OTP shell, keys, usage, Stripe). Hub brand visitors and Admin/CMS operators may enter OTP here only for a **one-time handoff** — do not keep brand/admin sessions on this host.
 >
-> | Surface | Path | Backend |
+> | Surface | Owns session? | Role |
 > |---|---|---|
-> | Login / signup (email OTP) | `/login/`, `/signup/` | `POST /api/account/otp`, `POST /api/account/verify` → gateway `/v1/account/auth/*` |
-> | Dashboard (plan, usage, keys, quickstart) | `/dashboard/` | `GET /api/account/{me,usage,keys}`, `POST /api/account/keys`, `DELETE /api/account/keys/:id` |
-> | Logout | `POST /api/account/logout`, `GET /api/auth/logout` | gateway `/v1/account/auth/logout` |
+> | `account.newsfork.com` | Yes (`nf_account_session`) | API consumer: keys · usage · billing |
+> | Hub brands (`koryy.com`, …) | Brand cookie after handoff | Push prefs via `/auth/callback?user_id=` |
+> | `admin.newsfork.com` / `cms.newsfork.com` | CP session after handoff | Ops / Domain Content — handoff mint/consume on CP |
 >
-> BFF: `functions/api/account/[[path]].ts` keeps the gateway `nf_sess_…` token in an HttpOnly `nf_account_session` cookie (30 days) and calls `nl-api-gateway` via the `GATEWAY` service binding (`wrangler.toml`), falling back to `API_PUBLIC_ORIGIN`. Non-GET calls require a same-origin `Origin` header. Hub push callbacks below are unchanged.
+> Backend SSOT for keys, metering, and Stripe: news-labs **`nl-api-gateway`** (`api.newsfork.com`).
 
-## Legacy notes (hub push callbacks still use `functions/lib/apibay-portal.ts` return-URL sanitizers)
+## Native account API (current)
 
-# apibay-labs portal integration (account.newsfork.com)
+| Surface | Path | Backend |
+|---|---|---|
+| Login / signup (email OTP) | `/login/`, `/signup/` | `POST /api/account/otp`, `POST /api/account/verify` → gateway `/v1/account/auth/*` |
+| Dashboard (plan, usage, keys, billing, settings) | `/dashboard/*` | `GET/POST/PATCH/DELETE /api/account/*` |
+| Logout | `POST /api/account/logout`, `GET /api/auth/logout` | gateway `/v1/account/auth/logout` |
+| Session gate | `functions/_middleware.ts` | Unauthenticated `/` and `/dashboard/*` → `/login/` |
 
-> **Ownership (내재화 SSOT):** `api.newsfork.com`은 news-labs Worker **`nl-api-gateway`**가 호스트한다. apibay-labs는 **이행기 핸드오프 대상**이며 Phase 4 전 폐기 예정, Phase 5에서 SaaS 추출만. 환경 변수 `APIBAY_PORTAL_ORIGIN`은 이행기 이름이며, 코드 전환 시 **`API_PORTAL_ORIGIN`**을 canonical alias로 사용한다 (동일 기본값 `https://api.newsfork.com`).  
-> Canonical plan: [API Newsfork 플랫폼 마스터플랜](https://devdocs.newsfork.com/internal/admin-planning/api-newsfork-platform-masterplan/)
+BFF: `functions/api/account/[[path]].ts` keeps the gateway `nf_sess_…` token in an HttpOnly `nf_account_session` cookie (30 days) and calls `nl-api-gateway` via the `GATEWAY` service binding (`wrangler.toml`), falling back to `API_PUBLIC_ORIGIN`. Non-GET calls require a same-origin `Origin` header.
 
-Account portal UI lives on `account.newsfork.com`. **As-Is (이행기):** signup, login, API keys, billing, and sessions still hand off to the portal origin at `api.newsfork.com` (today via apibay bridge; To-Be = news-labs `nl-api-gateway`).
+**2026-11 cutover:** `/api/auth/continue` and `/api/auth/google` were removed (they 404). Do not revive apibay browser handoffs for signup/login.
 
-## Canonical URLs
+## Hub push callbacks
 
-| User action | Account UI | apibay handoff |
-|-------------|------------|----------------|
-| Sign in | `https://account.newsfork.com/login` | `https://api.newsfork.com/login` |
-| Get API key / Sign up | `https://account.newsfork.com/signup` | `https://api.newsfork.com/signup` |
-| Google OAuth | `/api/auth/google?flow=login\|signup` | `https://api.newsfork.com/oauth/google` |
-| Post-auth dashboard | — | `https://api.newsfork.com` (portal home) |
-| Hub push link | Brand `/sign-in` | `return_url` → `/api/auth/push-callback?next=…` → brand `/auth/callback` |
-
-Query parameters (`plan`, `email`, `return_url`, etc.) are forwarded from account login/signup UI → continue/OAuth → apibay.
-
-## BFF routes (Cloudflare Pages Functions)
+Brand sign-in still uses return-URL sanitizers in `functions/lib/apibay-portal.ts` (name is transitional):
 
 | Route | Behavior |
 |-------|----------|
-| `GET /api/auth/continue` | `flow=login\|signup\|forgot`; merges query → 302 to apibay portal path |
-| `GET /api/auth/google` | `flow=login\|signup`; 302 to apibay Google OAuth start |
-| `GET /api/auth/google/callback` | 302 to apibay callback (canonical OAuth on api host) |
 | `GET /api/auth/push-callback` | Validates `next` brand `/auth/callback`; copies `user_id`/`uid`; 302 |
-| `GET /api/auth/hub/callback` | Alias (needs sibling `hub.ts`) |
+| `GET /api/auth/hub/callback` | Alias |
 | `GET /api/auth/hub-callback` | Legacy alias |
-| `POST /api/auth/logout` | Clears account cookies; 302 to apibay logout or portal home |
 
-## Allowlist (return_url / post-login)
-
-### account-web (`sanitizeReturnUrl`)
+### Allowlist (`sanitizeReturnUrl`)
 
 Always allowed:
 
 - `account.newsfork.com`, `api.newsfork.com`, `www.newsfork.com`
+- `admin.newsfork.com`, `cms.newsfork.com` (F4/F5 handoff targets)
 - Brand apex (and subdomains): `koryy.com`, `tokyy.com` — **path must be** `/auth/callback`
 - Optional extras: Pages env `ACCOUNT_RETURN_URL_HOSTS` (comma-separated hostnames)
 
-### apibay-labs dashboard
+## Canonical URLs
 
-Configure:
+| User action | URL |
+|-------------|-----|
+| Sign in | `https://account.newsfork.com/login/` |
+| Sign up / Get API key | `https://account.newsfork.com/signup/` |
+| Dashboard | `https://account.newsfork.com/dashboard/` |
+| Hub push return | `https://account.newsfork.com/api/auth/push-callback?next=https://{brand}/auth/callback` |
 
-- `https://account.newsfork.com`
-- `https://account.newsfork.com/login`
-- `https://account.newsfork.com/signup`
-- `https://account.newsfork.com/api/auth/push-callback` (**required** for hub push account link)
-- `https://api.newsfork.com`
-- `https://api.newsfork.com/*`
-- Optional direct brand callbacks: `https://koryy.com/auth/callback`, `https://tokyy.com/auth/callback`
-
-**Post-login:** redirect to `return_url` and append `user_id` (or `uid`) query param so hub-callback / brand callback can link the push visitor.
-
-## OAuth redirect URIs (GCP + apibay)
-
-Register when enabling account-hosted OAuth bridge:
-
-- `https://account.newsfork.com/api/auth/google/callback` (optional bridge)
-- Primary OAuth remains on `api.newsfork.com` (news-labs host; 이행기 브리지가 apibay 경로를 경유할 수 있음)
-
-## CORS
-
-If apibay exposes browser auth APIs, allow origin:
-
-- `https://account.newsfork.com`
+Deep-link after login: `/login/?next=/dashboard/keys/` (`next` must be a same-origin `/dashboard…` path).
 
 ## Environment (Pages / CI)
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
-| `APIBAY_PORTAL_ORIGIN` | `https://api.newsfork.com` | Portal base URL (이행기 이름) |
-| `API_PORTAL_ORIGIN` | `https://api.newsfork.com` | **Canonical alias** (동일 origin; 코드 전환 시 우선) |
-| `APIBAY_SIGNUP_PATH` | `/signup` | Signup path |
-| `APIBAY_LOGIN_PATH` | `/login` | Login path |
-| `APIBAY_FORGOT_PASSWORD_PATH` | `/forgot-password` | Forgot password |
-| `APIBAY_GOOGLE_OAUTH_PATH` | `/oauth/google` | OAuth start |
-| `APIBAY_LOGOUT_PATH` | `/logout` | Logout |
+| `API_PUBLIC_ORIGIN` | `https://api.newsfork.com` | Gateway HTTPS fallback when service binding unavailable |
 | `ACCOUNT_PORTAL_ORIGIN` | `https://account.newsfork.com` | This portal |
-| `ACCOUNT_RETURN_URL_HOSTS` | _(empty)_ | Extra https return hosts |
+| `ACCOUNT_RETURN_URL_HOSTS` | _(empty)_ | Extra https return hosts for hub callbacks |
+| `API_PORTAL_ORIGIN` | `https://api.newsfork.com` | Legacy alias used by return-URL helpers |
+| `APIBAY_PORTAL_ORIGIN` | same | Transitional alias — prefer `API_PORTAL_ORIGIN` |
 
 ## Operator checklist
 
-- [x] apibay: allow `account.newsfork.com` (+ hub/callback URL) in return_url allowlist (`dashboard/lib/return-url.ts`)
-- [x] apibay: append `user_id` on post-login redirect to `return_url`
-- [x] apibay: P2 bare `/login` `/signup` → `account.newsfork.com` (skip when `return_url` / `account_origin` / `from`)
-- [ ] DNS: `account` CNAME → `nl-account-web.pages.dev` (Zone DNS Edit or Dashboard)
-- [ ] Verify E2E: brand Sign in → account → apibay → hub/callback → `/auth/callback?user_id=` → push prefs linked
-- [ ] Verify E2E: www CTA → account UI → apibay → API key visible
+- [x] Native OTP login/signup on account-web → `nl-api-gateway`
+- [x] Session cookie BFF + CSRF Origin check
+- [x] Unauthenticated `/dashboard/*` edge redirect (`functions/_middleware.ts`)
+- [x] Hub push `return_url` allowlist + `user_id` relay
+- [ ] Optional: restore Google OAuth **on gateway** (not apibay bridge)
+- [ ] Verify E2E: brand Sign in → account OTP → hub/callback → `/auth/callback?user_id=`
+- [ ] Verify E2E: www CTA → account → API key visible

@@ -77,7 +77,7 @@ export function DefaultHero() {
     <ProductHeroSection
       title="Government news in one API"
       description="Collect, score, and query government news from 100+ countries—semantic search, News-V scoring, and edge-native delivery in a single REST API."
-      footnote="Free tier available — 1,000 requests/month, no credit card required"
+      footnote="Free tier available — 1,000 weighted units/month, no credit card required"
     />
   );
 }

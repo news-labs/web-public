@@ -136,8 +136,13 @@ export function KeysPanel() {
             <tbody>
               {keys.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="py-4 text-muted-foreground">
-                    No keys yet. Create one to start calling the API.
+                  <td colSpan={7} className="py-6">
+                    <p className="font-medium text-foreground">No keys yet</p>
+                    <p className="mt-1 text-muted-foreground">
+                      Enter a name above and click <span className="font-medium text-foreground">Create key</span> —
+                      you will see the secret once. Then call{" "}
+                      <code className="rounded bg-muted px-1">{API_BASE_URL}/v1/news</code>.
+                    </p>
                   </td>
                 </tr>
               )}
