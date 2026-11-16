@@ -62,7 +62,18 @@ export function BillingPanel() {
       });
   }, [overview, billing]);
 
-  if (!overview) return null;
+  if (!overview) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Billing</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Upgrade, change cards, download invoices, or cancel — payment details live in Stripe Customer Portal.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const paid = isPaidBilling(billing);
   const canUpgrade = overview.plan.id === "free" && !paid;

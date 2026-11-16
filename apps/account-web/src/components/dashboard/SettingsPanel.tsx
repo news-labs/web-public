@@ -22,7 +22,14 @@ export function SettingsPanel() {
     setCompany(overview.consumer.company ?? "");
   }, [overview]);
 
-  if (!overview) return null;
+  if (!overview) {
+    return (
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Profile, sign-out, and account deletion.</p>
+      </div>
+    );
+  }
 
   async function saveProfile(event: FormEvent) {
     event.preventDefault();

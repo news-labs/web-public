@@ -71,7 +71,12 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               {error}
             </div>
           )}
-          {loading && !overview ? <p className="text-sm text-muted-foreground">Loading…</p> : children}
+          {children}
+          {loading && !overview && (
+            <p className="mt-4 text-sm text-muted-foreground" role="status">
+              Loading account…
+            </p>
+          )}
         </main>
       </div>
     </div>

@@ -40,8 +40,11 @@ test.describe("account portal static UI", () => {
 
   test("dashboard shell exposes account navigation", async ({ page }) => {
     await page.goto("/dashboard/billing/");
-    // Static export serves the shell HTML; auth redirect only happens after the BFF call.
+    // Static export serves the shell HTML; auth redirect only happens after the account API call.
     await expect(page.getByRole("navigation", { name: "Account" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Overview" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Usage" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "API keys" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Billing" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Settings" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Billing" })).toBeVisible();
