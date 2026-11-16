@@ -38,10 +38,12 @@ test.describe("account portal static UI", () => {
     expect(body).toContain("Disallow: /");
   });
 
-  test("dashboard shell exposes account navigation (auth redirect)", async ({ page }) => {
+  test("dashboard shell exposes account navigation", async ({ page }) => {
     await page.goto("/dashboard/billing/");
-    // Unauthenticated clients are sent to login by the dashboard data loader.
-    await page.waitForURL(/\/login\/?/);
-    await expect(page.getByRole("heading", { name: "Log in" })).toBeVisible();
+    // Static export serves the shell HTML; auth redirect only happens after the BFF call.
+    await expect(page.getByRole("navigation", { name: "Account" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Billing" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Settings" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Billing" })).toBeVisible();
   });
 });
