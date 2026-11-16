@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FaqAccordion } from "@/components/sections/faq-accordion";
+import { CheckoutStatusBanner } from "@/components/CheckoutStatusBanner";
 import { PRICING_FAQ, PRICING_PLANS } from "@/data/pricing";
 
 export const metadata: Metadata = {
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 export default function PricingPage() {
   return (
     <>
+      <CheckoutStatusBanner />
       <section className="border-b border-border bg-gradient-to-b from-background to-muted/30 py-20 md:py-28 text-center">
         <div className="container mx-auto max-w-3xl px-4">
           <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-5">
@@ -27,7 +29,7 @@ export default function PricingPage() {
 
       <section className="py-20 md:py-24">
         <div className="container mx-auto max-w-6xl px-4">
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
             {PRICING_PLANS.map((plan) => (
               <div
                 key={plan.id}
