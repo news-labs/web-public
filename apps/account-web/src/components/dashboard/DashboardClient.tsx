@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,28 +45,25 @@ function BillingAction({ overview, billing }: { overview: Overview; billing: Bil
     }
   }
 
-  let button: ReactNode = null;
-  if (billing && (paid || billing.hasBillingAccount)) {
-    button = (
-      <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => void go("portal")}>
-        Manage billing
-      </Button>
-    );
-  }
-  if (overview.plan.id === "free" && !paid) {
-    button = billing ? (
-      <Button type="button" size="sm" disabled={busy} onClick={() => void go("checkout")}>
-        Upgrade to Pro
-      </Button>
-    ) : (
-      <a href={CONTACT_PRO_URL} className="rounded-lg bg-accent px-3 py-2 text-sm font-medium text-accent-foreground hover:opacity-90">
-        Upgrade to Pro
-      </a>
-    );
-  }
+  const canUpgrade = overview.plan.id === "free" && !paid;
+  const canManage = billing !== null && (paid || billing.hasBillingAccount);
   return (
     <div className="flex flex-col items-end gap-1">
-      {button}
+      {canUpgrade &&
+        (billing ? (
+          <Button type="button" size="sm" disabled={busy} onClick={() => void go("checkout")}>
+            Upgrade to Pro
+          </Button>
+        ) : (
+          <a href={CONTACT_PRO_URL} className="rounded-lg bg-accent px-3 py-2 text-sm font-medium text-accent-foreground hover:opacity-90">
+            Upgrade to Pro
+          </a>
+        ))}
+      {canManage && (
+        <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => void go("portal")}>
+          Manage billing
+        </Button>
+      )}
       {error && (
         <p className="max-w-56 text-right text-xs text-destructive" role="alert">
           {error}
