@@ -79,7 +79,9 @@ export function OverviewPanel() {
             </div>
           </div>
           <ul className="mt-4 space-y-1 text-sm text-muted-foreground">
-            <li>{plan.monthlyUnits === null ? "Unlimited" : NUM.format(plan.monthlyUnits)} requests / month</li>
+            <li>
+              {plan.monthlyUnits === null ? "Unlimited" : NUM.format(plan.monthlyUnits)} weighted units / month
+            </li>
             <li>
               {usage.rateLimitPerMinute === null ? "Custom" : NUM.format(usage.rateLimitPerMinute)} requests / minute
             </li>
@@ -107,7 +109,7 @@ export function OverviewPanel() {
           <h2 id="usage-heading" className="mt-1 text-xl font-semibold">
             {NUM.format(used)}{" "}
             <span className="text-sm font-normal text-muted-foreground">
-              / {limit === null ? "unlimited" : NUM.format(limit)} requests
+              / {limit === null ? "unlimited" : NUM.format(limit)} units
             </span>
           </h2>
           {limit !== null && (
@@ -145,6 +147,23 @@ export function OverviewPanel() {
             {`curl -H "Authorization: Bearer $NEWSFORK_API_KEY" \\
   "${API_BASE_URL}/v1/news?country=SG&limit=5"`}
           </pre>
+          {plan.features.includes("mcp") ? (
+            <>
+              <p className="mt-4 text-sm font-medium">MCP (Pro)</p>
+              <pre className="mt-2 overflow-x-auto rounded-lg bg-muted p-4 text-xs">
+                {`curl -H "Authorization: Bearer $NEWSFORK_API_KEY" \\
+  "${API_BASE_URL}/mcp/tools/list"`}
+              </pre>
+            </>
+          ) : (
+            <p className="mt-4 text-sm text-muted-foreground">
+              MCP tools are included with Pro.{" "}
+              <Link href="/dashboard/billing/" className="text-foreground underline-offset-2 hover:underline">
+                Upgrade
+              </Link>{" "}
+              to unlock <code className="rounded bg-muted px-1">/mcp/tools/*</code>.
+            </p>
+          )}
           <p className="mt-3 text-sm text-muted-foreground">
             Manage keys on the{" "}
             <Link href="/dashboard/keys/" className="text-foreground underline-offset-2 hover:underline">
