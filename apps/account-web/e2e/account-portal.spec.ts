@@ -28,7 +28,7 @@ test.describe("account portal static UI", () => {
     await page.getByLabel("Email").fill("not-an-email");
     await page.getByLabel("Email").evaluate((el) => el.removeAttribute("type"));
     await page.getByRole("button", { name: "Continue" }).click();
-    await expect(page.getByRole("alert")).toContainText("valid email");
+    await expect(page.getByText("Enter a valid email address.")).toBeVisible();
   });
 
   test("robots.txt disallows crawlers", async ({ page }) => {
