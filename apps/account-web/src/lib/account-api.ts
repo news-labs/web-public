@@ -59,6 +59,8 @@ export interface DailyUsage {
   rejected: number;
 }
 
+export type BillingPlan = "pro_monthly" | "pro_annual";
+
 export interface BillingStatus {
   tier: string;
   status: string;
@@ -81,7 +83,7 @@ export const accountApi = {
     request<{ key: ApiKeySummary; apiKey: string }>("keys", { method: "POST", body: { label } }),
   revokeKey: (id: string) => request<{ status: string }>(`keys/${encodeURIComponent(id)}`, { method: "DELETE" }),
   billing: () => request<BillingStatus>("billing"),
-  checkout: () => request<{ url: string }>("billing/checkout", { method: "POST", body: { plan: "pro_monthly" } }),
+  checkout: (plan: BillingPlan) => request<{ url: string }>("billing/checkout", { method: "POST", body: { plan } }),
   portal: () => request<{ url: string }>("billing/portal", { method: "POST", body: {} }),
 };
 

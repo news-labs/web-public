@@ -11,6 +11,7 @@ import {
   type BillingStatus,
   type DailyUsage,
   type Overview,
+  type BillingPlan,
 } from "@/lib/account-api";
 import { API_BASE_URL, API_DOCS_URL, CONTACT_PRO_URL, PRICING_URL } from "@/lib/account-urls";
 
@@ -33,11 +34,11 @@ function BillingAction({ overview, billing }: { overview: Overview; billing: Bil
   const [error, setError] = useState<string | null>(null);
   const paid = billing !== null && billing.tier !== "free" && billing.status !== "canceled";
 
-  async function go(action: "checkout" | "portal") {
+  async function go(action: BillingPlan | "portal") {
     setBusy(true);
     setError(null);
     try {
-      const { url } = action === "checkout" ? await accountApi.checkout() : await accountApi.portal();
+      const { url } = action === "portal" ? await accountApi.portal() : await accountApi.checkout(action);
       window.location.assign(url);
     } catch (err) {
       setError(describeError(err));
@@ -51,9 +52,14 @@ function BillingAction({ overview, billing }: { overview: Overview; billing: Bil
     <div className="flex flex-col items-end gap-1">
       {canUpgrade &&
         (billing ? (
-          <Button type="button" size="sm" disabled={busy} onClick={() => void go("checkout")}>
-            Upgrade to Pro
-          </Button>
+          <div className="flex gap-2">
+            <Button type="button" size="sm" disabled={busy} onClick={() => void go("pro_monthly")}>
+              Upgrade to Pro · $10/mo
+            </Button>
+            <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => void go("pro_annual")}>
+              $100/yr
+            </Button>
+          </div>
         ) : (
           <a href={CONTACT_PRO_URL} className="rounded-lg bg-accent px-3 py-2 text-sm font-medium text-accent-foreground hover:opacity-90">
             Upgrade to Pro
