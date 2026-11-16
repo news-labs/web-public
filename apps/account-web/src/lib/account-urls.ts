@@ -11,21 +11,8 @@ export const DOCS_LEGAL_BASE = "https://docs.newsfork.com/legal";
 
 export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function buildContinueUrl(flow: "login" | "signup" | "forgot", params: URLSearchParams): string {
-  const url = new URL("/api/auth/continue", ACCOUNT_ORIGIN);
-  url.searchParams.set("flow", flow);
-  for (const [key, value] of params.entries()) {
-    if (key !== "flow") url.searchParams.set(key, value);
-  }
-  return url.pathname + url.search;
-}
-
-export function buildGoogleAuthUrl(flow: "login" | "signup", params: URLSearchParams): string {
-  const url = new URL("/api/auth/google", ACCOUNT_ORIGIN);
-  url.searchParams.set("flow", flow);
-  const plan = params.get("plan");
-  if (plan) url.searchParams.set("plan", plan);
-  const returnUrl = params.get("return_url");
-  if (returnUrl) url.searchParams.set("return_url", returnUrl);
-  return url.pathname + url.search;
-}
+export const DASHBOARD_PATH = "/dashboard/";
+export const API_BASE_URL = "https://api.newsfork.com";
+export const API_DOCS_URL = "https://docs.newsfork.com/";
+export const PRICING_URL = "https://newsfork.com/pricing/";
+export const CONTACT_PRO_URL = "https://newsfork.com/contact/?intent=pro";

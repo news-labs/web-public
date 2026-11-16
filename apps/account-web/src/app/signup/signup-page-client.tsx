@@ -9,7 +9,6 @@ function SignupContent() {
   const email = searchParams.get("email") ?? "";
   const plan = searchParams.get("plan") ?? undefined;
   const returnUrl = searchParams.get("return_url") ?? undefined;
-  const oauthError = searchParams.get("error") ?? undefined;
 
   return (
     <AuthCard
@@ -17,7 +16,6 @@ function SignupContent() {
       initialEmail={email}
       plan={plan}
       returnUrl={returnUrl}
-      oauthError={oauthError ? "Sign-up could not be completed. Please try again." : undefined}
     />
   );
 }
