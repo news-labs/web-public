@@ -17,7 +17,7 @@ export function KindePageLayout({
   description,
   children,
   ctaPrimary = { label: "View pricing", href: "/pricing/" },
-  ctaSecondary = { label: "Talk to sales", href: "/contact/?intent=enterprise" },
+  ctaSecondary = { label: "Talk to sales", href: "/contact/?intent=sales" },
 }: KindePageLayoutProps) {
   return (
     <>

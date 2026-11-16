@@ -155,6 +155,6 @@ export const TRIPLE_CTA = [
     title: "Talk to sales",
     description: "Custom seeds, dedicated workers, SLA.",
     cta: "Contact sales",
-    href: "/contact/?intent=enterprise",
+    href: "/contact/?intent=sales",
   },
 ];

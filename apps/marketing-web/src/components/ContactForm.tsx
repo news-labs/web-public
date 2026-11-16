@@ -9,7 +9,8 @@ const FORM_ACTION =
 
 const INTENT_SUBJECTS: Record<string, string> = {
   demo: "Live demo request",
-  enterprise: "Enterprise inquiry",
+  sales: "Sales inquiry",
+  enterprise: "Sales inquiry",
 };
 
 export function ContactForm() {

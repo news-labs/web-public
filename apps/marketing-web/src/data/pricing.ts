@@ -102,7 +102,7 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "Which countries and categories are included?",
-    a: "Free tier includes keyword search across 10 countries. Pro and Enterprise include all 100+ countries with categories such as news, policy, research, alert, and data. See the category reference in our docs for the full taxonomy.",
+    a: "Free and Pro include the full corpus — filter with ?country=SG and list sources with /v1/sources. Coverage grows as new official sources are onboarded.",
   },
   {
     q: "Is there a free tier?",
@@ -110,6 +110,6 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "How does News-V scoring work?",
-    a: "Every article receives a composite score from 1.0 to 10.0 across five dimensions: timeliness, impact, relevance, urgency, and source authority. Full scoring metadata is available on Pro and Enterprise plans.",
+    a: "Every article receives a composite score from 1.0 to 10.0 across five dimensions: timeliness, impact, relevance, urgency, and source authority. Full scoring metadata is available on the Pro plan.",
   },
 ];
