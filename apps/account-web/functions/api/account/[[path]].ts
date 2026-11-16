@@ -104,6 +104,12 @@ export async function onRequest(context: Context): Promise<Response> {
   else if (method === "POST" && route === "keys") {
     const body = await readBody(request);
     target = { path: "/v1/account/keys", method, body: { label: body.label } };
+  } else if (method === "GET" && route === "billing") target = { path: "/v1/account/billing", method };
+  else if (method === "POST" && route === "billing/checkout") {
+    const body = await readBody(request);
+    target = { path: "/v1/account/billing/checkout", method, body: { plan: body.plan } };
+  } else if (method === "POST" && route === "billing/portal") {
+    target = { path: "/v1/account/billing/portal", method, body: {} };
   } else if (method === "DELETE" && segments.length === 2 && segments[0] === "keys") {
     target = { path: `/v1/account/keys/${encodeURIComponent(segments[1]!)}`, method };
   }

@@ -59,6 +59,15 @@ export interface DailyUsage {
   rejected: number;
 }
 
+export interface BillingStatus {
+  tier: string;
+  status: string;
+  currentPeriodEnd: string | null;
+  trialEnd: string | null;
+  cancelAtPeriodEnd: boolean;
+  hasBillingAccount: boolean;
+}
+
 export const accountApi = {
   requestCode: (email: string) =>
     request<{ ok: true; expiresIn: number; debugCode?: string }>("otp", { method: "POST", body: { email } }),
@@ -71,6 +80,9 @@ export const accountApi = {
   createKey: (label: string) =>
     request<{ key: ApiKeySummary; apiKey: string }>("keys", { method: "POST", body: { label } }),
   revokeKey: (id: string) => request<{ status: string }>(`keys/${encodeURIComponent(id)}`, { method: "DELETE" }),
+  billing: () => request<BillingStatus>("billing"),
+  checkout: () => request<{ url: string }>("billing/checkout", { method: "POST", body: { plan: "pro_monthly" } }),
+  portal: () => request<{ url: string }>("billing/portal", { method: "POST", body: {} }),
 };
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -85,6 +97,11 @@ const ERROR_MESSAGES: Record<string, string> = {
   email_not_configured: "Email delivery is temporarily unavailable. Please try again later.",
   key_limit_reached: "You have reached the active key limit for your plan. Revoke a key first.",
   forbidden_origin: "Request blocked. Reload the page and try again.",
+  subscription_exists_use_portal: "You already have a subscription. Use Manage billing to change it.",
+  billing_not_configured: "Online billing is not available yet. Contact hello@newsfork.com to upgrade.",
+  price_not_configured: "Online billing is not available yet. Contact hello@newsfork.com to upgrade.",
+  portal_not_configured: "Billing management is temporarily unavailable. Contact hello@newsfork.com.",
+  no_billing_customer: "No billing account yet. Upgrade to Pro first.",
 };
 
 export function describeError(err: unknown): string {
