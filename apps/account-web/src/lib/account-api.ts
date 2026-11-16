@@ -50,6 +50,7 @@ export interface ApiKeySummary {
   createdAt: string;
   lastUsedAt: string | null;
   revokedAt: string | null;
+  expiresAt: string | null;
 }
 
 export interface DailyUsage {

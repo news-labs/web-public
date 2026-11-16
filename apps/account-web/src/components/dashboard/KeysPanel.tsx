@@ -1,14 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { useDashboard } from "@/components/dashboard/DashboardProvider";
 import { Button } from "@/components/ui/button";
 import { accountApi, describeError, type ApiKeySummary } from "@/lib/account-api";
 import { CARD, formatDate } from "@/lib/dashboard-format";
+import { API_BASE_URL, API_DOCS_URL, PRICING_URL } from "@/lib/account-urls";
+
+const DEFAULT_KEY_LABEL = "NEWSFORK_API_KEY";
 
 export function KeysPanel() {
   const { overview, keys, refresh } = useDashboard();
-  const [label, setLabel] = useState("");
+  const [label, setLabel] = useState(DEFAULT_KEY_LABEL);
   const [created, setCreated] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -24,16 +28,17 @@ export function KeysPanel() {
 
   const max = overview.keys.max;
   const active = keys.filter((k) => k.status === "active");
+  const hasMcp = overview.plan.features.includes("mcp");
 
   async function create(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
     setError(null);
     try {
-      const res = await accountApi.createKey(label.trim());
+      const res = await accountApi.createKey(label.trim() || DEFAULT_KEY_LABEL);
       setCreated(res.apiKey);
       setCopied(false);
-      setLabel("");
+      setLabel(DEFAULT_KEY_LABEL);
       await refresh();
     } catch (err) {
       setError(describeError(err));
@@ -58,7 +63,7 @@ export function KeysPanel() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">API keys</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {active.length} of {max} active keys. Send as{" "}
+          {active.length} of {max} active keys. New keys expire in 1 year. Send as{" "}
           <code className="rounded bg-muted px-1">Authorization: Bearer &lt;key&gt;</code>.
         </p>
       </div>
@@ -70,7 +75,7 @@ export function KeysPanel() {
           </label>
           <input
             id="key-label"
-            placeholder="Key name (e.g. production)"
+            placeholder={DEFAULT_KEY_LABEL}
             value={label}
             maxLength={80}
             onChange={(e) => setLabel(e.target.value)}
@@ -80,6 +85,10 @@ export function KeysPanel() {
             {busy ? "Creating…" : "Create key"}
           </Button>
         </form>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Default name is <code className="rounded bg-muted px-1">{DEFAULT_KEY_LABEL}</code>. Expiry is fixed at 1 year
+          from creation.
+        </p>
 
         {error && (
           <div className="mt-4 rounded-lg border border-border bg-muted px-3 py-2 text-sm" role="alert">
@@ -118,6 +127,7 @@ export function KeysPanel() {
                 <th className="py-2 pr-4 font-medium">Name</th>
                 <th className="py-2 pr-4 font-medium">Key</th>
                 <th className="py-2 pr-4 font-medium">Created</th>
+                <th className="py-2 pr-4 font-medium">Expires</th>
                 <th className="py-2 pr-4 font-medium">Last used</th>
                 <th className="py-2 pr-4 font-medium">Status</th>
                 <th className="py-2" />
@@ -126,7 +136,7 @@ export function KeysPanel() {
             <tbody>
               {keys.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-4 text-muted-foreground">
+                  <td colSpan={7} className="py-4 text-muted-foreground">
                     No keys yet. Create one to start calling the API.
                   </td>
                 </tr>
@@ -136,10 +146,11 @@ export function KeysPanel() {
                   <td className="py-2 pr-4">{k.label ?? "—"}</td>
                   <td className="py-2 pr-4 font-mono text-xs">{k.keyPrefix}…</td>
                   <td className="py-2 pr-4">{formatDate(k.createdAt)}</td>
+                  <td className="py-2 pr-4">{formatDate(k.expiresAt)}</td>
                   <td className="py-2 pr-4">{formatDate(k.lastUsedAt)}</td>
                   <td className="py-2 pr-4">{k.status}</td>
                   <td className="py-2 text-right">
-                    {k.status === "active" && (
+                    {(k.status === "active" || k.status === "expired") && (
                       <Button type="button" variant="outline" size="sm" onClick={() => void revoke(k)}>
                         Revoke
                       </Button>
@@ -150,6 +161,40 @@ export function KeysPanel() {
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section className={CARD} aria-labelledby="mcp-heading">
+        <h2 id="mcp-heading" className="text-lg font-semibold">
+          MCP tools
+        </h2>
+        {hasMcp ? (
+          <>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Pro includes MCP. Point your client at the gateway with the same API key.
+            </p>
+            <pre className="mt-3 overflow-x-auto rounded-lg bg-muted p-4 text-xs">
+              {`curl -H "Authorization: Bearer $NEWSFORK_API_KEY" \\
+  "${API_BASE_URL}/mcp/tools/list"`}
+            </pre>
+            <p className="mt-3 text-sm text-muted-foreground">
+              <a href={API_DOCS_URL} className="text-foreground underline-offset-2 hover:underline">
+                Read the docs
+              </a>
+            </p>
+          </>
+        ) : (
+          <p className="mt-2 text-sm text-muted-foreground">
+            MCP tools require Pro.{" "}
+            <Link href="/dashboard/billing/" className="text-foreground underline-offset-2 hover:underline">
+              Upgrade on Billing
+            </Link>{" "}
+            or{" "}
+            <a href={PRICING_URL} className="text-foreground underline-offset-2 hover:underline">
+              compare plans
+            </a>
+            .
+          </p>
+        )}
       </section>
     </div>
   );

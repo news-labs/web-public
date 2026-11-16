@@ -19,6 +19,8 @@ export function BillingPanel() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [checkoutResult, setCheckoutResult] = useState<string | null>(null);
+  const [activating, setActivating] = useState(false);
+  const [activationStalled, setActivationStalled] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const planCheckoutStarted = useRef(false);
 
@@ -29,14 +31,29 @@ export function BillingPanel() {
     setCheckoutResult(result);
     window.history.replaceState(null, "", window.location.pathname);
     if (result !== "success") return;
+    setActivating(true);
+    setActivationStalled(false);
     let tries = 0;
     const timer = window.setInterval(() => {
       tries += 1;
       void refresh();
-      if (tries >= 5) window.clearInterval(timer);
+      if (tries >= 5) {
+        window.clearInterval(timer);
+        setActivationStalled(true);
+        setActivating(false);
+      }
     }, 3000);
     return () => window.clearInterval(timer);
   }, [refresh]);
+
+  useEffect(() => {
+    if (!activating && !activationStalled) return;
+    if (isPaidBilling(billing) || (overview && overview.plan.id !== "free")) {
+      setActivating(false);
+      setActivationStalled(false);
+      setCheckoutResult(null);
+    }
+  }, [activating, activationStalled, billing, overview]);
 
   useEffect(() => {
     if (!overview || planCheckoutStarted.current) return;
@@ -102,11 +119,45 @@ export function BillingPanel() {
         </p>
       </div>
 
-      {checkoutResult && (
+      {checkoutResult === "cancel" && (
         <div className="rounded-lg border border-border bg-muted px-3 py-2 text-sm" role="status">
-          {checkoutResult === "success"
-            ? "Thanks! Your Pro subscription is being activated — this page updates automatically."
-            : "Checkout was canceled. You can upgrade any time."}
+          Checkout was canceled. You can upgrade any time.
+        </div>
+      )}
+      {(checkoutResult === "success" || activating || activationStalled) && !isPaidBilling(billing) && overview?.plan.id === "free" && (
+        <div className="rounded-lg border border-border bg-muted px-3 py-2 text-sm" role="status">
+          {activationStalled ? (
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span>
+                Still activating Pro — Stripe webhooks can take a minute. Refresh or open the Customer Portal if this
+                persists.
+              </span>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setActivationStalled(false);
+                  setActivating(true);
+                  void refresh();
+                  let tries = 0;
+                  const timer = window.setInterval(() => {
+                    tries += 1;
+                    void refresh();
+                    if (tries >= 5) {
+                      window.clearInterval(timer);
+                      setActivating(false);
+                      setActivationStalled(true);
+                    }
+                  }, 3000);
+                }}
+              >
+                Retry refresh
+              </Button>
+            </div>
+          ) : (
+            "Thanks! Your Pro subscription is activating — this page updates automatically (usually under 15s)."
+          )}
         </div>
       )}
       {notice && (
@@ -127,7 +178,9 @@ export function BillingPanel() {
             </h2>
             {note && <p className="mt-1 text-sm text-muted-foreground">{note}</p>}
             <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
-              <li>{plan.monthlyUnits === null ? "Unlimited" : NUM.format(plan.monthlyUnits)} requests / month</li>
+              <li>
+                {plan.monthlyUnits === null ? "Unlimited" : NUM.format(plan.monthlyUnits)} weighted units / month
+              </li>
               {plan.features.map((f) => (
                 <li key={f}>{featureLabel(f)}</li>
               ))}
