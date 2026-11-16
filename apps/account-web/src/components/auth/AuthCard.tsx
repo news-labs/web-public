@@ -31,13 +31,25 @@ export function AuthCard({ flow, initialEmail = "", plan, returnUrl }: AuthCardP
   const [busy, setBusy] = useState(false);
 
   const isLogin = flow === "login";
+  const wantsPro = plan === "pro" || plan === "pro_monthly" || plan === "pro_annual";
   const title = step === "code" ? "Check your email" : isLogin ? "Log in" : "Create account";
   const subtitle =
     step === "code"
       ? `We sent a 6-digit code to ${email}. It expires in 10 minutes.`
       : isLogin
-        ? "We will email you a one-time code — no password needed."
-        : "Free plan: 1,000 requests per month, no credit card required.";
+        ? wantsPro
+          ? "Log in to continue to Pro checkout. We will email you a one-time code."
+          : "We will email you a one-time code — no password needed."
+        : wantsPro
+          ? "Create your account, then continue to a 14-day Pro trial. A card is required at checkout; you will not be charged until the trial ends."
+          : "Free plan: 1,000 requests per month, no credit card required.";
+
+  const switchHref = (() => {
+    const url = new URL(isLogin ? ACCOUNT_SIGNUP_URL : ACCOUNT_SIGNIN_URL);
+    if (plan) url.searchParams.set("plan", plan);
+    if (returnUrl) url.searchParams.set("return_url", returnUrl);
+    return url.toString();
+  })();
 
   async function sendCode(event?: FormEvent) {
     event?.preventDefault();
@@ -203,10 +215,7 @@ export function AuthCard({ flow, initialEmail = "", plan, returnUrl }: AuthCardP
       {step === "email" && (
         <p className="mt-6 text-center text-sm text-muted-foreground">
           {isLogin ? "New to Newsfork API? " : "Already have an account? "}
-          <Link
-            href={isLogin ? ACCOUNT_SIGNUP_URL : ACCOUNT_SIGNIN_URL}
-            className="font-medium text-foreground underline-offset-2 hover:underline"
-          >
+          <Link href={switchHref} className="font-medium text-foreground underline-offset-2 hover:underline">
             {isLogin ? "Sign up" : "Log in"}
           </Link>
         </p>

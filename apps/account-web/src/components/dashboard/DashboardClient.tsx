@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,10 +8,23 @@ import {
   accountApi,
   describeError,
   type ApiKeySummary,
+  type BillingStatus,
   type DailyUsage,
   type Overview,
+  type BillingPlan,
 } from "@/lib/account-api";
 import { API_BASE_URL, API_DOCS_URL, CONTACT_PRO_URL, PRICING_URL } from "@/lib/account-urls";
+
+/** Marketing / signup deep-links that should open Stripe Checkout once the session is ready. */
+function resolveProCheckoutPlan(plan: string | null): BillingPlan | null {
+  if (plan === "pro_annual") return "pro_annual";
+  if (plan === "pro" || plan === "pro_monthly") return "pro_monthly";
+  return null;
+}
+
+function isPaidBilling(billing: BillingStatus | null): boolean {
+  return billing !== null && billing.tier !== "free" && billing.status !== "canceled";
+}
 
 const CARD = "rounded-xl border border-border/60 bg-card p-6 shadow-sm";
 const NUM = new Intl.NumberFormat("en-US");
@@ -27,9 +40,69 @@ function featureLabel(feature: string): string {
   return "News & sources API";
 }
 
-function PlanCard({ overview }: { overview: Overview }) {
+function BillingAction({ overview, billing }: { overview: Overview; billing: BillingStatus | null }) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const paid = isPaidBilling(billing);
+
+  async function go(action: BillingPlan | "portal") {
+    setBusy(true);
+    setError(null);
+    try {
+      const { url } = action === "portal" ? await accountApi.portal() : await accountApi.checkout(action);
+      window.location.assign(url);
+    } catch (err) {
+      setError(describeError(err));
+      setBusy(false);
+    }
+  }
+
+  const canUpgrade = overview.plan.id === "free" && !paid;
+  const canManage = billing !== null && (paid || billing.hasBillingAccount);
+  return (
+    <div className="flex flex-col items-end gap-1">
+      {canUpgrade &&
+        (billing ? (
+          <div className="flex gap-2">
+            <Button type="button" size="sm" disabled={busy} onClick={() => void go("pro_monthly")}>
+              Upgrade to Pro · $10/mo
+            </Button>
+            <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => void go("pro_annual")}>
+              $100/yr
+            </Button>
+          </div>
+        ) : (
+          <a href={CONTACT_PRO_URL} className="rounded-lg bg-accent px-3 py-2 text-sm font-medium text-accent-foreground hover:opacity-90">
+            Upgrade to Pro
+          </a>
+        ))}
+      {canManage && (
+        <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => void go("portal")}>
+          Manage billing
+        </Button>
+      )}
+      {error && (
+        <p className="max-w-56 text-right text-xs text-destructive" role="alert">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function billingNote(billing: BillingStatus | null): string | null {
+  if (!billing || billing.tier === "free") return null;
+  if (billing.status === "trialing" && billing.trialEnd) return `Trial ends ${formatDate(billing.trialEnd)}`;
+  if (billing.status === "past_due") return "Payment failed — update your payment method in Manage billing.";
+  if (billing.cancelAtPeriodEnd && billing.currentPeriodEnd) return `Cancels on ${formatDate(billing.currentPeriodEnd)}`;
+  if (billing.currentPeriodEnd) return `Renews ${formatDate(billing.currentPeriodEnd)}`;
+  return null;
+}
+
+function PlanCard({ overview, billing }: { overview: Overview; billing: BillingStatus | null }) {
   const { plan, usage } = overview;
   const price = plan.monthlyPriceUsd === null ? "Custom" : plan.monthlyPriceUsd === 0 ? "$0" : `$${plan.monthlyPriceUsd}/mo`;
+  const note = billingNote(billing);
   return (
     <section className={CARD} aria-labelledby="plan-heading">
       <div className="flex items-start justify-between gap-4">
@@ -38,12 +111,9 @@ function PlanCard({ overview }: { overview: Overview }) {
           <h2 id="plan-heading" className="mt-1 text-xl font-semibold">
             {plan.name} <span className="text-sm font-normal text-muted-foreground">{price}</span>
           </h2>
+          {note && <p className="mt-1 text-xs text-muted-foreground">{note}</p>}
         </div>
-        {plan.id === "free" && (
-          <a href={CONTACT_PRO_URL} className="rounded-lg bg-accent px-3 py-2 text-sm font-medium text-accent-foreground hover:opacity-90">
-            Upgrade to Pro
-          </a>
-        )}
+        <BillingAction overview={overview} billing={billing} />
       </div>
       <ul className="mt-4 space-y-1 text-sm text-muted-foreground">
         <li>{plan.monthlyUnits === null ? "Unlimited" : NUM.format(plan.monthlyUnits)} requests / month</li>
@@ -265,11 +335,22 @@ export function DashboardClient() {
   const [keys, setKeys] = useState<ApiKeySummary[]>([]);
   const [days, setDays] = useState<DailyUsage[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [billing, setBilling] = useState<BillingStatus | null>(null);
+  const [checkoutResult, setCheckoutResult] = useState<string | null>(null);
+  const [billingNotice, setBillingNotice] = useState<string | null>(null);
+  const planCheckoutStarted = useRef(false);
 
   const load = useCallback(async () => {
     try {
-      const [me, keyList, usage] = await Promise.all([accountApi.me(), accountApi.keys(), accountApi.usage(30)]);
+      const [me, keyList, usage, bill] = await Promise.all([
+        accountApi.me(),
+        accountApi.keys(),
+        accountApi.usage(30),
+        // Billing is optional: a 501 (Stripe not configured) falls back to the contact link.
+        accountApi.billing().catch(() => null),
+      ]);
       setOverview(me);
+      setBilling(bill);
       setKeys(keyList.keys);
       setDays(usage.days);
       setError(null);
@@ -285,6 +366,48 @@ export function DashboardClient() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const result = params.get("checkout");
+    if (result !== "success" && result !== "cancel") return;
+    setCheckoutResult(result);
+    window.history.replaceState(null, "", window.location.pathname);
+    if (result !== "success") return;
+    // The webhook may land a moment after the redirect; refresh until the plan reflects it.
+    let tries = 0;
+    const timer = window.setInterval(() => {
+      tries += 1;
+      void load();
+      if (tries >= 5) window.clearInterval(timer);
+    }, 3000);
+    return () => window.clearInterval(timer);
+  }, [load]);
+
+  // signup?plan=pro → dashboard?plan=pro → Stripe Checkout (first Pro subscription includes 14-day trial).
+  useEffect(() => {
+    if (!overview || planCheckoutStarted.current) return;
+    const params = new URLSearchParams(window.location.search);
+    const checkoutPlan = resolveProCheckoutPlan(params.get("plan"));
+    if (!checkoutPlan) return;
+    window.history.replaceState(null, "", window.location.pathname);
+    if (overview.plan.id !== "free" || isPaidBilling(billing)) return;
+    if (!billing) {
+      setBillingNotice("Online checkout is not available yet. Use Upgrade to Pro or contact hello@newsfork.com.");
+      return;
+    }
+    planCheckoutStarted.current = true;
+    setBillingNotice("Opening Stripe Checkout for your Pro trial…");
+    void accountApi
+      .checkout(checkoutPlan)
+      .then(({ url }) => {
+        window.location.assign(url);
+      })
+      .catch((err) => {
+        planCheckoutStarted.current = false;
+        setBillingNotice(describeError(err));
+      });
+  }, [overview, billing]);
 
   function logout() {
     // Server-side GET clears the HttpOnly cookie even if the gateway revoke fails.
@@ -311,10 +434,22 @@ export function DashboardClient() {
             {error}
           </div>
         )}
+        {checkoutResult && (
+          <div className="mt-4 rounded-lg border border-border bg-muted px-3 py-2 text-sm" role="status">
+            {checkoutResult === "success"
+              ? "Thanks! Your Pro subscription is being activated — this page updates automatically."
+              : "Checkout was canceled. You can upgrade any time."}
+          </div>
+        )}
+        {billingNotice && (
+          <div className="mt-4 rounded-lg border border-border bg-muted px-3 py-2 text-sm" role="status">
+            {billingNotice}
+          </div>
+        )}
         {!overview && !error && <p className="mt-6 text-sm text-muted-foreground">Loading…</p>}
         {overview && (
           <div className="mt-6 grid gap-6 lg:grid-cols-2">
-            <PlanCard overview={overview} />
+            <PlanCard overview={overview} billing={billing} />
             <UsageCard overview={overview} days={days} />
             <KeysCard keys={keys} max={overview.keys.max} onChanged={load} />
             <QuickstartCard />
