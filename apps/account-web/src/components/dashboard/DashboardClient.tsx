@@ -286,9 +286,9 @@ export function DashboardClient() {
     void load();
   }, [load]);
 
-  async function logout() {
-    await accountApi.logout().catch(() => undefined);
-    window.location.replace("/login/");
+  function logout() {
+    // Server-side GET clears the HttpOnly cookie even if the gateway revoke fails.
+    window.location.assign("/api/auth/logout");
   }
 
   return (
@@ -298,7 +298,7 @@ export function DashboardClient() {
           <Logo />
           <div className="flex items-center gap-3 text-sm">
             {overview && <span className="text-muted-foreground">{overview.consumer.email}</span>}
-            <Button type="button" variant="outline" size="sm" onClick={() => void logout()}>
+            <Button type="button" variant="outline" size="sm" onClick={logout}>
               Log out
             </Button>
           </div>
