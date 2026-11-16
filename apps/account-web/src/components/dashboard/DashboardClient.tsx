@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,17 @@ import {
   type BillingPlan,
 } from "@/lib/account-api";
 import { API_BASE_URL, API_DOCS_URL, CONTACT_PRO_URL, PRICING_URL } from "@/lib/account-urls";
+
+/** Marketing / signup deep-links that should open Stripe Checkout once the session is ready. */
+function resolveProCheckoutPlan(plan: string | null): BillingPlan | null {
+  if (plan === "pro_annual") return "pro_annual";
+  if (plan === "pro" || plan === "pro_monthly") return "pro_monthly";
+  return null;
+}
+
+function isPaidBilling(billing: BillingStatus | null): boolean {
+  return billing !== null && billing.tier !== "free" && billing.status !== "canceled";
+}
 
 const CARD = "rounded-xl border border-border/60 bg-card p-6 shadow-sm";
 const NUM = new Intl.NumberFormat("en-US");
@@ -32,7 +43,7 @@ function featureLabel(feature: string): string {
 function BillingAction({ overview, billing }: { overview: Overview; billing: BillingStatus | null }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const paid = billing !== null && billing.tier !== "free" && billing.status !== "canceled";
+  const paid = isPaidBilling(billing);
 
   async function go(action: BillingPlan | "portal") {
     setBusy(true);
@@ -326,6 +337,8 @@ export function DashboardClient() {
   const [error, setError] = useState<string | null>(null);
   const [billing, setBilling] = useState<BillingStatus | null>(null);
   const [checkoutResult, setCheckoutResult] = useState<string | null>(null);
+  const [billingNotice, setBillingNotice] = useState<string | null>(null);
+  const planCheckoutStarted = useRef(false);
 
   const load = useCallback(async () => {
     try {
@@ -371,6 +384,31 @@ export function DashboardClient() {
     return () => window.clearInterval(timer);
   }, [load]);
 
+  // signup?plan=pro → dashboard?plan=pro → Stripe Checkout (first Pro subscription includes 14-day trial).
+  useEffect(() => {
+    if (!overview || planCheckoutStarted.current) return;
+    const params = new URLSearchParams(window.location.search);
+    const checkoutPlan = resolveProCheckoutPlan(params.get("plan"));
+    if (!checkoutPlan) return;
+    window.history.replaceState(null, "", window.location.pathname);
+    if (overview.plan.id !== "free" || isPaidBilling(billing)) return;
+    if (!billing) {
+      setBillingNotice("Online checkout is not available yet. Use Upgrade to Pro or contact hello@newsfork.com.");
+      return;
+    }
+    planCheckoutStarted.current = true;
+    setBillingNotice("Opening Stripe Checkout for your Pro trial…");
+    void accountApi
+      .checkout(checkoutPlan)
+      .then(({ url }) => {
+        window.location.assign(url);
+      })
+      .catch((err) => {
+        planCheckoutStarted.current = false;
+        setBillingNotice(describeError(err));
+      });
+  }, [overview, billing]);
+
   function logout() {
     // Server-side GET clears the HttpOnly cookie even if the gateway revoke fails.
     window.location.assign("/api/auth/logout");
@@ -401,6 +439,11 @@ export function DashboardClient() {
             {checkoutResult === "success"
               ? "Thanks! Your Pro subscription is being activated — this page updates automatically."
               : "Checkout was canceled. You can upgrade any time."}
+          </div>
+        )}
+        {billingNotice && (
+          <div className="mt-4 rounded-lg border border-border bg-muted px-3 py-2 text-sm" role="status">
+            {billingNotice}
           </div>
         )}
         {!overview && !error && <p className="mt-6 text-sm text-muted-foreground">Loading…</p>}

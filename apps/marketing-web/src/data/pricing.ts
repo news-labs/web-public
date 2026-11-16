@@ -53,6 +53,7 @@ export const PRICING_PLANS: PricingPlan[] = [
       "Webhooks & streaming",
       "News-V scoring",
       "MCP tools for AI agents",
+      "14-day free trial (card required)",
       "Email support",
       "99.9% uptime SLA",
     ],
@@ -75,7 +76,11 @@ export const PRICING_FAQ: FaqItem[] = [
   },
   {
     q: "Is there a free trial for the Pro plan?",
-    a: "Yes, Pro comes with a 14-day free trial on your first subscription.",
+    a: "Yes. The first Pro subscription includes a 14-day free trial. A credit card is required at checkout; you are not charged until the trial ends. Cancel any time from Manage billing.",
+  },
+  {
+    q: "How do I upgrade to Pro?",
+    a: "Create a free account at account.newsfork.com, then choose Upgrade to Pro on the dashboard (or follow Start 14-day trial from pricing). Stripe Checkout opens Manage billing for later changes.",
   },
   {
     q: "What payment methods are accepted?",
