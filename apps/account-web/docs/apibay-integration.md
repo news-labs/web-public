@@ -1,3 +1,17 @@
+# Account portal (account.newsfork.com)
+
+> **2026-11 cutover:** signup/login, API keys and usage are served natively. The apibay handoff (`/api/auth/continue`, `/api/auth/google`) was removed — those paths 404'd on `nl-api-gateway` and `api.newsfork.com/login` redirected back here (loop).
+>
+> | Surface | Path | Backend |
+> |---|---|---|
+> | Login / signup (email OTP) | `/login/`, `/signup/` | `POST /api/account/otp`, `POST /api/account/verify` → gateway `/v1/account/auth/*` |
+> | Dashboard (plan, usage, keys, quickstart) | `/dashboard/` | `GET /api/account/{me,usage,keys}`, `POST /api/account/keys`, `DELETE /api/account/keys/:id` |
+> | Logout | `POST /api/account/logout`, `GET /api/auth/logout` | gateway `/v1/account/auth/logout` |
+>
+> BFF: `functions/api/account/[[path]].ts` keeps the gateway `nf_sess_…` token in an HttpOnly `nf_account_session` cookie (30 days) and calls `nl-api-gateway` via the `GATEWAY` service binding (`wrangler.toml`), falling back to `API_PUBLIC_ORIGIN`. Non-GET calls require a same-origin `Origin` header. Hub push callbacks below are unchanged.
+
+## Legacy notes (hub push callbacks still use `functions/lib/apibay-portal.ts` return-URL sanitizers)
+
 # apibay-labs portal integration (account.newsfork.com)
 
 > **Ownership (내재화 SSOT):** `api.newsfork.com`은 news-labs Worker **`nl-api-gateway`**가 호스트한다. apibay-labs는 **이행기 핸드오프 대상**이며 Phase 4 전 폐기 예정, Phase 5에서 SaaS 추출만. 환경 변수 `APIBAY_PORTAL_ORIGIN`은 이행기 이름이며, 코드 전환 시 **`API_PORTAL_ORIGIN`**을 canonical alias로 사용한다 (동일 기본값 `https://api.newsfork.com`).  

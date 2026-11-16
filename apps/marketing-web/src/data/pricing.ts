@@ -1,6 +1,7 @@
 /**
- * Canonical marketing pricing tiers for www.newsfork.com.
- * Keep in sync with newsfork/zuplo-api/modules/subscription-info.ts
+ * Marketing copy for www.newsfork.com/pricing.
+ * Quota / RPM / price must match the gateway plan SSOT: edge-api-gateway `src/plans.ts`
+ * (served at https://api.newsfork.com/v1/plans).
  */
 
 export interface PricingPlan {
@@ -28,11 +29,11 @@ export const PRICING_PLANS: PricingPlan[] = [
     highlight: false,
     features: [
       "1,000 API requests / month",
-      "10 countries",
-      "24-hour data freshness",
-      "Keyword search",
+      "10 requests / minute",
+      "Government news & sources API",
+      "Country, language, date and keyword filters",
+      "Self-serve API keys & usage dashboard",
       "Community support",
-      "Public docs",
     ],
   },
   {
@@ -41,20 +42,18 @@ export const PRICING_PLANS: PricingPlan[] = [
     price: "$79",
     period: "/ month",
     description: "For teams building production applications.",
-    cta: "Start 14-day trial",
-    ctaHref: "https://account.newsfork.com/signup?plan=pro",
+    cta: "Talk to us",
+    ctaHref: "/contact/?intent=pro",
     highlight: true,
     badge: "Most popular",
     features: [
       "50,000 API requests / month",
-      "All 100+ countries",
-      "Real-time data (<5 min freshness)",
-      "Semantic search + RAG",
-      "Webhooks & streaming",
-      "News-V scoring",
-      "MCP tools for AI agents",
+      "100 requests / minute",
+      "Everything in Free",
+      "Semantic search + RAG answers",
+      "MCP tools for AI agents (beta)",
+      "News score on every document",
       "Email support",
-      "99.9% uptime SLA",
     ],
   },
   {
@@ -67,14 +66,12 @@ export const PRICING_PLANS: PricingPlan[] = [
     ctaHref: "/contact/?intent=enterprise",
     highlight: false,
     features: [
-      "Unlimited API requests",
-      "Dedicated edge workers",
-      "Custom seed contracts",
+      "Custom request volume and rate limits",
+      "Custom seed contracts (sources)",
       "Private data pipeline",
-      "SLA up to 99.99%",
-      "Priority support (Slack / phone)",
-      "Custom data retention",
-      "Audit log & compliance exports",
+      "Contracted SLA",
+      "Priority support",
+      "Invoice billing",
     ],
   },
 ];
@@ -87,31 +84,23 @@ export interface FaqItem {
 export const PRICING_FAQ: FaqItem[] = [
   {
     q: "What counts as an API request?",
-    a: "Any call to the Newsfork REST API — search, article fetch, feed query, semantic query, or MCP tool invocation — counts as one request. Webhook deliveries do not count.",
+    a: "Each authenticated call to the Newsfork API counts as weighted units: news, article and source lookups are 1, semantic search is 2, RAG answers are 3, and MCP tool calls are weighted by tool. Every response returns X-Quota-Used and X-Quota-Remaining headers.",
   },
   {
-    q: "Can I upgrade or downgrade at any time?",
-    a: "Yes. Plan changes take effect immediately and are prorated to the current billing period.",
+    q: "When does my quota reset?",
+    a: "Quotas reset at the start of each calendar month (UTC). Your dashboard at account.newsfork.com shows usage for the current month and the last 30 days.",
   },
   {
-    q: "Is there a free trial for the Pro plan?",
-    a: "Yes, Pro comes with a 14-day free trial. No credit card required to start.",
+    q: "What happens if I exceed my quota or rate limit?",
+    a: "Requests beyond the monthly quota or per-minute limit return HTTP 429 with a Retry-After header and the reset time. Upgrade to Pro or contact us for higher limits.",
   },
   {
-    q: "What payment methods are accepted?",
-    a: "We accept all major credit cards via Stripe. Enterprise customers can be invoiced.",
-  },
-  {
-    q: "What happens if I exceed my monthly quota?",
-    a: "We notify you at 80% and 100% of your quota. Requests beyond the limit return a 429 response. You can purchase add-on packs or upgrade your plan.",
+    q: "How do I upgrade to Pro?",
+    a: "Create a free account first, then contact us from the dashboard. Self-serve card checkout is coming soon.",
   },
   {
     q: "Do MCP tool calls count toward my quota?",
-    a: "Yes. Each MCP tool invocation (search, article fetch, trending, etc.) counts as one API request, the same as REST endpoints.",
-  },
-  {
-    q: "Are webhooks billed separately?",
-    a: "No. Webhook deliveries are included with Pro and Enterprise plans and do not count toward your monthly request quota.",
+    a: "Yes. MCP tools are available on Pro and Enterprise and are metered against the same monthly quota as REST endpoints.",
   },
   {
     q: "Can Enterprise customers pay by invoice?",
@@ -122,15 +111,15 @@ export const PRICING_FAQ: FaqItem[] = [
 export const HOME_FAQ: FaqItem[] = [
   {
     q: "What counts as one API request?",
-    a: "Any call to the Newsfork REST API — search, article fetch, feed query, semantic query, or MCP tool invocation — counts as one request. Webhook deliveries do not count.",
+    a: "Each authenticated API call counts as weighted units — 1 for news and source lookups, more for semantic search, RAG answers and MCP tools. Usage headers on every response show what is left this month.",
   },
   {
     q: "Which countries and categories are included?",
-    a: "Free tier includes keyword search across 10 countries. Pro and Enterprise include all 100+ countries with categories such as news, policy, research, alert, and data. See the category reference in our docs for the full taxonomy.",
+    a: "All plans include every country in the corpus — filter with ?country=SG and list sources with /v1/sources. Coverage grows continuously as new official sources are onboarded.",
   },
   {
     q: "Is there a free tier?",
-    a: "Yes. The Free plan includes 1,000 API requests per month, 10 countries, 24-hour data freshness, and keyword search — no credit card required.",
+    a: "Yes. The Free plan includes 1,000 API requests per month at 10 requests per minute, with self-serve API keys — no credit card required.",
   },
   {
     q: "How does News-V scoring work?",
