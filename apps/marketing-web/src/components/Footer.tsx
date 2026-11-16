@@ -20,7 +20,7 @@ const FOOTER_LINKS: Record<string, FooterLink[]> = {
     { label: "Changelog", href: "/blog/" },
   ],
   Solutions: [
-    { label: "Enterprise", href: "/contact/?intent=enterprise" },
+    { label: "Contact sales", href: "/contact/?intent=sales" },
     { label: "Use Cases", href: "/product/" },
     { label: "CuFork Ads", href: "https://cufork.newsfork.com", external: true },
   ],

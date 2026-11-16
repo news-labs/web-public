@@ -16,8 +16,7 @@ export default function ContactPage() {
           <div>
             <h1 className="text-5xl font-bold tracking-tight mb-5">Get in touch</h1>
             <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-              Have questions about the API, pricing, or enterprise plans? We&apos;d love to hear
-              from you.
+              Have questions about the API or pricing? We&apos;d love to hear from you.
             </p>
 
             <div className="space-y-5">
@@ -76,12 +75,11 @@ export default function ContactPage() {
             </div>
 
             <div className="mt-8 rounded-xl border border-border bg-muted/50 p-6">
-              <h3 className="font-semibold mb-2">Enterprise inquiries</h3>
+              <h3 className="font-semibold mb-2">Volume and custom needs</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Looking for a dedicated deployment, custom seed contracts, or volume pricing? Email
-                us at{" "}
-                <a href="mailto:enterprise@newsfork.com" className="text-accent hover:underline">
-                  enterprise@newsfork.com
+                Looking for higher limits, custom seed contracts, or volume pricing? Email us at{" "}
+                <a href="mailto:hello@newsfork.com" className="text-accent hover:underline">
+                  hello@newsfork.com
                 </a>{" "}
                 with details about your use case.
               </p>

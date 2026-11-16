@@ -102,7 +102,7 @@ export default function DocsPage() {
           </pre>
           <p className="mt-4 text-xs text-muted-foreground">
             Knowledge agent Q&amp;A (<code>/v1/knowledge/ask</code>) is not yet available — use semantic
-            search via <code>/v1/rag/query</code> on Pro and Enterprise plans.
+            search via <code>/v1/rag/query</code> on the Pro plan.
           </p>
         </div>
 

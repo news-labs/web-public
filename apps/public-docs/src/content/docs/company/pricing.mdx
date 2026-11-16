@@ -1,7 +1,7 @@
 ---
 title: Pricing
 description: Newsfork API pricing tiers and plan limits.
-lastUpdated: 2026-06-27
+lastUpdated: 2026-11-16
 ---
 
 Official pricing for the Newsfork API. For the latest CTAs and trials, see [www.newsfork.com/pricing](https://www.newsfork.com/pricing/).
@@ -10,27 +10,26 @@ Official pricing for the Newsfork API. For the latest CTAs and trials, see [www.
 
 | Plan | Price | Monthly requests | Highlights |
 |------|-------|------------------|------------|
-| **Free** | $0 | 1,000 | 10 countries, 24h freshness, keyword search |
-| **Pro** | $79/mo | 50,000 | 100+ countries, semantic search + RAG, webhooks, News-V, MCP tools, 99.9% SLA |
-| **Enterprise** | Custom | Unlimited | Dedicated workers, custom seeds, audit exports, up to 99.99% SLA |
+| **Free** | $0 | 1,000 | Keyword search, self-serve API keys, 10 rpm |
+| **Pro** | $10/mo ($100/yr) | 50,000 | Semantic search + RAG, MCP tools, News-V, 100 rpm, 99.9% SLA |
 
 ## What counts as a request?
 
 Any call to the Newsfork REST API — search, article fetch, feed query, semantic query, or MCP tool invocation — counts as one request. **Webhook deliveries do not count.**
 
-## Free tier countries
+## Coverage
 
-The Free plan includes keyword search across **10 countries**. Pro and Enterprise include all **100+ countries**.
+Free and Pro include the full corpus. Filter with `?country=` and list sources with `/v1/sources`.
 
 ## Billing
 
-- Pro includes a **14-day trial** (no credit card required to start).
+- Pro includes a **14-day trial** on the first subscription.
 - Payments are processed via **Stripe**.
-- Enterprise customers can pay by **invoice**.
+- For volume or custom contracts, email [hello@newsfork.com](mailto:hello@newsfork.com).
 
 ## Not yet available
 
-The knowledge agent endpoint (`/v1/knowledge/ask`) is not yet generally available. Use semantic search via `/v1/rag/query` on Pro and Enterprise plans.
+The knowledge agent endpoint (`/v1/knowledge/ask`) is not yet generally available. Use semantic search via `/v1/rag/query` on Pro.
 
 ## Related
 
