@@ -13,7 +13,14 @@ export function KeysPanel() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
-  if (!overview) return null;
+  if (!overview) {
+    return (
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">API keys</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Create and revoke keys for the Newsfork API.</p>
+      </div>
+    );
+  }
 
   const max = overview.keys.max;
   const active = keys.filter((k) => k.status === "active");

@@ -5,7 +5,16 @@ import { CARD, NUM, formatDate } from "@/lib/dashboard-format";
 
 export function UsagePanel() {
   const { overview, days } = useDashboard();
-  if (!overview) return null;
+  if (!overview) {
+    return (
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Usage</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Weighted request units for the current UTC month and the last 30 days.
+        </p>
+      </div>
+    );
+  }
 
   const { used, limit, remaining, resetAt } = overview.usage.month;
   const pct = limit ? Math.min(100, Math.round((used / limit) * 100)) : 0;

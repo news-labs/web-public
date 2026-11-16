@@ -12,7 +12,14 @@ export function OverviewPanel() {
   const { overview, billing, days, refresh } = useDashboard();
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
-  if (!overview) return null;
+  if (!overview) {
+    return (
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Overview</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Plan, usage, and quick links for your API account.</p>
+      </div>
+    );
+  }
 
   const { plan, usage } = overview;
   const price =
