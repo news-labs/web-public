@@ -48,12 +48,11 @@ export const WEB_PORTAL: PortalConfig = {
       items: [
         { href: "/sites", label: "All Sites", icon: Globe },
         { href: "/brands", label: "Brands & Domains", icon: Megaphone },
-        { href: "/regions", label: "Regions", icon: MapPin },
         { href: "/locales", label: "Locales & Languages", icon: Languages },
       ],
       sections: [
         { label: "Overview", itemHrefs: ["/sites"] },
-        { label: "Configuration", itemHrefs: ["/brands", "/regions", "/locales"] },
+        { label: "Configuration", itemHrefs: ["/brands", "/locales"] },
       ],
     },
     {
