@@ -3,6 +3,8 @@ import { LoadingState, PageHeader } from "@core-labs/admin-shell";
 
 /** Diaspora city_nodes SSOT moved to Platform Ref Data; brand geo is CMS Editions. */
 const REF_DATA_CITIES = "/platform/reference-data?tab=cities";
+/** Gateway also mounts CMS SPA under `/cms/` (product host is separate). */
+const CMS_GATEWAY_MOUNT = "/cms/";
 
 export function RegionsPage() {
   useEffect(() => {
@@ -22,8 +24,8 @@ export function RegionsPage() {
           {REF_DATA_CITIES}
         </a>
         . Brand city editions:{" "}
-        <a className="underline" href="https://cms.newsfork.com/">
-          cms.newsfork.com
+        <a className="underline" href={CMS_GATEWAY_MOUNT}>
+          CMS
         </a>
         .
       </p>
