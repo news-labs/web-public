@@ -70,8 +70,9 @@ for n in nl-site-newsfork-marketing nl-site-newsfork-account nl-site-newsfork-do
 done
 ```
 
-`public-docs` 빌드는 먼저 `scripts/audit-public-docs-sensitive.mjs`를 실행합니다. 검사에 걸리면 빌드가 실패하므로, 위의 수동 배포에서도
-검사를 건너뛸 수 없습니다. 빌드가 실패하면 2·3단계를 진행하지 마세요.
+`public-docs`의 `build`·`deploy` 스크립트는 먼저 `scripts/audit-public-docs-sensitive.mjs`를 실행하고, 검사에 걸리면 실패합니다.
+`astro build`를 직접 실행하면 검사를 건너뜁니다. 위 명령 묶음은 실패해도 자동으로 멈추지 않으며, 이전 빌드의 `dist/`가 남아 있으면
+2·3단계에서 그대로 배포될 수 있습니다. 빌드가 실패하면 2·3단계를 진행하지 마세요.
 
 Free 한도: 버전당 20,000 파일, 파일당 25 MiB. 현재 빌드는 각각 수십~수백 개 파일, 최대 파일 약 1.6 MB입니다.
 
