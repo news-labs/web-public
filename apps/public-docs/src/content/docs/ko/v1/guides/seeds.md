@@ -323,7 +323,4 @@ Seed contracts are stored in GitHub, which is shared across environments. Howeve
 
 ## Related Documentation
 
-- [Project README](../README.md)
-- ](/ko/v1/guides/research/)
-- [Environment Guide](../docs/ENVIRONMENT_GUIDE.md)
-- [Architecture Guidelines](../.cursorrules)
+- [Research guide](/ko/v1/guides/research/)

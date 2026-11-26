@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { useDashboard } from "@/components/dashboard/DashboardProvider";
-import { accountApi, BILLING_ENABLED } from "@/lib/account-api";
+import { accountApi, AccountApiError, BILLING_ENABLED } from "@/lib/account-api";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -32,9 +32,19 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const planLabel = overview?.plan.name ?? "…";
   const showBootstrap = redirecting || (loading && !overview);
 
+  const [logoutFailed, setLogoutFailed] = useState(false);
+
   async function logout() {
-    // Leave the dashboard even if the request fails; the login page shows the real session state.
-    await accountApi.logout().catch(() => undefined);
+    setLogoutFailed(false);
+    try {
+      await accountApi.logout();
+    } catch (err) {
+      // 401 means the session is already gone. Anything else may leave it active, so stay and say so.
+      if (!(err instanceof AccountApiError && err.status === 401)) {
+        setLogoutFailed(true);
+        return;
+      }
+    }
     window.location.assign("/login/");
   }
 
@@ -90,6 +100,11 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
       <div className="min-w-0 flex-1">
         <main className="mx-auto max-w-4xl px-4 py-8">
+          {logoutFailed && (
+            <div className="mb-4 rounded-lg border border-border bg-muted px-3 py-2 text-sm" role="alert">
+              Log out failed. You may still be signed in. Check your connection and try again.
+            </div>
+          )}
           {redirecting ? (
             <p className="text-sm text-muted-foreground" role="status">
               Redirecting to log in…

@@ -7,6 +7,7 @@ export type MarketingLayoutKind = "A" | "B" | "C";
 
 export interface MarketingSplitImageSectionProps {
   layout: Extract<MarketingLayoutKind, "B" | "C">;
+  id?: string;
   headline: string;
   body: string;
   icon?: LucideIcon;
@@ -15,6 +16,7 @@ export interface MarketingSplitImageSectionProps {
 
 export function MarketingSplitImageSection({
   layout,
+  id,
   headline,
   body,
   icon,
@@ -34,7 +36,7 @@ export function MarketingSplitImageSection({
   );
 
   return (
-    <section className={`border-t border-border py-16 md:min-h-[640px] md:py-20 ${bg}`}>
+    <section id={id} className={`scroll-mt-20 border-t border-border py-16 md:min-h-[640px] md:py-20 ${bg}`}>
       <PageContainer className="max-w-revamp-content">
         {layout === "B" ? (
           <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-10">

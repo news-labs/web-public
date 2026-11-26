@@ -70,6 +70,9 @@ for n in nl-site-newsfork-marketing nl-site-newsfork-account nl-site-newsfork-do
 done
 ```
 
+`public-docs` 빌드는 먼저 `scripts/audit-public-docs-sensitive.mjs`를 실행합니다. 검사에 걸리면 빌드가 실패하므로, 위의 수동 배포에서도
+검사를 건너뛸 수 없습니다. 빌드가 실패하면 2·3단계를 진행하지 마세요.
+
 Free 한도: 버전당 20,000 파일, 파일당 25 MiB. 현재 빌드는 각각 수십~수백 개 파일, 최대 파일 약 1.6 MB입니다.
 
 `.github/workflows/deploy-*.yml`(구 계정 Cloudflare Pages)은 push 자동 배포를 끄고 수동 실행만 남겼습니다.

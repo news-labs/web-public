@@ -223,7 +223,8 @@ curl -X POST https://api.example.com/api/v1/queues/research \
 // Using R2 Storage Service
 const r2 = createR2StorageService(env.DATASETS_BUCKET);
 const dataset = await r2.getDataset(country, category, date, chunk);
-``` ## Related Documentation - [Project README](../README.md)
-- ](/ko/v1/guides/seeds/)
-- [Environment Guide](../docs/ENVIRONMENT_GUIDE.md)
-- [Architecture Guidelines](../.cursorrules)
+```
+
+## Related Documentation
+
+- [Seeds guide](/v1/guides/seeds/)

@@ -52,3 +52,32 @@ test.describe("account portal static UI", () => {
     await expect(page.getByRole("heading", { name: "Log in" })).toBeVisible();
   });
 });
+
+test("a failed log out stays on the dashboard and says so", async ({ page }) => {
+  const month = { used: 0, limit: 1000, remaining: 1000, resetAt: null };
+  const plan = { id: "free", name: "Free", monthlyPriceUsd: 0, monthlyUnits: 1000, rateLimitPerMinute: 60, maxActiveKeys: 2, features: ["core"] };
+  const bodies: Record<string, unknown> = {
+    me: {
+      consumer: { id: "c1", email: "dev@example.com", name: null, company: null, plan: "free", createdAt: "2026-11-01T00:00:00Z" },
+      plan,
+      usage: { month, rateLimitPerMinute: 60 },
+      keys: { active: 0, max: 2 },
+    },
+    keys: { keys: [] },
+    usage: { days: [], month, monthlyLimit: 1000 },
+  };
+  await page.route("**/v1/account/**", async (route) => {
+    const path = new URL(route.request().url()).pathname.replace("/v1/account/", "");
+    if (path === "auth/logout") return route.abort();
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      headers: { "access-control-allow-origin": "http://127.0.0.1:3099", "access-control-allow-credentials": "true" },
+      body: JSON.stringify(bodies[path] ?? {}),
+    });
+  });
+  await page.goto("/dashboard/");
+  await page.getByRole("button", { name: "Log out" }).click();
+  await expect(page.getByText(/Log out failed/)).toBeVisible();
+  await expect(page).toHaveURL(/\/dashboard\/$/);
+});

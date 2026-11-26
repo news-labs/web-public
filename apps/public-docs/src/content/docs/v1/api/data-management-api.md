@@ -39,7 +39,6 @@ Send API credentials in the `Authorization` header. See [API overview](/v1/api/#
 ## Next steps
 
 - [Infrastructure API](/v1/api/infrastructure-api/) — Queue batch processing.
-- [R2 operations standard](/v1/guides/r2-operations-standard/) — Storage conventions.
 
 ## Notes
 
