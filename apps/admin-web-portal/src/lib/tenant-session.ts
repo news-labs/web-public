@@ -59,34 +59,29 @@ export function getWebTenantApiHeaders(tenantId: string): HeadersInit {
   };
 }
 
-/** Request Email OTP (audience=tenant). Enumeration-safe: always ok unless 503. */
-export async function requestWebTenantOtp(cpApiBaseUrl: string, email: string): Promise<number> {
-  const res = await fetch(`${cpApiBaseUrl}/api/v1/auth/otp/request`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, audience: "tenant" }),
-  });
-  if (res.status === 503) throw new Error("Email delivery unavailable");
-  if (!res.ok) throw new Error("Could not send code");
-  const body = (await res.json().catch(() => ({}))) as { resend_after_seconds?: number };
-  return body.resend_after_seconds ?? 60;
-}
-
-/** Verify Email OTP and persist tenant session. */
-export async function loginWebTenantOtp(
+/** Email (ID) + password login for webmaster / designer tenant users. */
+export async function loginWebTenantPassword(
   cpApiBaseUrl: string,
   email: string,
-  code: string,
+  password: string,
+  turnstileToken?: string | null,
 ): Promise<WebTenantSession> {
-  const res = await fetch(`${cpApiBaseUrl}/api/v1/auth/otp/verify`, {
+  const res = await fetch(`${cpApiBaseUrl}/api/v1/auth/password/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, code, audience: "tenant" }),
+    body: JSON.stringify({
+      email,
+      password,
+      audience: "tenant",
+      ...(turnstileToken ? { turnstile_token: turnstileToken } : {}),
+    }),
   });
 
+  if (res.status === 403) throw new Error("Security check failed. Try again.");
+
+  if (res.status === 429) throw new Error("Too many attempts. Try again in a few minutes.");
   if (!res.ok) {
-    const err = (await res.json().catch(() => ({ error: "Login failed" }))) as { error?: string };
-    throw new Error(err.error ?? "Invalid or expired code");
+    throw new Error("Invalid email or password");
   }
 
   const data = (await res.json()) as WebTenantSession & { session_token?: string; token?: string };
@@ -104,14 +99,5 @@ export async function loginWebTenantOtp(
   return session;
 }
 
-/** @deprecated Password login removed — use loginWebTenantOtp */
-export async function loginWebTenantUser(
-  cpApiBaseUrl: string,
-  email: string,
-  _password: string,
-): Promise<WebTenantSession> {
-  void _password;
-  void email;
-  void cpApiBaseUrl;
-  throw new Error("password_login_removed — use Email OTP");
-}
+/** @deprecated Use loginWebTenantPassword. */
+export const loginWebTenantUser = loginWebTenantPassword;
