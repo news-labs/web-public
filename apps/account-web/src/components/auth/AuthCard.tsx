@@ -11,7 +11,8 @@ import {
   DASHBOARD_PATH,
   EMAIL_RE,
 } from "@/lib/account-urls";
-import { accountApi, describeError } from "@/lib/account-api";
+import { ACCOUNT_API_ENABLED, accountApi, describeError } from "@/lib/account-api";
+import { ServiceUnavailable } from "@/components/ServiceUnavailable";
 import { sanitizeDashboardNext } from "@/lib/safe-next";
 
 export type AuthFlow = "login" | "signup";
@@ -116,6 +117,8 @@ export function AuthCard({ flow, initialEmail = "", plan, returnUrl, nextPath }:
       setBusy(false);
     }
   }
+
+  if (!ACCOUNT_API_ENABLED) return <ServiceUnavailable />;
 
   return (
     <div className={ONBOARDING_PANEL_CLASS}>

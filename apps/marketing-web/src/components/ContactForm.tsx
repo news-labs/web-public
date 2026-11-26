@@ -4,8 +4,9 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-const FORM_ACTION =
-  process.env.NEXT_PUBLIC_CONTACT_FORM_ACTION ?? "/api/contact/";
+// Static hosting (assets-only Worker) has no /api/contact/ backend. The form is only live when an external
+// endpoint is configured at build time; otherwise it shows an email fallback instead of posting to a dead URL.
+const FORM_ACTION = process.env.NEXT_PUBLIC_CONTACT_FORM_ACTION ?? "";
 
 const INTENT_SUBJECTS: Record<string, string> = {
   demo: "Live demo request",
@@ -53,6 +54,24 @@ export function ContactForm() {
     } catch {
       setStatus("error");
     }
+  }
+
+  if (!FORM_ACTION) {
+    return (
+      <div className="rounded-2xl border border-border bg-card p-8" role="status">
+        <h2 className="text-xl font-semibold mb-3">Contact form temporarily unavailable</h2>
+        <p className="text-sm text-muted-foreground">
+          Our online form is offline while we move infrastructure. Please email us at{" "}
+          <a
+            href={`mailto:hello@newsfork.com${defaultSubject ? `?subject=${encodeURIComponent(defaultSubject)}` : ""}`}
+            className="underline"
+          >
+            hello@newsfork.com
+          </a>{" "}
+          and we&apos;ll get back to you within one business day.
+        </p>
+      </div>
+    );
   }
 
   if (status === "success") {

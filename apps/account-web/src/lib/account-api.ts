@@ -1,5 +1,12 @@
 /** Browser client for the same-origin `/api/account/*` BFF (HttpOnly session cookie). */
 
+/**
+ * The BFF only exists when a backend serves `/api/*` on this origin. The static build (assets-only Worker)
+ * has none, so login/signup/dashboard render a "temporarily unavailable" state unless the build sets
+ * `NEXT_PUBLIC_ACCOUNT_API_ENABLED=1`.
+ */
+export const ACCOUNT_API_ENABLED = process.env.NEXT_PUBLIC_ACCOUNT_API_ENABLED === "1";
+
 export class AccountApiError extends Error {
   constructor(
     readonly status: number,
