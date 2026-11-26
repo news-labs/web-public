@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useDashboard } from "@/components/dashboard/DashboardProvider";
 import { Button } from "@/components/ui/button";
 import { CARD, NUM, featureLabel, formatDate, billingNote, isPaidBilling } from "@/lib/dashboard-format";
-import { accountApi, describeError } from "@/lib/account-api";
+import { accountApi, describeError, BILLING_ENABLED } from "@/lib/account-api";
 import { API_BASE_URL, API_DOCS_URL, PRICING_URL } from "@/lib/account-urls";
 import { useState } from "react";
 
@@ -111,9 +111,11 @@ export function OverviewPanel() {
             ))}
           </ul>
           <div className="mt-4 flex flex-wrap gap-3 text-sm">
-            <Link href="/dashboard/billing/" className="text-foreground underline-offset-2 hover:underline">
-              Billing
-            </Link>
+            {BILLING_ENABLED && (
+              <Link href="/dashboard/billing/" className="text-foreground underline-offset-2 hover:underline">
+                Billing
+              </Link>
+            )}
             <a href={PRICING_URL} className="text-foreground underline-offset-2 hover:underline">
               Compare plans
             </a>
@@ -179,11 +181,17 @@ export function OverviewPanel() {
             </>
           ) : (
             <p className="mt-4 text-sm text-muted-foreground">
-              MCP tools are included with Pro.{" "}
-              <Link href="/dashboard/billing/" className="text-foreground underline-offset-2 hover:underline">
-                Upgrade
-              </Link>{" "}
-              to unlock <code className="rounded bg-muted px-1">/mcp/tools/*</code>.
+              {BILLING_ENABLED ? (
+                <>
+                  MCP tools are included with Pro.{" "}
+                  <Link href="/dashboard/billing/" className="text-foreground underline-offset-2 hover:underline">
+                    Upgrade
+                  </Link>{" "}
+                  to unlock <code className="rounded bg-muted px-1">/mcp/tools/*</code>.
+                </>
+              ) : (
+                "MCP tools are not available yet."
+              )}
             </p>
           )}
           <p className="mt-3 text-sm text-muted-foreground">

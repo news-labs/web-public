@@ -11,7 +11,7 @@ import {
   DASHBOARD_PATH,
   EMAIL_RE,
 } from "@/lib/account-urls";
-import { ACCOUNT_API_ENABLED, accountApi, describeError } from "@/lib/account-api";
+import { ACCOUNT_API_ENABLED, BILLING_ENABLED, MANUAL_LOGIN, accountApi, describeError } from "@/lib/account-api";
 import { ServiceUnavailable } from "@/components/ServiceUnavailable";
 import { sanitizeDashboardNext } from "@/lib/safe-next";
 
@@ -21,7 +21,7 @@ interface AuthCardProps {
   flow: AuthFlow;
   initialEmail?: string;
   plan?: string;
-  /** Post-login destination (CMS / hub push); sanitized server-side by the BFF. */
+  /** Post-login destination (CMS / hub push); not honored by nl-account-api yet. */
   returnUrl?: string;
   /** Same-origin dashboard deep-link after OTP (e.g. `/dashboard/keys/`). */
   nextPath?: string;
@@ -39,15 +39,20 @@ export function AuthCard({ flow, initialEmail = "", plan, returnUrl, nextPath }:
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [manual, setManual] = useState(false);
 
   const isLogin = flow === "login";
-  const wantsPro = plan === "pro" || plan === "pro_monthly" || plan === "pro_annual";
+  const wantsPro = BILLING_ENABLED && (plan === "pro" || plan === "pro_monthly" || plan === "pro_annual");
   const safeNext = sanitizeDashboardNext(nextPath);
-  const title = step === "code" ? "Check your email" : isLogin ? "Log in" : "Create account";
+  const title = step === "code" ? (manual ? "Enter your code" : "Check your email") : isLogin ? "Log in" : "Create account";
   const subtitle =
     step === "code"
-      ? `We sent a 6-digit code to ${email}. It expires in 10 minutes.`
-      : isLogin
+      ? manual
+        ? `Email delivery is not available. Enter the 6-digit code that the Newsfork team gave you for ${email}.`
+        : `We sent a 6-digit code to ${email}. It expires in 10 minutes.`
+      : MANUAL_LOGIN
+        ? "Access is by invitation while email delivery is unavailable. You need a one-time code from the Newsfork team."
+        : isLogin
         ? wantsPro
           ? "Log in to continue to Pro checkout. We will email you a one-time code."
           : "We will email you a one-time code — no password needed."
@@ -75,6 +80,7 @@ export function AuthCard({ flow, initialEmail = "", plan, returnUrl, nextPath }:
     try {
       const res = await accountApi.requestCode(normalized);
       setEmail(normalized);
+      setManual(res.delivery === "manual");
       setStep("code");
       setNotice(res.debugCode ? `Development code: ${res.debugCode}` : null);
     } catch (err) {
@@ -110,7 +116,7 @@ export function AuthCard({ flow, initialEmail = "", plan, returnUrl, nextPath }:
       }
       const dest = wantsPro ? DASHBOARD_BILLING_PATH : DASHBOARD_PATH;
       const next = new URL(dest, window.location.origin);
-      if (plan) next.searchParams.set("plan", plan);
+      if (plan && BILLING_ENABLED) next.searchParams.set("plan", plan);
       window.location.assign(next.pathname + next.search);
     } catch (err) {
       setError(describeError(err));
@@ -180,7 +186,7 @@ export function AuthCard({ flow, initialEmail = "", plan, returnUrl, nextPath }:
             </>
           )}
           <Button type="submit" variant="accent" size="lg" disabled={busy}>
-            {busy ? "Sending…" : isLogin ? "Email me a code" : "Continue"}
+            {busy ? "Sending…" : isLogin && !MANUAL_LOGIN ? "Email me a code" : "Continue"}
           </Button>
         </form>
       ) : (

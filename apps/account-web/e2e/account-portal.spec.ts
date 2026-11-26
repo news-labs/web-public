@@ -40,7 +40,7 @@ test.describe("account portal static UI", () => {
   });
 
   test("unauthenticated dashboard redirects to login when account API returns 401", async ({ page }) => {
-    await page.route("**/api/account/**", async (route) => {
+    await page.route("**/v1/account/**", async (route) => {
       await route.fulfill({
         status: 401,
         contentType: "application/json",

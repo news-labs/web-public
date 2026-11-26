@@ -3,7 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useDashboard } from "@/components/dashboard/DashboardProvider";
 import { Button } from "@/components/ui/button";
-import { accountApi, describeError } from "@/lib/account-api";
+import { accountApi, describeError, BILLING_ENABLED } from "@/lib/account-api";
 import { CARD, formatDate, isPaidBilling } from "@/lib/dashboard-format";
 
 export function SettingsPanel() {
@@ -52,7 +52,7 @@ export function SettingsPanel() {
   }
 
   function logout() {
-    window.location.assign("/api/auth/logout");
+    void accountApi.logout().catch(() => undefined).then(() => window.location.assign("/login/"));
   }
 
   async function terminate() {
@@ -149,7 +149,7 @@ export function SettingsPanel() {
       <section className={CARD}>
         <h2 className="text-lg font-semibold text-destructive">Delete account</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Permanently revokes API keys and sessions. If you have an active Pro subscription, cancel it in Billing first.
+          Permanently revokes API keys and sessions.{BILLING_ENABLED && " If you have an active Pro subscription, cancel it in Billing first."}
         </p>
         <label className="mt-4 block text-sm font-medium" htmlFor="delete-confirm">
           Type <span className="font-mono">{overview.consumer.email}</span> to confirm

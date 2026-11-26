@@ -6,15 +6,16 @@ import type { ReactNode } from "react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { useDashboard } from "@/components/dashboard/DashboardProvider";
+import { accountApi, BILLING_ENABLED } from "@/lib/account-api";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/dashboard/", label: "Overview" },
   { href: "/dashboard/usage/", label: "Usage" },
   { href: "/dashboard/keys/", label: "API keys" },
-  { href: "/dashboard/billing/", label: "Billing" },
+  ...(BILLING_ENABLED ? [{ href: "/dashboard/billing/", label: "Billing" }] : []),
   { href: "/dashboard/settings/", label: "Settings" },
-] as const;
+];
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/dashboard/") return pathname === "/dashboard" || pathname === "/dashboard/";
@@ -31,8 +32,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const planLabel = overview?.plan.name ?? "…";
   const showBootstrap = redirecting || (loading && !overview);
 
-  function logout() {
-    window.location.assign("/api/auth/logout");
+  async function logout() {
+    // Leave the dashboard even if the request fails; the login page shows the real session state.
+    await accountApi.logout().catch(() => undefined);
+    window.location.assign("/login/");
   }
 
   return (
