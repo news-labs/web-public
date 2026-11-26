@@ -33,6 +33,7 @@ export default function ProductPage() {
           return (
             <MarketingFullImageSection
               key={section.id}
+              id={section.id}
               headline={section.title}
               body={section.features.join(" ")}
               icon={section.icon}
@@ -43,6 +44,7 @@ export default function ProductPage() {
         return (
           <MarketingSplitImageSection
             key={section.id}
+            id={section.id}
             layout={layout as "B" | "C"}
             headline={section.title}
             body={section.features[0] ?? section.subtitle}

@@ -269,7 +269,4 @@ const dataset = await r2.getDataset(country, category, date, chunk);
 
 ## Related Documentation
 
-- [Project README](../README.md)
-- ](/ko/v1/guides/seeds/)
-- [Environment Guide](../docs/ENVIRONMENT_GUIDE.md)
-- [Architecture Guidelines](../.cursorrules)
+- [Seeds guide](/ko/v1/guides/seeds/)

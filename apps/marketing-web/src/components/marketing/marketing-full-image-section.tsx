@@ -4,6 +4,7 @@ import { MarketingPlaceholderImage } from "@/components/marketing/marketing-plac
 import { MotionReveal } from "@/components/ui/motion-reveal";
 
 export interface MarketingFullImageSectionProps {
+  id?: string;
   headline: string;
   body: string;
   icon?: LucideIcon;
@@ -11,6 +12,7 @@ export interface MarketingFullImageSectionProps {
 }
 
 export function MarketingFullImageSection({
+  id,
   headline,
   body,
   icon,
@@ -18,7 +20,7 @@ export function MarketingFullImageSection({
 }: MarketingFullImageSectionProps) {
   const bg = variant === "muted" ? "bg-muted/50" : "bg-background";
   return (
-    <section className={`border-t border-border py-16 md:min-h-[640px] md:py-20 ${bg}`}>
+    <section id={id} className={`scroll-mt-20 border-t border-border py-16 md:min-h-[640px] md:py-20 ${bg}`}>
       <PageContainer className="max-w-revamp-content">
         <MotionReveal>
           <div className="mb-8 max-w-3xl">

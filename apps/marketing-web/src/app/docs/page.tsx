@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BookOpen, Code2, FileJson, Globe, Zap, ArrowRight, ExternalLink } from "lucide-react";
+import { BookOpen, Code2, Globe, Zap, ArrowRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SIGNUP_URL } from "@/data/home-content";
 
@@ -33,12 +33,6 @@ const DOC_SECTIONS = [
     title: "Architecture Guides",
     description: "System architecture, deployment, and integration guides.",
     href: "https://docs.newsfork.com/v1/guides/",
-  },
-  {
-    icon: FileJson,
-    title: "OpenAPI Spec",
-    description: "Machine-readable OpenAPI 3.1 specification for the Newsfork API.",
-    href: "https://api.newsfork.com/openapi.json",
   },
 ];
 

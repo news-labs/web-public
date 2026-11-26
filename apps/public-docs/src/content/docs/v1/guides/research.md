@@ -203,7 +203,9 @@ This ensures complete isolation between environments.
 
 ## Data Access
 
-### Via API ```bash
+### Via API
+
+```bash
 # List research outputs
 curl https://api.example.com/api/v1/research?country=SG&category=news
 
@@ -219,11 +221,18 @@ curl -X POST https://api.example.com/api/v1/queues/research \
     "urls": ["https://example.com"],
     "chunkSize": 100
   }'
-``` ### Via R2 Direct Access Research datasets can be accessed directly from R2: ```typescript
+```
+
+### Via R2 Direct Access
+
+Research datasets can be accessed directly from R2:
+
+```typescript
 // Using R2 Storage Service
 const r2 = createR2StorageService(env.DATASETS_BUCKET);
 const dataset = await r2.getDataset(country, category, date, chunk);
-``` ## Related Documentation - [Project README](../README.md)
-- ](/ko/v1/guides/seeds/)
-- [Environment Guide](../docs/ENVIRONMENT_GUIDE.md)
-- [Architecture Guidelines](../.cursorrules)
+```
+
+## Related Documentation
+
+- [Seeds guide](/v1/guides/seeds/)
