@@ -1,16 +1,9 @@
 name: Deploy account-web to Cloudflare Pages
 
+# Legacy Cloudflare Pages deploy (old account). Auto-deploy on push is disabled: the site now ships as an
+# assets-only Worker built and deployed from project-a (see README.md "배포 (Static hosting)").
+# Kept as manual-only until CI is moved to the new account.
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "apps/account-web/**"
-      - "pnpm-lock.yaml"
-      - "pnpm-workspace.yaml"
-      - "scripts/preflight-cloudflare.mjs"
-      - "scripts/account-guard.mjs"
-      - ".github/workflows/deploy-account.yml"
   workflow_dispatch:
 
 concurrency:
@@ -53,6 +46,8 @@ jobs:
         run: pnpm --filter account-web run build
         env:
           NODE_ENV: production
+          # Pages deploy ships the /api/account BFF (functions/), so the live forms are enabled here.
+          NEXT_PUBLIC_ACCOUNT_API_ENABLED: "1"
 
       - name: apibay URL builder tests
         run: pnpm --filter account-web run test:apibay

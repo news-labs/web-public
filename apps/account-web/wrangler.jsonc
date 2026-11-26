@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Assets-only Worker (Workers Static Assets, no `main`, no bindings): requests never run Worker code, so
+  // static traffic is free and unlimited. Design: news-labs/ops-ci-workflows docs/thin-cloudflare-static-hosting.md
+  // account_id is NOT set here (CI rule D-2 / hardcoded-account-id): pass CLOUDFLARE_ACCOUNT_ID in the env.
+  "name": "nl-site-newsfork-account",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": { "enabled": false }
+}

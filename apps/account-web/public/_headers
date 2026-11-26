@@ -1,8 +1,7 @@
+# account.newsfork.com: never indexed, never framed.
 /*
- * https://account.newsfork.com
- */
-X-Robots-Tag: noindex, nofollow
-X-Content-Type-Options: nosniff
-Referrer-Policy: strict-origin-when-cross-origin
-X-Frame-Options: DENY
-Permissions-Policy: camera=(), microphone=(), geolocation=()
+  X-Robots-Tag: noindex, nofollow
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=()

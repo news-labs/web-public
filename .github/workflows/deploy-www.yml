@@ -1,17 +1,9 @@
 name: Deploy marketing-web to Cloudflare Pages
 
+# Legacy Cloudflare Pages deploy (old account). Auto-deploy on push is disabled: the site now ships as an
+# assets-only Worker built and deployed from project-a (see README.md "배포 (Static hosting)").
+# Kept as manual-only until CI is moved to the new account.
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "apps/marketing-web/**"
-      - "packages/**"
-      - "pnpm-lock.yaml"
-      - "pnpm-workspace.yaml"
-      - "scripts/preflight-cloudflare.mjs"
-      - "scripts/account-guard.mjs"
-      - ".github/workflows/deploy-www.yml"
   workflow_dispatch:
 
 concurrency:
