@@ -1,11 +1,15 @@
-/** Browser client for the same-origin `/api/account/*` BFF (HttpOnly session cookie). */
+/** Browser client for nl-account-api on api.newsfork.com (session is an HttpOnly cookie on that host). */
 
 /**
- * The BFF only exists when a backend serves `/api/*` on this origin. The static build (assets-only Worker)
- * has none, so login/signup/dashboard render a "temporarily unavailable" state unless the build sets
- * `NEXT_PUBLIC_ACCOUNT_API_ENABLED=1`.
+ * The static site has no backend of its own. Unless the build sets `NEXT_PUBLIC_ACCOUNT_API_ENABLED=1`,
+ * login/signup/dashboard render a "temporarily unavailable" state.
  */
 export const ACCOUNT_API_ENABLED = process.env.NEXT_PUBLIC_ACCOUNT_API_ENABLED === "1";
+/** Paid plans are not sold until billing is rebuilt. */
+export const BILLING_ENABLED = process.env.NEXT_PUBLIC_BILLING_ENABLED === "1";
+/** Copy for the first step when the API runs with `LOGIN_DELIVERY=manual` (no mail). */
+export const MANUAL_LOGIN = process.env.NEXT_PUBLIC_LOGIN_DELIVERY === "manual";
+const API_ORIGIN = process.env.NEXT_PUBLIC_ACCOUNT_API_ORIGIN ?? "https://api.newsfork.com";
 
 export class AccountApiError extends Error {
   constructor(
@@ -18,9 +22,9 @@ export class AccountApiError extends Error {
 }
 
 async function request<T>(path: string, init: { method?: string; body?: unknown } = {}): Promise<T> {
-  const res = await fetch(`/api/account/${path}`, {
+  const res = await fetch(`${API_ORIGIN}/v1/account/${path}`, {
     method: init.method ?? "GET",
-    credentials: "same-origin",
+    credentials: "include",
     headers: init.body !== undefined ? { "content-type": "application/json" } : undefined,
     body: init.body !== undefined ? JSON.stringify(init.body) : undefined,
   });
@@ -80,10 +84,10 @@ export interface BillingStatus {
 
 export const accountApi = {
   requestCode: (email: string) =>
-    request<{ ok: true; expiresIn: number; debugCode?: string }>("otp", { method: "POST", body: { email } }),
+    request<{ ok: true; expiresIn?: number; delivery?: "manual"; debugCode?: string }>("auth/otp", { method: "POST", body: { email } }),
   verify: (input: { email: string; code: string; name?: string; company?: string; returnUrl?: string }) =>
-    request<{ created: boolean; next?: string | null }>("verify", { method: "POST", body: input }),
-  logout: () => request<{ ok: true }>("logout", { method: "POST", body: {} }),
+    request<{ created: boolean; next?: string | null }>("auth/verify", { method: "POST", body: input }),
+  logout: () => request<{ ok: true }>("auth/logout", { method: "POST", body: {} }),
   me: () => request<Overview>("me"),
   updateProfile: (patch: { name?: string | null; company?: string | null }) =>
     request<{ consumer: Overview["consumer"] }>("me", { method: "PATCH", body: patch }),
@@ -96,7 +100,10 @@ export const accountApi = {
   createKey: (label: string) =>
     request<{ key: ApiKeySummary; apiKey: string }>("keys", { method: "POST", body: { label } }),
   revokeKey: (id: string) => request<{ status: string }>(`keys/${encodeURIComponent(id)}`, { method: "DELETE" }),
-  billing: () => request<BillingStatus>("billing"),
+  billing: (): Promise<BillingStatus> =>
+    BILLING_ENABLED
+      ? request<BillingStatus>("billing")
+      : Promise.reject(new AccountApiError(404, "billing_not_configured")),
   checkout: (plan: BillingPlan) => request<{ url: string }>("billing/checkout", { method: "POST", body: { plan } }),
   portal: () => request<{ url: string }>("billing/portal", { method: "POST", body: {} }),
 };
@@ -110,6 +117,9 @@ const ERROR_MESSAGES: Record<string, string> = {
   otp_too_many_attempts: "Too many attempts. Request a new code.",
   invalid_code_format: "Enter the 6-digit code from the email.",
   account_suspended: "This account is suspended. Contact hello@newsfork.com.",
+  email_daily_cap_reached: "We cannot send more codes right now. Please try again later.",
+  email_send_failed: "We could not send the email. Please try again in a few minutes.",
+  rate_limited: "Too many requests. Please wait a while and try again.",
   email_not_configured: "Email delivery is temporarily unavailable. Please try again later.",
   key_limit_reached: "You have reached the active key limit for your plan. Revoke a key first.",
   forbidden_origin: "Request blocked. Reload the page and try again.",

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { useDashboard } from "@/components/dashboard/DashboardProvider";
 import { Button } from "@/components/ui/button";
-import { accountApi, describeError, type ApiKeySummary } from "@/lib/account-api";
+import { accountApi, BILLING_ENABLED, describeError, type ApiKeySummary } from "@/lib/account-api";
 import { CARD, formatDate } from "@/lib/dashboard-format";
 import { API_BASE_URL, API_DOCS_URL, PRICING_URL } from "@/lib/account-urls";
 
@@ -188,6 +188,9 @@ export function KeysPanel() {
             </p>
           </>
         ) : (
+          !BILLING_ENABLED ? (
+            <p className="mt-2 text-sm text-muted-foreground">MCP tools are not available yet.</p>
+          ) : (
           <p className="mt-2 text-sm text-muted-foreground">
             MCP tools require Pro.{" "}
             <Link href="/dashboard/billing/" className="text-foreground underline-offset-2 hover:underline">
@@ -199,6 +202,7 @@ export function KeysPanel() {
             </a>
             .
           </p>
+          )
         )}
       </section>
     </div>
