@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { useDashboard } from "@/components/dashboard/DashboardProvider";
-import { accountApi, AccountApiError, BILLING_ENABLED } from "@/lib/account-api";
+import { BILLING_ENABLED } from "@/lib/account-api";
+import { LOGOUT_FAILED_MESSAGE, signOut } from "@/lib/sign-out";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -34,18 +35,12 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
   const [logoutFailed, setLogoutFailed] = useState(false);
 
+  // The shell outlives navigation, so drop the alert when the page changes.
+  useEffect(() => setLogoutFailed(false), [pathname]);
+
   async function logout() {
     setLogoutFailed(false);
-    try {
-      await accountApi.logout();
-    } catch (err) {
-      // 401 means the session is already gone. Anything else may leave it active, so stay and say so.
-      if (!(err instanceof AccountApiError && err.status === 401)) {
-        setLogoutFailed(true);
-        return;
-      }
-    }
-    window.location.assign("/login/");
+    if (!(await signOut())) setLogoutFailed(true);
   }
 
   return (
@@ -102,7 +97,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         <main className="mx-auto max-w-4xl px-4 py-8">
           {logoutFailed && (
             <div className="mb-4 rounded-lg border border-border bg-muted px-3 py-2 text-sm" role="alert">
-              Log out failed. You may still be signed in. Check your connection and try again.
+              {LOGOUT_FAILED_MESSAGE}
             </div>
           )}
           {redirecting ? (

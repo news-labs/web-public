@@ -47,6 +47,10 @@ pnpm dev:docs
 ### Build + deploy (project-a)
 
 ```bash
+# 한 단계라도 실패하면 멈추도록 서브셸에서 실행합니다.
+(
+set -euo pipefail
+
 # 1) build (repo checkout, Node 22 + pnpm via corepack; no Cloudflare token needed)
 cd web-public
 corepack pnpm install --frozen-lockfile --filter marketing-web... --filter account-web... --filter public-docs...
@@ -62,21 +66,20 @@ for a in marketing-web:nl-site-newsfork-marketing:out account-web:nl-site-newsfo
 done
 
 # 3) deploy (root: reads the token). Uploads only changed files; roll back with `npx wrangler rollback`.
-cd /opt/nl-static-sites
 export PATH=/opt/nl-static-sites/node/bin:$PATH WRANGLER_SEND_METRICS=false
-export CLOUDFLARE_API_TOKEN=$(cat /root/.config/cf-marcojapan/token) CLOUDFLARE_ACCOUNT_ID=0273546a70813961da4db72ca30e7452
-for n in nl-site-newsfork-marketing nl-site-newsfork-account nl-site-newsfork-docs; do
-  (cd "out/$n" && npx wrangler deploy --dry-run && npx wrangler deploy)
-done
+CLOUDFLARE_API_TOKEN=$(cat /root/.config/cf-marcojapan/token)
+export CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:?set the target account ID first}"
+bash scripts/deploy-static-sites.sh /opt/nl-static-sites
+)
 ```
 
 `public-docs`의 `build`·`deploy` 스크립트는 먼저 `scripts/audit-public-docs-sensitive.mjs`를 실행하고, 검사에 걸리면 실패합니다.
-`astro build`를 직접 실행하면 검사를 건너뜁니다. 위 명령 묶음은 실패해도 자동으로 멈추지 않으며, 이전 빌드의 `dist/`가 남아 있으면
-2·3단계에서 그대로 배포될 수 있습니다. 빌드가 실패하면 2·3단계를 진행하지 마세요.
+`astro build`를 직접 실행하면 검사를 건너뜁니다. `scripts/deploy-static-sites.sh`는 토큰이 대상 계정에 접근할 수 있는지
+확인하고, 세 사이트의 dry-run이 모두 통과해야 배포를 시작합니다. 배포 도중 실패하면 거기서 멈추며, 이미 배포된 사이트는 되돌리지 않습니다.
 
 Free 한도: 버전당 20,000 파일, 파일당 25 MiB. 현재 빌드는 각각 수십~수백 개 파일, 최대 파일 약 1.6 MB입니다.
 
-`.github/workflows/deploy-*.yml`(구 계정 Cloudflare Pages)은 push 자동 배포를 끄고 수동 실행만 남겼습니다.
+구 계정 Cloudflare Pages용 마케팅·계정·문서 배포 워크플로는 삭제했습니다.
 
 Internal engineering docs: [devdocs.newsfork.com](https://devdocs.newsfork.com/products/seeds/) (Seeds architecture/ops migrated from public-docs). Boundary: `apps/public-docs/docs/PLAN-content-separation.md`.
 

@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 test.describe("account portal static UI", () => {
   test("login page asks for email and links to signup", async ({ page }) => {
@@ -53,7 +53,7 @@ test.describe("account portal static UI", () => {
   });
 });
 
-test("a failed log out stays on the dashboard and says so", async ({ page }) => {
+async function mockSignedInWithBrokenLogout(page: Page) {
   const month = { used: 0, limit: 1000, remaining: 1000, resetAt: null };
   const plan = { id: "free", name: "Free", monthlyPriceUsd: 0, monthlyUnits: 1000, rateLimitPerMinute: 60, maxActiveKeys: 2, features: ["core"] };
   const bodies: Record<string, unknown> = {
@@ -76,8 +76,23 @@ test("a failed log out stays on the dashboard and says so", async ({ page }) => 
       body: JSON.stringify(bodies[path] ?? {}),
     });
   });
+}
+
+test("a failed log out stays on the dashboard and says so", async ({ page }) => {
+  await mockSignedInWithBrokenLogout(page);
   await page.goto("/dashboard/");
   await page.getByRole("button", { name: "Log out" }).click();
   await expect(page.getByText(/Log out failed/)).toBeVisible();
   await expect(page).toHaveURL(/\/dashboard\/$/);
+  await page.getByRole("navigation", { name: "Account" }).getByRole("link", { name: "API keys" }).click();
+  await expect(page).toHaveURL(/\/dashboard\/keys\/$/);
+  await expect(page.getByText(/Log out failed/)).toHaveCount(0);
+});
+
+test("a failed log out from settings stays there and says so", async ({ page }) => {
+  await mockSignedInWithBrokenLogout(page);
+  await page.goto("/dashboard/settings/");
+  await page.getByRole("main").getByRole("button", { name: /log out|sign out/i }).click();
+  await expect(page.getByText(/Log out failed/)).toBeVisible();
+  await expect(page).toHaveURL(/\/dashboard\/settings\/$/);
 });
