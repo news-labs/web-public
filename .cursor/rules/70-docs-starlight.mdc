@@ -51,6 +51,6 @@ Before adding a page, check `scripts/content-classification.csv` and run `node s
 
 ## Deploy
 
-Production deploys to Cloudflare Pages project `nl-public-docs` via `.github/workflows/deploy-public-docs.yml`.
+Production ships as an assets-only Worker built and deployed from project-a (see README.md).
 
 CI runs `scripts/audit-public-docs-sensitive.mjs` before deploy.

@@ -7,7 +7,21 @@ status: auto-generated
 translatedFromHash: eb162dee38a358a07592ca5e0344209f8f3c37ac653c089baff36bbdf0541fce
 ---
 
-This document was automatically generated from the README in the **research** folder. # Research Research outputs represent the **discovery phase** of the NewsFork pipeline. ## Philosophy > "Research Engine discovers WHERE to look."Research doesn't judge content quality, fetch methods, or validity. It simply discovers URLs that _might_ be relevant news sources. ## Structure ```
+This document was automatically generated from the README in the **research** folder.
+
+# Research
+
+Research outputs represent the **discovery phase** of the NewsFork pipeline.
+
+## Philosophy
+
+> "Research Engine discovers WHERE to look."
+
+Research doesn't judge content quality, fetch methods, or validity. It simply discovers URLs that _might_ be relevant news sources.
+
+## Structure
+
+```
 research/
 ├── datasets/           # Research datasets (immutable snapshots)
 │   └── country=sg/
@@ -24,7 +38,9 @@ research/
 │   └── country=sg/
 │       └── 2026-01-24.json
 └── README.md
-``` ## Storage 
+```
+
+## Storage
 
 Research data is stored in **Cloudflare R2** for production use: 
 
@@ -32,12 +48,25 @@ Research data is stored in **Cloudflare R2** for production use:
 - **Path Format**: `research/datasets/country={code}/category={type}/{date}_{chunk}.json` 
 - **Backup/Audit**: GitHub (via metadata sync) 
 
-## Path Convention Uses Hive-style partitioning for compatibility with data lake tools: ```
+## Path Convention
+
+Uses Hive-style partitioning for compatibility with data lake tools:
+
+```
 research/datasets/country=sg/category=news/2026-01-25_0001.json
 research/liveness/country=sg/2026-01-25.json
 research/blocked/country=sg/2026-01-25.json
 research/dead/country=sg/2026-01-25.json
-``` This format works with: - BigQuery - Delta Lake - AWS Athena - Cloudflare R2 ## Enhanced Research Dataset Schema
+```
+
+This format works with:
+
+- BigQuery
+- Delta Lake
+- AWS Athena
+- Cloudflare R2
+
+## Enhanced Research Dataset Schema
 
  ```json
 {
@@ -120,7 +149,14 @@ These are the Seed Engine's responsibilities.
 ### Research Operations
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|___EN___| GET | `/api/v1/research` | List research outputs |___EN___| GET | `/api/v1/research/index` | Get research index |___EN___| GET | `/api/v1/research/:country/:category/:date` | Get specific research |___EN___| GET | `/api/v1/research/:country/:category/today` | Get today's research |___EN___| POST | `/api/v1/research` | Create research output |___EN______EN___### Queue Operations
+|--------|----------|-------------|
+| GET | `/api/v1/research` | List research outputs |
+| GET | `/api/v1/research/index` | Get research index |
+| GET | `/api/v1/research/:country/:category/:date` | Get specific research |
+| GET | `/api/v1/research/:country/:category/today` | Get today's research |
+| POST | `/api/v1/research` | Create research output |
+
+### Queue Operations
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|

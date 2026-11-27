@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import { LOGOUT_FAILED_MESSAGE, signOut } from "@/lib/sign-out";
 import { useDashboard } from "@/components/dashboard/DashboardProvider";
 import { Button } from "@/components/ui/button";
 import { accountApi, describeError, BILLING_ENABLED } from "@/lib/account-api";
@@ -14,6 +15,7 @@ export function SettingsPanel() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [logoutError, setLogoutError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
@@ -51,8 +53,9 @@ export function SettingsPanel() {
     }
   }
 
-  function logout() {
-    void accountApi.logout().catch(() => undefined).then(() => window.location.assign("/login/"));
+  async function logout() {
+    setLogoutError(null);
+    if (!(await signOut())) setLogoutError(LOGOUT_FAILED_MESSAGE);
   }
 
   async function terminate() {
@@ -141,6 +144,11 @@ export function SettingsPanel() {
       <section className={CARD}>
         <h2 className="text-lg font-semibold">Session</h2>
         <p className="mt-2 text-sm text-muted-foreground">Sign out of this browser. API keys keep working until revoked.</p>
+        {logoutError && (
+          <p className="mt-3 text-sm" role="alert">
+            {logoutError}
+          </p>
+        )}
         <Button type="button" variant="outline" className="mt-4" onClick={logout}>
           Log out
         </Button>

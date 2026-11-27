@@ -7,7 +7,26 @@ status: auto-generated
 translatedFromHash: 071793e4bee35cabdd54543ffb022da3af0847e50a9dbea3fb769cb8e80627bf
 ---
 
-This document was automatically generated from the README in the **seeds** folder. # Seeds Seeds represent the **contract phase** of the NewsFork pipeline. ## Philosophy > "Seed Engine defines HOW to fetch content."Seeds are production-ready contracts that specify exactly how to retrieve content from a source, including: - Fetch method (HTML, RSS, API) - Content selectors - Update frequency - Validation rules ## Structure ```
+This document was automatically generated from the README in the **seeds** folder.
+
+# Seeds
+
+Seeds represent the **contract phase** of the NewsFork pipeline.
+
+## Philosophy
+
+> "Seed Engine defines HOW to fetch content."
+
+Seeds are production-ready contracts that specify exactly how to retrieve content from a source, including:
+
+- Fetch method (HTML, RSS, API)
+- Content selectors
+- Update frequency
+- Validation rules
+
+## Structure
+
+```
 seeds/
 ├── drafts/             # Pending review
 │   └── country=sg/
@@ -20,7 +39,17 @@ seeds/
 ├── archived/           # Historical
 │   └── ...
 └── README.md
-``` ## Storage Seed contracts are stored in **GitHub** for version control and audit trail: - **Primary Storage**: GitHub repository - **Path Format**: `seeds/{status}/country={code}/domain={domain}/content={type}/v{version}.json` - **Backup**: R2 (via metadata sync, future) ## Lifecycle
+```
+
+## Storage
+
+Seed contracts are stored in **GitHub** for version control and audit trail:
+
+- **Primary Storage**: GitHub repository
+- **Path Format**: `seeds/{status}/country={code}/domain={domain}/content={type}/v{version}.json`
+- **Backup**: R2 (via metadata sync, future)
+
+## Lifecycle
 
  ```
 ┌─────────┐    review    ┌─────────┐    deprecate    ┌──────────┐
@@ -79,7 +108,18 @@ seeds/
 - `guide` - How-to content
 - `faq` - Q&A structured info
 
-### Versioning Seeds are versioned to track changes: - `v1.json` , `v2.json` , etc. - Version bumps on content/structure changes - Discovery updates don't bump version ### Promotion Flow 1. Research discovers URLs (R2 datasets) 2. Seed Engine creates draft (via API)
+### Versioning
+
+Seeds are versioned to track changes:
+
+- `v1.json` , `v2.json` , etc.
+- Version bumps on content/structure changes
+- Discovery updates don't bump version
+
+### Promotion Flow
+
+1. Research discovers URLs (R2 datasets)
+2. Seed Engine creates draft (via API)
 3. Human reviews draft
 4. PR merged → promoted to active (via API)
 5. Scraper trusts active seeds only
@@ -112,7 +152,15 @@ Supported filters:
 - `limit`: Number of results (default: 50, max: 100)
 - `offset`: Pagination offset
 
-## Service Layer The Seed Service (`src/services/seed.service.ts`) orchestrates: - **Domain Functions**: Pure business logic (no Cloudflare dependencies) - **Infra Adapters**: GitHub storage for contracts - **Validation**: Zod schema validation ### Key Functions
+## Service Layer
+
+The Seed Service (`src/services/seed.service.ts`) orchestrates:
+
+- **Domain Functions**: Pure business logic (no Cloudflare dependencies)
+- **Infra Adapters**: GitHub storage for contracts
+- **Validation**: Zod schema validation
+
+### Key Functions
 
  ```typescript
 // Domain functions (pure, testable)
@@ -162,11 +210,31 @@ The system automatically checks for duplicate seeds:
 
 Duplicate seeds are rejected with appropriate error messages.
 
-## Path Format Seeds use Hive-style partitioning: ```
+## Path Format
+
+Seeds use Hive-style partitioning:
+
+```
 seeds/drafts/country=sg/domain=mom.gov.sg/content=news/v1.json
 seeds/active/country=sg/domain=mom.gov.sg/content=news/v1.json
 seeds/archived/country=sg/domain=mom.gov.sg/content=news/v1.json
-``` This format: - Enables efficient querying by country/domain - Supports versioning (v1, v2, etc.) - Compatible with data lake tools ## Status Management ### Draft - Initial state for all new seeds - Stored in `seeds/drafts/` - Requires human review before promotion ### Active Active
+```
+
+This format:
+
+- Enables efficient querying by country/domain
+- Supports versioning (v1, v2, etc.)
+- Compatible with data lake tools
+
+## Status Management
+
+### Draft
+
+- Initial state for all new seeds
+- Stored in `seeds/drafts/`
+- Requires human review before promotion
+
+### Active
 
 - Production-ready contracts
 - Stored in `seeds/active/` 
@@ -185,7 +253,18 @@ seeds/archived/country=sg/domain=mom.gov.sg/content=news/v1.json
 - Stored in `seeds/archived/` 
 - Historical record only
 
-## Versioning Strategy Seeds are versioned when: - Content structure changes - Fetch method changes - Selectors are updated - Validation rules change Versioning does NOT occur for: - Discovery updates (liveness checks)
+## Versioning Strategy
+
+Seeds are versioned when:
+
+- Content structure changes
+- Fetch method changes
+- Selectors are updated
+- Validation rules change
+
+Versioning does NOT occur for:
+
+- Discovery updates (liveness checks)
 - Metadata updates
 - Status changes
 
